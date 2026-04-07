@@ -1,0 +1,11 @@
+{
+  "plan_name": "memory_usage_diagnosis",
+  "check_type": "memory",
+  "commands": [
+    "free -m",
+    "ps -eo pid,ppid,cmd,%mem --sort=-%mem | head -10"
+  ],
+  "reasoning": "根据技能文件3.2场景：内存不足/泄漏，首先检查内存使用概览，然后查看内存占用排行，定位高耗内存进程",
+  "expected_findings": [],
+  "created_at": "2026-03-28T22:32:35.121502"
+}

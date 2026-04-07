@@ -1,0 +1,49 @@
+---
+- name: Get Server Status
+  hosts: aliyun_servers
+  gather_facts: yes
+  tasks:
+    - name: Get CPU info
+      command: cat /proc/cpuinfo
+      register: cpu_info
+      changed_when: false
+
+    - name: Get memory info
+      command: free -h
+      register: memory_info
+      changed_when: false
+
+    - name: Get disk info
+      command: df -h
+      register: disk_info
+      changed_when: false
+
+    - name: Get system uptime
+      command: uptime
+      register: uptime_info
+      changed_when: false
+
+    - name: Get load average
+      command: cat /proc/loadavg
+      register: load_avg
+      changed_when: false
+
+    - name: Get running services
+      shell: systemctl list-units --type=service --state=running | head -20
+      register: running_services
+      changed_when: false
+
+    - name: Display server status
+      debug:
+        msg:
+          - "=== Server: {{ inventory_hostname }} ({{ ansible_host }}) ==="
+          - "=== Uptime ==="
+          - "{{ uptime_info.stdout }}"
+          - "=== CPU Cores ==="
+          - "{{ ansible_processor_vcpus | default('N/A') }}"
+          - "=== Memory ==="
+          - "{{ memory_info.stdout }}"
+          - "=== Disk ==="
+          - "{{ disk_info.stdout }}"
+          - "=== Load Average ==="
+          - "{{ load_avg.stdout }}"

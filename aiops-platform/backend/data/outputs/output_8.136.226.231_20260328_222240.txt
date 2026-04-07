@@ -1,0 +1,4 @@
+
+grep: of: No such file or directory
+grep: memory: No such file or directory
+grep: /var/log/messages: Permission denied

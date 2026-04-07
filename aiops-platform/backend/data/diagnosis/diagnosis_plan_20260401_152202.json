@@ -1,0 +1,12 @@
+{
+  "plan_name": "oom_diagnosis_plan",
+  "check_type": "memory",
+  "commands": [
+    "free -m",
+    "ps -eo pid,ppid,cmd,%mem --sort=-%mem | head -10",
+    "dmesg | grep -i \"Out of memory\\|oom\\|kill\""
+  ],
+  "reasoning": "根据 skill 文件 3.2 节，OOM 问题需先检查内存总量可用性、高内存进程、以及内核 OOM 日志确认是否已触发 Kill。所有命令均为只读、低风险操作。",
+  "expected_findings": [],
+  "created_at": "2026-04-01T15:22:02.767444"
+}

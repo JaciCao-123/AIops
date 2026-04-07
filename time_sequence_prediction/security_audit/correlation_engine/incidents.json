@@ -1,0 +1,1857 @@
+[
+    {
+        "incident_type": "Coordinated_Attack_Detected",
+        "severity": "CRITICAL",
+        "start_time": "2023-03-25T14:00:00",
+        "end_time": "2023-03-25T14:10:00",
+        "summary": "检测到协同攻击：系统同时遭受SSH暴力破解和身份认证撞库攻击",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:00:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 66/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 105
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "Auth_CredentialStuffing_Detected",
+                "timestamp": "2023-03-25T14:10:00",
+                "severity": "HIGH",
+                "description": "Authentication failure rate 92/min exceeds threshold 0.50/min",
+                "entities": {
+                    "target_user": "leaked_user@example.com",
+                    "target_app": "app1",
+                    "source_ip_count": 79,
+                    "failure_type": "invalid_password"
+                },
+                "source_system": "auth_detector",
+                "indicators": {
+                    "is_credential_stuffing": true,
+                    "is_targeted_attack": false
+                }
+            }
+        ],
+        "recommendations": [
+            "立即封锁攻击源IP",
+            "强制重置目标用户密码",
+            "检查是否有账户已被入侵",
+            "加强认证系统的防护措施",
+            "启用多因素认证(MFA)"
+        ],
+        "created_at": "2026-03-30T18:02:52.235025"
+    },
+    {
+        "incident_type": "Coordinated_Attack_Detected",
+        "severity": "CRITICAL",
+        "start_time": "2023-03-25T14:00:00",
+        "end_time": "2023-03-25T14:11:00",
+        "summary": "检测到协同攻击：系统同时遭受SSH暴力破解和身份认证撞库攻击",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:00:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 66/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 105
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "Auth_CredentialStuffing_Detected",
+                "timestamp": "2023-03-25T14:11:00",
+                "severity": "HIGH",
+                "description": "Authentication failure rate 108/min exceeds threshold 0.50/min",
+                "entities": {
+                    "target_user": "leaked_user@example.com",
+                    "target_app": "app1",
+                    "source_ip_count": 84,
+                    "failure_type": "invalid_password"
+                },
+                "source_system": "auth_detector",
+                "indicators": {
+                    "is_credential_stuffing": true,
+                    "is_targeted_attack": false
+                }
+            }
+        ],
+        "recommendations": [
+            "立即封锁攻击源IP",
+            "强制重置目标用户密码",
+            "检查是否有账户已被入侵",
+            "加强认证系统的防护措施",
+            "启用多因素认证(MFA)"
+        ],
+        "created_at": "2026-03-30T18:02:52.235097"
+    },
+    {
+        "incident_type": "Coordinated_Attack_Detected",
+        "severity": "CRITICAL",
+        "start_time": "2023-03-25T14:01:00",
+        "end_time": "2023-03-25T14:10:00",
+        "summary": "检测到协同攻击：系统同时遭受SSH暴力破解和身份认证撞库攻击",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:01:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 49/min exceeds threshold 0.26/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 72
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "Auth_CredentialStuffing_Detected",
+                "timestamp": "2023-03-25T14:10:00",
+                "severity": "HIGH",
+                "description": "Authentication failure rate 92/min exceeds threshold 0.50/min",
+                "entities": {
+                    "target_user": "leaked_user@example.com",
+                    "target_app": "app1",
+                    "source_ip_count": 79,
+                    "failure_type": "invalid_password"
+                },
+                "source_system": "auth_detector",
+                "indicators": {
+                    "is_credential_stuffing": true,
+                    "is_targeted_attack": false
+                }
+            }
+        ],
+        "recommendations": [
+            "立即封锁攻击源IP",
+            "强制重置目标用户密码",
+            "检查是否有账户已被入侵",
+            "加强认证系统的防护措施",
+            "启用多因素认证(MFA)"
+        ],
+        "created_at": "2026-03-30T18:02:52.235162"
+    },
+    {
+        "incident_type": "Coordinated_Attack_Detected",
+        "severity": "CRITICAL",
+        "start_time": "2023-03-25T14:01:00",
+        "end_time": "2023-03-25T14:11:00",
+        "summary": "检测到协同攻击：系统同时遭受SSH暴力破解和身份认证撞库攻击",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:01:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 49/min exceeds threshold 0.26/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 72
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "Auth_CredentialStuffing_Detected",
+                "timestamp": "2023-03-25T14:11:00",
+                "severity": "HIGH",
+                "description": "Authentication failure rate 108/min exceeds threshold 0.50/min",
+                "entities": {
+                    "target_user": "leaked_user@example.com",
+                    "target_app": "app1",
+                    "source_ip_count": 84,
+                    "failure_type": "invalid_password"
+                },
+                "source_system": "auth_detector",
+                "indicators": {
+                    "is_credential_stuffing": true,
+                    "is_targeted_attack": false
+                }
+            }
+        ],
+        "recommendations": [
+            "立即封锁攻击源IP",
+            "强制重置目标用户密码",
+            "检查是否有账户已被入侵",
+            "加强认证系统的防护措施",
+            "启用多因素认证(MFA)"
+        ],
+        "created_at": "2026-03-30T18:02:52.235219"
+    },
+    {
+        "incident_type": "Coordinated_Attack_Detected",
+        "severity": "CRITICAL",
+        "start_time": "2023-03-25T14:02:00",
+        "end_time": "2023-03-25T14:10:00",
+        "summary": "检测到协同攻击：系统同时遭受SSH暴力破解和身份认证撞库攻击",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:02:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 57/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 83
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "Auth_CredentialStuffing_Detected",
+                "timestamp": "2023-03-25T14:10:00",
+                "severity": "HIGH",
+                "description": "Authentication failure rate 92/min exceeds threshold 0.50/min",
+                "entities": {
+                    "target_user": "leaked_user@example.com",
+                    "target_app": "app1",
+                    "source_ip_count": 79,
+                    "failure_type": "invalid_password"
+                },
+                "source_system": "auth_detector",
+                "indicators": {
+                    "is_credential_stuffing": true,
+                    "is_targeted_attack": false
+                }
+            }
+        ],
+        "recommendations": [
+            "立即封锁攻击源IP",
+            "强制重置目标用户密码",
+            "检查是否有账户已被入侵",
+            "加强认证系统的防护措施",
+            "启用多因素认证(MFA)"
+        ],
+        "created_at": "2026-03-30T18:02:52.235274"
+    },
+    {
+        "incident_type": "Coordinated_Attack_Detected",
+        "severity": "CRITICAL",
+        "start_time": "2023-03-25T14:02:00",
+        "end_time": "2023-03-25T14:11:00",
+        "summary": "检测到协同攻击：系统同时遭受SSH暴力破解和身份认证撞库攻击",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:02:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 57/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 83
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "Auth_CredentialStuffing_Detected",
+                "timestamp": "2023-03-25T14:11:00",
+                "severity": "HIGH",
+                "description": "Authentication failure rate 108/min exceeds threshold 0.50/min",
+                "entities": {
+                    "target_user": "leaked_user@example.com",
+                    "target_app": "app1",
+                    "source_ip_count": 84,
+                    "failure_type": "invalid_password"
+                },
+                "source_system": "auth_detector",
+                "indicators": {
+                    "is_credential_stuffing": true,
+                    "is_targeted_attack": false
+                }
+            }
+        ],
+        "recommendations": [
+            "立即封锁攻击源IP",
+            "强制重置目标用户密码",
+            "检查是否有账户已被入侵",
+            "加强认证系统的防护措施",
+            "启用多因素认证(MFA)"
+        ],
+        "created_at": "2026-03-30T18:02:52.235340"
+    },
+    {
+        "incident_type": "Coordinated_Attack_Detected",
+        "severity": "CRITICAL",
+        "start_time": "2023-03-25T14:03:00",
+        "end_time": "2023-03-25T14:10:00",
+        "summary": "检测到协同攻击：系统同时遭受SSH暴力破解和身份认证撞库攻击",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:03:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 68/min exceeds threshold 0.25/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 95
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "Auth_CredentialStuffing_Detected",
+                "timestamp": "2023-03-25T14:10:00",
+                "severity": "HIGH",
+                "description": "Authentication failure rate 92/min exceeds threshold 0.50/min",
+                "entities": {
+                    "target_user": "leaked_user@example.com",
+                    "target_app": "app1",
+                    "source_ip_count": 79,
+                    "failure_type": "invalid_password"
+                },
+                "source_system": "auth_detector",
+                "indicators": {
+                    "is_credential_stuffing": true,
+                    "is_targeted_attack": false
+                }
+            }
+        ],
+        "recommendations": [
+            "立即封锁攻击源IP",
+            "强制重置目标用户密码",
+            "检查是否有账户已被入侵",
+            "加强认证系统的防护措施",
+            "启用多因素认证(MFA)"
+        ],
+        "created_at": "2026-03-30T18:02:52.235399"
+    },
+    {
+        "incident_type": "Coordinated_Attack_Detected",
+        "severity": "CRITICAL",
+        "start_time": "2023-03-25T14:03:00",
+        "end_time": "2023-03-25T14:11:00",
+        "summary": "检测到协同攻击：系统同时遭受SSH暴力破解和身份认证撞库攻击",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:03:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 68/min exceeds threshold 0.25/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 95
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "Auth_CredentialStuffing_Detected",
+                "timestamp": "2023-03-25T14:11:00",
+                "severity": "HIGH",
+                "description": "Authentication failure rate 108/min exceeds threshold 0.50/min",
+                "entities": {
+                    "target_user": "leaked_user@example.com",
+                    "target_app": "app1",
+                    "source_ip_count": 84,
+                    "failure_type": "invalid_password"
+                },
+                "source_system": "auth_detector",
+                "indicators": {
+                    "is_credential_stuffing": true,
+                    "is_targeted_attack": false
+                }
+            }
+        ],
+        "recommendations": [
+            "立即封锁攻击源IP",
+            "强制重置目标用户密码",
+            "检查是否有账户已被入侵",
+            "加强认证系统的防护措施",
+            "启用多因素认证(MFA)"
+        ],
+        "created_at": "2026-03-30T18:02:52.235454"
+    },
+    {
+        "incident_type": "Coordinated_Attack_Detected",
+        "severity": "CRITICAL",
+        "start_time": "2023-03-25T14:04:00",
+        "end_time": "2023-03-25T14:10:00",
+        "summary": "检测到协同攻击：系统同时遭受SSH暴力破解和身份认证撞库攻击",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:04:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 60/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 89
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "Auth_CredentialStuffing_Detected",
+                "timestamp": "2023-03-25T14:10:00",
+                "severity": "HIGH",
+                "description": "Authentication failure rate 92/min exceeds threshold 0.50/min",
+                "entities": {
+                    "target_user": "leaked_user@example.com",
+                    "target_app": "app1",
+                    "source_ip_count": 79,
+                    "failure_type": "invalid_password"
+                },
+                "source_system": "auth_detector",
+                "indicators": {
+                    "is_credential_stuffing": true,
+                    "is_targeted_attack": false
+                }
+            }
+        ],
+        "recommendations": [
+            "立即封锁攻击源IP",
+            "强制重置目标用户密码",
+            "检查是否有账户已被入侵",
+            "加强认证系统的防护措施",
+            "启用多因素认证(MFA)"
+        ],
+        "created_at": "2026-03-30T18:02:52.235509"
+    },
+    {
+        "incident_type": "Coordinated_Attack_Detected",
+        "severity": "CRITICAL",
+        "start_time": "2023-03-25T14:04:00",
+        "end_time": "2023-03-25T14:11:00",
+        "summary": "检测到协同攻击：系统同时遭受SSH暴力破解和身份认证撞库攻击",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:04:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 60/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 89
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "Auth_CredentialStuffing_Detected",
+                "timestamp": "2023-03-25T14:11:00",
+                "severity": "HIGH",
+                "description": "Authentication failure rate 108/min exceeds threshold 0.50/min",
+                "entities": {
+                    "target_user": "leaked_user@example.com",
+                    "target_app": "app1",
+                    "source_ip_count": 84,
+                    "failure_type": "invalid_password"
+                },
+                "source_system": "auth_detector",
+                "indicators": {
+                    "is_credential_stuffing": true,
+                    "is_targeted_attack": false
+                }
+            }
+        ],
+        "recommendations": [
+            "立即封锁攻击源IP",
+            "强制重置目标用户密码",
+            "检查是否有账户已被入侵",
+            "加强认证系统的防护措施",
+            "启用多因素认证(MFA)"
+        ],
+        "created_at": "2026-03-30T18:02:52.235564"
+    },
+    {
+        "incident_type": "Cloud_Breach_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:06:00",
+        "end_time": "2023-03-25T14:15:00",
+        "summary": "检测到云平台异常访问与应用错误激增的关联，可能存在云资源被攻击",
+        "correlated_events": [
+            {
+                "alert_type": "Cloud_Anomaly_Detected",
+                "timestamp": "2023-03-25T14:06:00",
+                "severity": "HIGH",
+                "description": "Cloud API call rate 115/min exceeds threshold 1.00/min",
+                "entities": {
+                    "source_ip": "103.24.77.55",
+                    "user": "compromised_user@example.com",
+                    "unique_actions": 7,
+                    "denied_count": 77
+                },
+                "source_system": "cloud_detector",
+                "indicators": {
+                    "has_dangerous_operations": true,
+                    "high_denial_rate": true,
+                    "potential_compromise": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:15:00",
+                "severity": "HIGH",
+                "description": "Application error rate 108/min exceeds threshold 0.56/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 103,
+                    "avg_response_time_ms": 16340.66,
+                    "max_response_time_ms": "29774"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查云平台IAM权限配置",
+            "审计云资源操作日志",
+            "检查服务 payment-service 的配置和依赖",
+            "评估是否需要隔离受影响的云资源"
+        ],
+        "created_at": "2026-03-30T18:02:52.235624",
+        "additional_info": {
+            "cloud_user": "compromised_user@example.com",
+            "affected_service": "payment-service",
+            "cloud_source_ip": "103.24.77.55"
+        }
+    },
+    {
+        "incident_type": "Cloud_Breach_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:06:00",
+        "end_time": "2023-03-25T14:16:00",
+        "summary": "检测到云平台异常访问与应用错误激增的关联，可能存在云资源被攻击",
+        "correlated_events": [
+            {
+                "alert_type": "Cloud_Anomaly_Detected",
+                "timestamp": "2023-03-25T14:06:00",
+                "severity": "HIGH",
+                "description": "Cloud API call rate 115/min exceeds threshold 1.00/min",
+                "entities": {
+                    "source_ip": "103.24.77.55",
+                    "user": "compromised_user@example.com",
+                    "unique_actions": 7,
+                    "denied_count": 77
+                },
+                "source_system": "cloud_detector",
+                "indicators": {
+                    "has_dangerous_operations": true,
+                    "high_denial_rate": true,
+                    "potential_compromise": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:16:00",
+                "severity": "HIGH",
+                "description": "Application error rate 109/min exceeds threshold 0.59/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 104,
+                    "avg_response_time_ms": 17150.86,
+                    "max_response_time_ms": "29842"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查云平台IAM权限配置",
+            "审计云资源操作日志",
+            "检查服务 payment-service 的配置和依赖",
+            "评估是否需要隔离受影响的云资源"
+        ],
+        "created_at": "2026-03-30T18:02:52.235685",
+        "additional_info": {
+            "cloud_user": "compromised_user@example.com",
+            "affected_service": "payment-service",
+            "cloud_source_ip": "103.24.77.55"
+        }
+    },
+    {
+        "incident_type": "Cloud_Breach_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:06:00",
+        "end_time": "2023-03-25T14:17:00",
+        "summary": "检测到云平台异常访问与应用错误激增的关联，可能存在云资源被攻击",
+        "correlated_events": [
+            {
+                "alert_type": "Cloud_Anomaly_Detected",
+                "timestamp": "2023-03-25T14:06:00",
+                "severity": "HIGH",
+                "description": "Cloud API call rate 115/min exceeds threshold 1.00/min",
+                "entities": {
+                    "source_ip": "103.24.77.55",
+                    "user": "compromised_user@example.com",
+                    "unique_actions": 7,
+                    "denied_count": 77
+                },
+                "source_system": "cloud_detector",
+                "indicators": {
+                    "has_dangerous_operations": true,
+                    "high_denial_rate": true,
+                    "potential_compromise": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:17:00",
+                "severity": "MEDIUM",
+                "description": "Application error rate 85/min exceeds threshold 0.59/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "502",
+                    "affected_endpoints": 79,
+                    "avg_response_time_ms": 17216.81,
+                    "max_response_time_ms": "29683"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查云平台IAM权限配置",
+            "审计云资源操作日志",
+            "检查服务 payment-service 的配置和依赖",
+            "评估是否需要隔离受影响的云资源"
+        ],
+        "created_at": "2026-03-30T18:02:52.235746",
+        "additional_info": {
+            "cloud_user": "compromised_user@example.com",
+            "affected_service": "payment-service",
+            "cloud_source_ip": "103.24.77.55"
+        }
+    },
+    {
+        "incident_type": "Cloud_Breach_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:08:00",
+        "end_time": "2023-03-25T14:15:00",
+        "summary": "检测到云平台异常访问与应用错误激增的关联，可能存在云资源被攻击",
+        "correlated_events": [
+            {
+                "alert_type": "Cloud_Anomaly_Detected",
+                "timestamp": "2023-03-25T14:08:00",
+                "severity": "HIGH",
+                "description": "Cloud API call rate 104/min exceeds threshold 1.00/min",
+                "entities": {
+                    "source_ip": "103.24.77.55",
+                    "user": "compromised_user@example.com",
+                    "unique_actions": 7,
+                    "denied_count": 76
+                },
+                "source_system": "cloud_detector",
+                "indicators": {
+                    "has_dangerous_operations": true,
+                    "high_denial_rate": true,
+                    "potential_compromise": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:15:00",
+                "severity": "HIGH",
+                "description": "Application error rate 108/min exceeds threshold 0.56/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 103,
+                    "avg_response_time_ms": 16340.66,
+                    "max_response_time_ms": "29774"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查云平台IAM权限配置",
+            "审计云资源操作日志",
+            "检查服务 payment-service 的配置和依赖",
+            "评估是否需要隔离受影响的云资源"
+        ],
+        "created_at": "2026-03-30T18:02:52.235805",
+        "additional_info": {
+            "cloud_user": "compromised_user@example.com",
+            "affected_service": "payment-service",
+            "cloud_source_ip": "103.24.77.55"
+        }
+    },
+    {
+        "incident_type": "Cloud_Breach_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:08:00",
+        "end_time": "2023-03-25T14:16:00",
+        "summary": "检测到云平台异常访问与应用错误激增的关联，可能存在云资源被攻击",
+        "correlated_events": [
+            {
+                "alert_type": "Cloud_Anomaly_Detected",
+                "timestamp": "2023-03-25T14:08:00",
+                "severity": "HIGH",
+                "description": "Cloud API call rate 104/min exceeds threshold 1.00/min",
+                "entities": {
+                    "source_ip": "103.24.77.55",
+                    "user": "compromised_user@example.com",
+                    "unique_actions": 7,
+                    "denied_count": 76
+                },
+                "source_system": "cloud_detector",
+                "indicators": {
+                    "has_dangerous_operations": true,
+                    "high_denial_rate": true,
+                    "potential_compromise": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:16:00",
+                "severity": "HIGH",
+                "description": "Application error rate 109/min exceeds threshold 0.59/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 104,
+                    "avg_response_time_ms": 17150.86,
+                    "max_response_time_ms": "29842"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查云平台IAM权限配置",
+            "审计云资源操作日志",
+            "检查服务 payment-service 的配置和依赖",
+            "评估是否需要隔离受影响的云资源"
+        ],
+        "created_at": "2026-03-30T18:02:52.235866",
+        "additional_info": {
+            "cloud_user": "compromised_user@example.com",
+            "affected_service": "payment-service",
+            "cloud_source_ip": "103.24.77.55"
+        }
+    },
+    {
+        "incident_type": "Cloud_Breach_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:08:00",
+        "end_time": "2023-03-25T14:17:00",
+        "summary": "检测到云平台异常访问与应用错误激增的关联，可能存在云资源被攻击",
+        "correlated_events": [
+            {
+                "alert_type": "Cloud_Anomaly_Detected",
+                "timestamp": "2023-03-25T14:08:00",
+                "severity": "HIGH",
+                "description": "Cloud API call rate 104/min exceeds threshold 1.00/min",
+                "entities": {
+                    "source_ip": "103.24.77.55",
+                    "user": "compromised_user@example.com",
+                    "unique_actions": 7,
+                    "denied_count": 76
+                },
+                "source_system": "cloud_detector",
+                "indicators": {
+                    "has_dangerous_operations": true,
+                    "high_denial_rate": true,
+                    "potential_compromise": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:17:00",
+                "severity": "MEDIUM",
+                "description": "Application error rate 85/min exceeds threshold 0.59/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "502",
+                    "affected_endpoints": 79,
+                    "avg_response_time_ms": 17216.81,
+                    "max_response_time_ms": "29683"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查云平台IAM权限配置",
+            "审计云资源操作日志",
+            "检查服务 payment-service 的配置和依赖",
+            "评估是否需要隔离受影响的云资源"
+        ],
+        "created_at": "2026-03-30T18:02:52.235923",
+        "additional_info": {
+            "cloud_user": "compromised_user@example.com",
+            "affected_service": "payment-service",
+            "cloud_source_ip": "103.24.77.55"
+        }
+    },
+    {
+        "incident_type": "Multi_Vector_Attack_Detected",
+        "severity": "CRITICAL",
+        "start_time": "2023-03-25T14:00:00",
+        "end_time": "2023-03-25T14:17:00",
+        "summary": "检测到多向量攻击：4 个系统同时出现异常",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:00:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 66/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 105
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:01:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 49/min exceeds threshold 0.26/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 72
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:02:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 57/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 83
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:03:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 68/min exceeds threshold 0.25/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 95
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:04:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 60/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 89
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "Cloud_Anomaly_Detected",
+                "timestamp": "2023-03-25T14:06:00",
+                "severity": "HIGH",
+                "description": "Cloud API call rate 115/min exceeds threshold 1.00/min",
+                "entities": {
+                    "source_ip": "103.24.77.55",
+                    "user": "compromised_user@example.com",
+                    "unique_actions": 7,
+                    "denied_count": 77
+                },
+                "source_system": "cloud_detector",
+                "indicators": {
+                    "has_dangerous_operations": true,
+                    "high_denial_rate": true,
+                    "potential_compromise": true
+                }
+            },
+            {
+                "alert_type": "Cloud_Anomaly_Detected",
+                "timestamp": "2023-03-25T14:08:00",
+                "severity": "HIGH",
+                "description": "Cloud API call rate 104/min exceeds threshold 1.00/min",
+                "entities": {
+                    "source_ip": "103.24.77.55",
+                    "user": "compromised_user@example.com",
+                    "unique_actions": 7,
+                    "denied_count": 76
+                },
+                "source_system": "cloud_detector",
+                "indicators": {
+                    "has_dangerous_operations": true,
+                    "high_denial_rate": true,
+                    "potential_compromise": true
+                }
+            },
+            {
+                "alert_type": "Auth_CredentialStuffing_Detected",
+                "timestamp": "2023-03-25T14:10:00",
+                "severity": "HIGH",
+                "description": "Authentication failure rate 92/min exceeds threshold 0.50/min",
+                "entities": {
+                    "target_user": "leaked_user@example.com",
+                    "target_app": "app1",
+                    "source_ip_count": 79,
+                    "failure_type": "invalid_password"
+                },
+                "source_system": "auth_detector",
+                "indicators": {
+                    "is_credential_stuffing": true,
+                    "is_targeted_attack": false
+                }
+            },
+            {
+                "alert_type": "Auth_CredentialStuffing_Detected",
+                "timestamp": "2023-03-25T14:11:00",
+                "severity": "HIGH",
+                "description": "Authentication failure rate 108/min exceeds threshold 0.50/min",
+                "entities": {
+                    "target_user": "leaked_user@example.com",
+                    "target_app": "app1",
+                    "source_ip_count": 84,
+                    "failure_type": "invalid_password"
+                },
+                "source_system": "auth_detector",
+                "indicators": {
+                    "is_credential_stuffing": true,
+                    "is_targeted_attack": false
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:15:00",
+                "severity": "HIGH",
+                "description": "Application error rate 108/min exceeds threshold 0.56/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 103,
+                    "avg_response_time_ms": 16340.66,
+                    "max_response_time_ms": "29774"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:16:00",
+                "severity": "HIGH",
+                "description": "Application error rate 109/min exceeds threshold 0.59/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 104,
+                    "avg_response_time_ms": 17150.86,
+                    "max_response_time_ms": "29842"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:17:00",
+                "severity": "MEDIUM",
+                "description": "Application error rate 85/min exceeds threshold 0.59/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "502",
+                    "affected_endpoints": 79,
+                    "avg_response_time_ms": 17216.81,
+                    "max_response_time_ms": "29683"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "立即启动应急响应流程",
+            "隔离受影响的系统和网络",
+            "通知安全团队和管理层",
+            "收集并保全攻击证据",
+            "检查是否存在数据泄露"
+        ],
+        "created_at": "2026-03-30T18:02:52.236001",
+        "additional_info": {
+            "attack_vectors": [
+                "AppServer_ErrorSpike_Detected",
+                "Cloud_Anomaly_Detected",
+                "SSH_BruteForce_Detected",
+                "Auth_CredentialStuffing_Detected"
+            ],
+            "total_events": 12
+        }
+    },
+    {
+        "incident_type": "Lateral_Movement_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:00:00",
+        "end_time": "2023-03-25T14:15:00",
+        "summary": "检测到横向移动迹象：SSH攻击后应用服务异常",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:00:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 66/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 105
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:15:00",
+                "severity": "HIGH",
+                "description": "Application error rate 108/min exceeds threshold 0.56/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 103,
+                    "avg_response_time_ms": 16340.66,
+                    "max_response_time_ms": "29774"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查SSH登录后的操作记录",
+            "审计应用服务的访问日志",
+            "检查是否存在权限提升",
+            "隔离可疑账户和主机"
+        ],
+        "created_at": "2026-03-30T18:02:52.236062",
+        "additional_info": {
+            "entry_point": "prod-server-01",
+            "target_service": "payment-service",
+            "attacker_ip": "198.51.100.123"
+        }
+    },
+    {
+        "incident_type": "Lateral_Movement_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:01:00",
+        "end_time": "2023-03-25T14:15:00",
+        "summary": "检测到横向移动迹象：SSH攻击后应用服务异常",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:01:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 49/min exceeds threshold 0.26/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 72
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:15:00",
+                "severity": "HIGH",
+                "description": "Application error rate 108/min exceeds threshold 0.56/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 103,
+                    "avg_response_time_ms": 16340.66,
+                    "max_response_time_ms": "29774"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查SSH登录后的操作记录",
+            "审计应用服务的访问日志",
+            "检查是否存在权限提升",
+            "隔离可疑账户和主机"
+        ],
+        "created_at": "2026-03-30T18:02:52.236129",
+        "additional_info": {
+            "entry_point": "prod-server-01",
+            "target_service": "payment-service",
+            "attacker_ip": "198.51.100.123"
+        }
+    },
+    {
+        "incident_type": "Lateral_Movement_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:01:00",
+        "end_time": "2023-03-25T14:16:00",
+        "summary": "检测到横向移动迹象：SSH攻击后应用服务异常",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:01:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 49/min exceeds threshold 0.26/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 72
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:16:00",
+                "severity": "HIGH",
+                "description": "Application error rate 109/min exceeds threshold 0.59/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 104,
+                    "avg_response_time_ms": 17150.86,
+                    "max_response_time_ms": "29842"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查SSH登录后的操作记录",
+            "审计应用服务的访问日志",
+            "检查是否存在权限提升",
+            "隔离可疑账户和主机"
+        ],
+        "created_at": "2026-03-30T18:02:52.236185",
+        "additional_info": {
+            "entry_point": "prod-server-01",
+            "target_service": "payment-service",
+            "attacker_ip": "198.51.100.123"
+        }
+    },
+    {
+        "incident_type": "Lateral_Movement_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:02:00",
+        "end_time": "2023-03-25T14:15:00",
+        "summary": "检测到横向移动迹象：SSH攻击后应用服务异常",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:02:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 57/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 83
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:15:00",
+                "severity": "HIGH",
+                "description": "Application error rate 108/min exceeds threshold 0.56/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 103,
+                    "avg_response_time_ms": 16340.66,
+                    "max_response_time_ms": "29774"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查SSH登录后的操作记录",
+            "审计应用服务的访问日志",
+            "检查是否存在权限提升",
+            "隔离可疑账户和主机"
+        ],
+        "created_at": "2026-03-30T18:02:52.236241",
+        "additional_info": {
+            "entry_point": "prod-server-01",
+            "target_service": "payment-service",
+            "attacker_ip": "198.51.100.123"
+        }
+    },
+    {
+        "incident_type": "Lateral_Movement_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:02:00",
+        "end_time": "2023-03-25T14:16:00",
+        "summary": "检测到横向移动迹象：SSH攻击后应用服务异常",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:02:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 57/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 83
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:16:00",
+                "severity": "HIGH",
+                "description": "Application error rate 109/min exceeds threshold 0.59/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 104,
+                    "avg_response_time_ms": 17150.86,
+                    "max_response_time_ms": "29842"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查SSH登录后的操作记录",
+            "审计应用服务的访问日志",
+            "检查是否存在权限提升",
+            "隔离可疑账户和主机"
+        ],
+        "created_at": "2026-03-30T18:02:52.236295",
+        "additional_info": {
+            "entry_point": "prod-server-01",
+            "target_service": "payment-service",
+            "attacker_ip": "198.51.100.123"
+        }
+    },
+    {
+        "incident_type": "Lateral_Movement_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:02:00",
+        "end_time": "2023-03-25T14:17:00",
+        "summary": "检测到横向移动迹象：SSH攻击后应用服务异常",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:02:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 57/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 83
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:17:00",
+                "severity": "MEDIUM",
+                "description": "Application error rate 85/min exceeds threshold 0.59/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "502",
+                    "affected_endpoints": 79,
+                    "avg_response_time_ms": 17216.81,
+                    "max_response_time_ms": "29683"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查SSH登录后的操作记录",
+            "审计应用服务的访问日志",
+            "检查是否存在权限提升",
+            "隔离可疑账户和主机"
+        ],
+        "created_at": "2026-03-30T18:02:52.236350",
+        "additional_info": {
+            "entry_point": "prod-server-01",
+            "target_service": "payment-service",
+            "attacker_ip": "198.51.100.123"
+        }
+    },
+    {
+        "incident_type": "Lateral_Movement_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:03:00",
+        "end_time": "2023-03-25T14:15:00",
+        "summary": "检测到横向移动迹象：SSH攻击后应用服务异常",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:03:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 68/min exceeds threshold 0.25/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 95
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:15:00",
+                "severity": "HIGH",
+                "description": "Application error rate 108/min exceeds threshold 0.56/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 103,
+                    "avg_response_time_ms": 16340.66,
+                    "max_response_time_ms": "29774"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查SSH登录后的操作记录",
+            "审计应用服务的访问日志",
+            "检查是否存在权限提升",
+            "隔离可疑账户和主机"
+        ],
+        "created_at": "2026-03-30T18:02:52.236406",
+        "additional_info": {
+            "entry_point": "prod-server-01",
+            "target_service": "payment-service",
+            "attacker_ip": "198.51.100.123"
+        }
+    },
+    {
+        "incident_type": "Lateral_Movement_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:03:00",
+        "end_time": "2023-03-25T14:16:00",
+        "summary": "检测到横向移动迹象：SSH攻击后应用服务异常",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:03:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 68/min exceeds threshold 0.25/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 95
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:16:00",
+                "severity": "HIGH",
+                "description": "Application error rate 109/min exceeds threshold 0.59/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 104,
+                    "avg_response_time_ms": 17150.86,
+                    "max_response_time_ms": "29842"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查SSH登录后的操作记录",
+            "审计应用服务的访问日志",
+            "检查是否存在权限提升",
+            "隔离可疑账户和主机"
+        ],
+        "created_at": "2026-03-30T18:02:52.236462",
+        "additional_info": {
+            "entry_point": "prod-server-01",
+            "target_service": "payment-service",
+            "attacker_ip": "198.51.100.123"
+        }
+    },
+    {
+        "incident_type": "Lateral_Movement_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:03:00",
+        "end_time": "2023-03-25T14:17:00",
+        "summary": "检测到横向移动迹象：SSH攻击后应用服务异常",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:03:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 68/min exceeds threshold 0.25/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 95
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:17:00",
+                "severity": "MEDIUM",
+                "description": "Application error rate 85/min exceeds threshold 0.59/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "502",
+                    "affected_endpoints": 79,
+                    "avg_response_time_ms": 17216.81,
+                    "max_response_time_ms": "29683"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查SSH登录后的操作记录",
+            "审计应用服务的访问日志",
+            "检查是否存在权限提升",
+            "隔离可疑账户和主机"
+        ],
+        "created_at": "2026-03-30T18:02:52.236517",
+        "additional_info": {
+            "entry_point": "prod-server-01",
+            "target_service": "payment-service",
+            "attacker_ip": "198.51.100.123"
+        }
+    },
+    {
+        "incident_type": "Lateral_Movement_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:04:00",
+        "end_time": "2023-03-25T14:15:00",
+        "summary": "检测到横向移动迹象：SSH攻击后应用服务异常",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:04:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 60/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 89
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:15:00",
+                "severity": "HIGH",
+                "description": "Application error rate 108/min exceeds threshold 0.56/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 103,
+                    "avg_response_time_ms": 16340.66,
+                    "max_response_time_ms": "29774"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查SSH登录后的操作记录",
+            "审计应用服务的访问日志",
+            "检查是否存在权限提升",
+            "隔离可疑账户和主机"
+        ],
+        "created_at": "2026-03-30T18:02:52.236572",
+        "additional_info": {
+            "entry_point": "prod-server-01",
+            "target_service": "payment-service",
+            "attacker_ip": "198.51.100.123"
+        }
+    },
+    {
+        "incident_type": "Lateral_Movement_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:04:00",
+        "end_time": "2023-03-25T14:16:00",
+        "summary": "检测到横向移动迹象：SSH攻击后应用服务异常",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:04:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 60/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 89
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:16:00",
+                "severity": "HIGH",
+                "description": "Application error rate 109/min exceeds threshold 0.59/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "500",
+                    "affected_endpoints": 104,
+                    "avg_response_time_ms": 17150.86,
+                    "max_response_time_ms": "29842"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查SSH登录后的操作记录",
+            "审计应用服务的访问日志",
+            "检查是否存在权限提升",
+            "隔离可疑账户和主机"
+        ],
+        "created_at": "2026-03-30T18:02:52.236626",
+        "additional_info": {
+            "entry_point": "prod-server-01",
+            "target_service": "payment-service",
+            "attacker_ip": "198.51.100.123"
+        }
+    },
+    {
+        "incident_type": "Lateral_Movement_Detected",
+        "severity": "HIGH",
+        "start_time": "2023-03-25T14:04:00",
+        "end_time": "2023-03-25T14:17:00",
+        "summary": "检测到横向移动迹象：SSH攻击后应用服务异常",
+        "correlated_events": [
+            {
+                "alert_type": "SSH_BruteForce_Detected",
+                "timestamp": "2023-03-25T14:04:00",
+                "severity": "CRITICAL",
+                "description": "SSH failure rate 60/min exceeds threshold 0.27/min",
+                "entities": {
+                    "source_ip": "198.51.100.123",
+                    "target_user": "root",
+                    "target_host": "prod-server-01",
+                    "unique_users_tried": 1,
+                    "total_attempts": 89
+                },
+                "source_system": "ssh_detector",
+                "indicators": {
+                    "is_root_attack": true,
+                    "is_distributed_attack": false,
+                    "is_single_target": true
+                }
+            },
+            {
+                "alert_type": "AppServer_ErrorSpike_Detected",
+                "timestamp": "2023-03-25T14:17:00",
+                "severity": "MEDIUM",
+                "description": "Application error rate 85/min exceeds threshold 0.59/min",
+                "entities": {
+                    "service": "payment-service",
+                    "error_code": "502",
+                    "affected_endpoints": 79,
+                    "avg_response_time_ms": 17216.81,
+                    "max_response_time_ms": "29683"
+                },
+                "source_system": "app_server_detector",
+                "indicators": {
+                    "is_service_degradation": false,
+                    "is_internal_error": false,
+                    "is_latency_issue": "True",
+                    "potential_cascade_failure": false
+                }
+            }
+        ],
+        "recommendations": [
+            "检查SSH登录后的操作记录",
+            "审计应用服务的访问日志",
+            "检查是否存在权限提升",
+            "隔离可疑账户和主机"
+        ],
+        "created_at": "2026-03-30T18:02:52.236685",
+        "additional_info": {
+            "entry_point": "prod-server-01",
+            "target_service": "payment-service",
+            "attacker_ip": "198.51.100.123"
+        }
+    }
+]

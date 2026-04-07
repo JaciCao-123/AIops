@@ -1,0 +1,13 @@
+{
+  "plan_name": "mysql_deadlock_diagnosis",
+  "check_type": "mysql_deadlock",
+  "commands": [
+    "SHOW ENGINE INNODB STATUS",
+    "SELECT * FROM information_schema.innodb_trx",
+    "SHOW VARIABLES LIKE 'transaction_isolation'",
+    "SELECT * FROM performance_schema.data_lock_waits"
+  ],
+  "reasoning": "根据 mysql_deadlock_skill，需要先获取死锁日志，检查当前事务状态，查看事务隔离级别，并检查锁等待关系。由于环境检测显示 MySQL 运行在 Docker 容器中，将使用 docker exec 命令执行诊断。",
+  "expected_findings": [],
+  "created_at": "2026-04-02T18:00:03.828951"
+}

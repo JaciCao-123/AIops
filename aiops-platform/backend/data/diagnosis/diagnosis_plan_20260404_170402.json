@@ -1,0 +1,13 @@
+{
+  "plan_name": "mysql_deadlock_diagnosis",
+  "check_type": "mysql_deadlock",
+  "commands": [
+    "docker ps | grep mysql",
+    "ps aux | grep mysql | grep -v grep",
+    "netstat -tlnp | grep :3306",
+    "which mysql"
+  ],
+  "reasoning": "根据 mysql_deadlock_skill 的环境检测要求，首先需要确认 MySQL 是在 Docker 容器中运行还是本地进程，以及确定正确的连接方式",
+  "expected_findings": [],
+  "created_at": "2026-04-04T17:04:02.279456"
+}

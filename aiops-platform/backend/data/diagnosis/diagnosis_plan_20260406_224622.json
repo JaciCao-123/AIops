@@ -1,0 +1,13 @@
+{
+  "plan_name": "lb_service_capability_check",
+  "check_type": "service",
+  "commands": [
+    "kubectl get service lb-bp1bxqgw0jflid09i6xnq -o wide",
+    "kubectl get endpoints lb-bp1bxqgw0jflid09i6xnq",
+    "kubectl describe service lb-bp1bxqgw0jflid09i6xnq",
+    "kubectl get pods --selector=service=lb-bp1bxqgw0jflid09i6xnq"
+  ],
+  "reasoning": "根据中间件排查技能，需要检查Service状态、Endpoints、详细描述以及关联的Pod状态，以确认负载均衡服务是否正常提供服务",
+  "expected_findings": [],
+  "created_at": "2026-04-06T22:46:22.346893"
+}

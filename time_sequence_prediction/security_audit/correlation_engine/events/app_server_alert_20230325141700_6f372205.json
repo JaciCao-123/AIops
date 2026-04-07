@@ -1,0 +1,20 @@
+{
+    "alert_type": "AppServer_ErrorSpike_Detected",
+    "timestamp": "2023-03-25T14:17:00",
+    "severity": "MEDIUM",
+    "description": "Application error rate 85/min exceeds threshold 0.59/min",
+    "entities": {
+        "service": "payment-service",
+        "error_code": "502",
+        "affected_endpoints": 79,
+        "avg_response_time_ms": 17216.81,
+        "max_response_time_ms": "29683"
+    },
+    "source_system": "app_server_detector",
+    "indicators": {
+        "is_service_degradation": false,
+        "is_internal_error": false,
+        "is_latency_issue": "True",
+        "potential_cascade_failure": false
+    }
+}

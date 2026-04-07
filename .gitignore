@@ -1,0 +1,104 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Machine Learning Models (large files)
+*.pkl
+*.pt
+*.pth
+*.h5
+*.hdf5
+*.onnx
+*.model
+*.weights
+
+# Keep model directory structure but ignore model files
+!models/.gitkeep
+
+# Data files (keep structure, ignore content)
+*.parquet
+*.csv
+data/diagnosis/*.txt
+data/diagnosis/*.md
+data/diagnosis/*.json
+data/logs/*.json
+data/outputs/*.txt
+data/approvals/*.json
+
+# Keep empty directories
+!.gitkeep
+
+# Temporary files
+*.tmp
+*.temp
+cache/
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/

@@ -1,0 +1,4 @@
+total 1.8G
+-rw-r--r-- 1 root root 1.8G Apr  1 16:38 fill_file
+-rw------- 1 root root    0 Apr  1 16:35 aliyun-assist-agent-coldstarted
+

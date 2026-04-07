@@ -1,0 +1,11 @@
+{
+  "plan_name": "high_memory_usage_diagnosis",
+  "check_type": "memory",
+  "commands": [
+    "free -m",
+    "ps -eo pid,ppid,cmd,%mem --sort=-%mem | head -10"
+  ],
+  "reasoning": "根据 skill 文件 3.2 节，先检查整体内存可用量（free -m），再按 %mem 降序列出前 10 个进程以定位高内存占用者。",
+  "expected_findings": [],
+  "created_at": "2026-03-28T22:19:43.246309"
+}

@@ -1,0 +1,20 @@
+============================================================
+阿里云 SLB 远程诊断
+============================================================
+SLB ID: lb-bp1bxqgw0jflid09i6xnq
+区域: cn-hangzhou
+诊断时间: 2026-04-06 23:22:56
+
+=== Step 1: 检查阿里云 SDK 环境 ===
+✗ 未找到阿里云认证信息
+
+请设置环境变量:
+  export ALICLOUD_ACCESS_KEY='your-access-key-id'
+  export ALICLOUD_SECRET_KEY='your-access-key-secret'
+  export ALICLOUD_REGION='cn-hangzhou'
+
+或创建配置文件 ~/.aliyun/config.json
+
+============================================================
+诊断失败: 环境检查未通过
+============================================================

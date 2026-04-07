@@ -1,0 +1,14 @@
+{
+  "plan_name": "lb_service_diagnosis",
+  "check_type": "service",
+  "commands": [
+    "uptime",
+    "df -h",
+    "free -m",
+    "ps aux | grep lb-bp1bxqgw0jflid09i6xnq",
+    "netstat -tuln | grep :80"
+  ],
+  "reasoning": "首先检查系统基本健康状态（CPU负载、磁盘空间、内存使用），然后检查负载均衡服务相关进程和端口监听状态",
+  "expected_findings": [],
+  "created_at": "2026-04-06T18:25:49.089622"
+}

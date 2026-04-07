@@ -1,0 +1,12 @@
+{
+  "plan_name": "lb_bp1bxqgw0jflid09i6xnq_diagnosis",
+  "check_type": "network",
+  "commands": [
+    "ping -c 4 lb-bp1bxqgw0jflid09i6xnq",
+    "nc -zv -w 3 lb-bp1bxqgw0jflid09i6xnq 80",
+    "nc -zv -w 3 lb-bp1bxqgw0jflid09i6xnq 443"
+  ],
+  "reasoning": "首先检查负载均衡服务的基本网络连通性和端口监听状态，80和443是HTTP/HTTPS标准端口",
+  "expected_findings": [],
+  "created_at": "2026-04-06T18:27:42.631157"
+}

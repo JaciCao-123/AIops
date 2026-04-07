@@ -1,0 +1,4471 @@
+[
+  {
+    "n": {
+      "identity": 34200,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.10",
+        "name": "prod-server-01",
+        "location": "IDC-A",
+        "cpu_usage": 0.85
+      },
+      "elementId": "34200"
+    },
+    "r": {
+      "identity": 192555,
+      "start": 34200,
+      "end": 34213,
+      "type": "PUBLISH_EVENT",
+      "properties": {
+        "topic": "order_created"
+      },
+      "elementId": "192555",
+      "startNodeElementId": "34200",
+      "endNodeElementId": "34213"
+    },
+    "m": {
+      "identity": 34213,
+      "labels": [
+        "Infra",
+        "Middleware"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "lag": 0,
+        "name": "order-kafka-cluster",
+        "topic": "order-events",
+        "type": "Kafka",
+        "version": "2.8.0",
+        "status": "Running"
+      },
+      "elementId": "34213"
+    }
+  },
+  {
+    "n": {
+      "identity": 34200,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.10",
+        "name": "prod-server-01",
+        "location": "IDC-A",
+        "cpu_usage": 0.85
+      },
+      "elementId": "34200"
+    },
+    "r": {
+      "identity": 192548,
+      "start": 34200,
+      "end": 34211,
+      "type": "CONNECTED_TO",
+      "properties": {
+        "port": "Gi0/1",
+        "speed": "1Gbps"
+      },
+      "elementId": "192548",
+      "startNodeElementId": "34200",
+      "endNodeElementId": "34211"
+    },
+    "m": {
+      "identity": 34211,
+      "labels": [
+        "Infra",
+        "NetworkDevice"
+      ],
+      "properties": {
+        "owner_email": "network-team@company.com",
+        "owner": "Network-Team",
+        "bandwidth": "10Gbps",
+        "vendor": "Cisco",
+        "ip": "192.168.1.1",
+        "name": "core-switch-01",
+        "type": "Switch",
+        "status": "Normal"
+      },
+      "elementId": "34211"
+    }
+  },
+  {
+    "n": {
+      "identity": 34200,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.10",
+        "name": "prod-server-01",
+        "location": "IDC-A",
+        "cpu_usage": 0.85
+      },
+      "elementId": "34200"
+    },
+    "r": {
+      "identity": 192545,
+      "start": 34200,
+      "end": 34209,
+      "type": "READS_FROM",
+      "properties": {
+        "purpose": "Serve User Images",
+        "freq": "High"
+      },
+      "elementId": "192545",
+      "startNodeElementId": "34200",
+      "endNodeElementId": "34209"
+    },
+    "m": {
+      "identity": 34209,
+      "labels": [
+        "Infra",
+        "Storage"
+      ],
+      "properties": {
+        "owner_email": "storage-team@company.com",
+        "owner": "Storage-Team",
+        "storage_class": "Standard",
+        "size": "2TB",
+        "bucket_name": "app-static-bucket",
+        "name": "prod-oss-static-resources",
+        "region": "cn-hangzhou",
+        "type": "OSS"
+      },
+      "elementId": "34209"
+    }
+  },
+  {
+    "n": {
+      "identity": 34200,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.10",
+        "name": "prod-server-01",
+        "location": "IDC-A",
+        "cpu_usage": 0.85
+      },
+      "elementId": "34200"
+    },
+    "r": {
+      "identity": 192537,
+      "start": 34200,
+      "end": 34205,
+      "type": "DEPENDS_ON",
+      "properties": {
+        "latency": "0.5ms",
+        "since": "2023-01-01"
+      },
+      "elementId": "192537",
+      "startNodeElementId": "34200",
+      "endNodeElementId": "34205"
+    },
+    "m": {
+      "identity": 34205,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "db_type": "Redis",
+        "memory": "32GB",
+        "port": 6379,
+        "name": "session-cache-redis",
+        "status": "Running"
+      },
+      "elementId": "34205"
+    }
+  },
+  {
+    "n": {
+      "identity": 34200,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.10",
+        "name": "prod-server-01",
+        "location": "IDC-A",
+        "cpu_usage": 0.85
+      },
+      "elementId": "34200"
+    },
+    "r": {
+      "identity": 192536,
+      "start": 34200,
+      "end": 34203,
+      "type": "DEPENDS_ON",
+      "properties": {
+        "latency": "2ms",
+        "since": "2023-01-01"
+      },
+      "elementId": "192536",
+      "startNodeElementId": "34200",
+      "endNodeElementId": "34203"
+    },
+    "m": {
+      "identity": 34203,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "volume": "500GB",
+        "db_type": "MySQL",
+        "port": 3306,
+        "name": "user-mysql-master",
+        "status": "Running"
+      },
+      "elementId": "34203"
+    }
+  },
+  {
+    "n": {
+      "identity": 34201,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.12",
+        "name": "prod-server-02",
+        "location": "IDC-B",
+        "cpu_usage": 0.2
+      },
+      "elementId": "34201"
+    },
+    "r": {
+      "identity": 192549,
+      "start": 34201,
+      "end": 34211,
+      "type": "CONNECTED_TO",
+      "properties": {
+        "port": "Gi0/2",
+        "speed": "1Gbps"
+      },
+      "elementId": "192549",
+      "startNodeElementId": "34201",
+      "endNodeElementId": "34211"
+    },
+    "m": {
+      "identity": 34211,
+      "labels": [
+        "Infra",
+        "NetworkDevice"
+      ],
+      "properties": {
+        "owner_email": "network-team@company.com",
+        "owner": "Network-Team",
+        "bandwidth": "10Gbps",
+        "vendor": "Cisco",
+        "ip": "192.168.1.1",
+        "name": "core-switch-01",
+        "type": "Switch",
+        "status": "Normal"
+      },
+      "elementId": "34211"
+    }
+  },
+  {
+    "n": {
+      "identity": 34201,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.12",
+        "name": "prod-server-02",
+        "location": "IDC-B",
+        "cpu_usage": 0.2
+      },
+      "elementId": "34201"
+    },
+    "r": {
+      "identity": 192546,
+      "start": 34201,
+      "end": 34210,
+      "type": "READS_FROM",
+      "properties": {
+        "purpose": "Retrieve History Logs",
+        "freq": "Low"
+      },
+      "elementId": "192546",
+      "startNodeElementId": "34201",
+      "endNodeElementId": "34210"
+    },
+    "m": {
+      "identity": 34210,
+      "labels": [
+        "Infra",
+        "Storage"
+      ],
+      "properties": {
+        "owner_email": "storage-team@company.com",
+        "owner": "Storage-Team",
+        "storage_class": "Archive",
+        "size": "10TB",
+        "bucket_name": "app-backup-bucket",
+        "name": "prod-oss-backup-archive",
+        "region": "cn-hangzhou",
+        "type": "OSS"
+      },
+      "elementId": "34210"
+    }
+  },
+  {
+    "n": {
+      "identity": 34201,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.12",
+        "name": "prod-server-02",
+        "location": "IDC-B",
+        "cpu_usage": 0.2
+      },
+      "elementId": "34201"
+    },
+    "r": {
+      "identity": 192538,
+      "start": 34201,
+      "end": 34204,
+      "type": "DEPENDS_ON",
+      "properties": {
+        "latency": "5ms",
+        "since": "2023-05-10"
+      },
+      "elementId": "192538",
+      "startNodeElementId": "34201",
+      "endNodeElementId": "34204"
+    },
+    "m": {
+      "identity": 34204,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "volume": "1TB",
+        "db_type": "PostgreSQL",
+        "port": 5432,
+        "name": "order-postgres",
+        "status": "Running"
+      },
+      "elementId": "34204"
+    }
+  },
+  {
+    "n": {
+      "identity": 34201,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.12",
+        "name": "prod-server-02",
+        "location": "IDC-B",
+        "cpu_usage": 0.2
+      },
+      "elementId": "34201"
+    },
+    "r": {
+      "identity": 192539,
+      "start": 34201,
+      "end": 34205,
+      "type": "DEPENDS_ON",
+      "properties": {
+        "latency": "0.8ms",
+        "since": "2023-05-10"
+      },
+      "elementId": "192539",
+      "startNodeElementId": "34201",
+      "endNodeElementId": "34205"
+    },
+    "m": {
+      "identity": 34205,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "db_type": "Redis",
+        "memory": "32GB",
+        "port": 6379,
+        "name": "session-cache-redis",
+        "status": "Running"
+      },
+      "elementId": "34205"
+    }
+  },
+  {
+    "n": {
+      "identity": 34202,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.13",
+        "name": "prod-server-03",
+        "location": "IDC-C",
+        "cpu_usage": 0.2
+      },
+      "elementId": "34202"
+    },
+    "r": {
+      "identity": 192556,
+      "start": 34202,
+      "end": 34213,
+      "type": "CONSUME_EVENT",
+      "properties": {
+        "topic": "order_created"
+      },
+      "elementId": "192556",
+      "startNodeElementId": "34202",
+      "endNodeElementId": "34213"
+    },
+    "m": {
+      "identity": 34213,
+      "labels": [
+        "Infra",
+        "Middleware"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "lag": 0,
+        "name": "order-kafka-cluster",
+        "topic": "order-events",
+        "type": "Kafka",
+        "version": "2.8.0",
+        "status": "Running"
+      },
+      "elementId": "34213"
+    }
+  },
+  {
+    "n": {
+      "identity": 34202,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.13",
+        "name": "prod-server-03",
+        "location": "IDC-C",
+        "cpu_usage": 0.2
+      },
+      "elementId": "34202"
+    },
+    "r": {
+      "identity": 192550,
+      "start": 34202,
+      "end": 34211,
+      "type": "CONNECTED_TO",
+      "properties": {
+        "port": "Gi0/3",
+        "speed": "1Gbps"
+      },
+      "elementId": "192550",
+      "startNodeElementId": "34202",
+      "endNodeElementId": "34211"
+    },
+    "m": {
+      "identity": 34211,
+      "labels": [
+        "Infra",
+        "NetworkDevice"
+      ],
+      "properties": {
+        "owner_email": "network-team@company.com",
+        "owner": "Network-Team",
+        "bandwidth": "10Gbps",
+        "vendor": "Cisco",
+        "ip": "192.168.1.1",
+        "name": "core-switch-01",
+        "type": "Switch",
+        "status": "Normal"
+      },
+      "elementId": "34211"
+    }
+  },
+  {
+    "n": {
+      "identity": 34202,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.13",
+        "name": "prod-server-03",
+        "location": "IDC-C",
+        "cpu_usage": 0.2
+      },
+      "elementId": "34202"
+    },
+    "r": {
+      "identity": 192547,
+      "start": 34202,
+      "end": 34209,
+      "type": "READS_FROM",
+      "properties": {
+        "purpose": "Load Config Files",
+        "freq": "Medium"
+      },
+      "elementId": "192547",
+      "startNodeElementId": "34202",
+      "endNodeElementId": "34209"
+    },
+    "m": {
+      "identity": 34209,
+      "labels": [
+        "Infra",
+        "Storage"
+      ],
+      "properties": {
+        "owner_email": "storage-team@company.com",
+        "owner": "Storage-Team",
+        "storage_class": "Standard",
+        "size": "2TB",
+        "bucket_name": "app-static-bucket",
+        "name": "prod-oss-static-resources",
+        "region": "cn-hangzhou",
+        "type": "OSS"
+      },
+      "elementId": "34209"
+    }
+  },
+  {
+    "n": {
+      "identity": 34203,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "volume": "500GB",
+        "db_type": "MySQL",
+        "port": 3306,
+        "name": "user-mysql-master",
+        "status": "Running"
+      },
+      "elementId": "34203"
+    },
+    "r": {
+      "identity": 192551,
+      "start": 34203,
+      "end": 34211,
+      "type": "CONNECTED_TO",
+      "properties": {
+        "port": "Gi0/10",
+        "speed": "10Gbps"
+      },
+      "elementId": "192551",
+      "startNodeElementId": "34203",
+      "endNodeElementId": "34211"
+    },
+    "m": {
+      "identity": 34211,
+      "labels": [
+        "Infra",
+        "NetworkDevice"
+      ],
+      "properties": {
+        "owner_email": "network-team@company.com",
+        "owner": "Network-Team",
+        "bandwidth": "10Gbps",
+        "vendor": "Cisco",
+        "ip": "192.168.1.1",
+        "name": "core-switch-01",
+        "type": "Switch",
+        "status": "Normal"
+      },
+      "elementId": "34211"
+    }
+  },
+  {
+    "n": {
+      "identity": 34203,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "volume": "500GB",
+        "db_type": "MySQL",
+        "port": 3306,
+        "name": "user-mysql-master",
+        "status": "Running"
+      },
+      "elementId": "34203"
+    },
+    "r": {
+      "identity": 192542,
+      "start": 34203,
+      "end": 34201,
+      "type": "RUNS_ON",
+      "properties": {
+        "process_name": "mysqld"
+      },
+      "elementId": "192542",
+      "startNodeElementId": "34203",
+      "endNodeElementId": "34201"
+    },
+    "m": {
+      "identity": 34201,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.12",
+        "name": "prod-server-02",
+        "location": "IDC-B",
+        "cpu_usage": 0.2
+      },
+      "elementId": "34201"
+    }
+  },
+  {
+    "n": {
+      "identity": 34204,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "volume": "1TB",
+        "db_type": "PostgreSQL",
+        "port": 5432,
+        "name": "order-postgres",
+        "status": "Running"
+      },
+      "elementId": "34204"
+    },
+    "r": {
+      "identity": 192543,
+      "start": 34204,
+      "end": 34200,
+      "type": "RUNS_ON",
+      "properties": {
+        "process_name": "postgres"
+      },
+      "elementId": "192543",
+      "startNodeElementId": "34204",
+      "endNodeElementId": "34200"
+    },
+    "m": {
+      "identity": 34200,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.10",
+        "name": "prod-server-01",
+        "location": "IDC-A",
+        "cpu_usage": 0.85
+      },
+      "elementId": "34200"
+    }
+  },
+  {
+    "n": {
+      "identity": 34205,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "db_type": "Redis",
+        "memory": "32GB",
+        "port": 6379,
+        "name": "session-cache-redis",
+        "status": "Running"
+      },
+      "elementId": "34205"
+    },
+    "r": {
+      "identity": 192544,
+      "start": 34205,
+      "end": 34202,
+      "type": "RUNS_ON",
+      "properties": {
+        "process_name": "redis-server"
+      },
+      "elementId": "192544",
+      "startNodeElementId": "34205",
+      "endNodeElementId": "34202"
+    },
+    "m": {
+      "identity": 34202,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.13",
+        "name": "prod-server-03",
+        "location": "IDC-C",
+        "cpu_usage": 0.2
+      },
+      "elementId": "34202"
+    }
+  },
+  {
+    "n": {
+      "identity": 34212,
+      "labels": [
+        "Infra",
+        "LoadBalancer"
+      ],
+      "properties": {
+        "owner_email": "network-team@company.com",
+        "owner": "Network-Team",
+        "public_ip": "203.0.113.100",
+        "name": "ingress-slb-01",
+        "type": "SLB",
+        "status": "Active",
+        "algorithm": "RoundRobin"
+      },
+      "elementId": "34212"
+    },
+    "r": {
+      "identity": 192578,
+      "start": 34212,
+      "end": 34223,
+      "type": "ROUTES_TO",
+      "properties": {},
+      "elementId": "192578",
+      "startNodeElementId": "34212",
+      "endNodeElementId": "34223"
+    },
+    "m": {
+      "identity": 34223,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34223"
+    }
+  },
+  {
+    "n": {
+      "identity": 34212,
+      "labels": [
+        "Infra",
+        "LoadBalancer"
+      ],
+      "properties": {
+        "owner_email": "network-team@company.com",
+        "owner": "Network-Team",
+        "public_ip": "203.0.113.100",
+        "name": "ingress-slb-01",
+        "type": "SLB",
+        "status": "Active",
+        "algorithm": "RoundRobin"
+      },
+      "elementId": "34212"
+    },
+    "r": {
+      "identity": 192565,
+      "start": 34212,
+      "end": 34218,
+      "type": "ROUTES_TO",
+      "properties": {},
+      "elementId": "192565",
+      "startNodeElementId": "34212",
+      "endNodeElementId": "34218"
+    },
+    "m": {
+      "identity": 34218,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34218"
+    }
+  },
+  {
+    "n": {
+      "identity": 34212,
+      "labels": [
+        "Infra",
+        "LoadBalancer"
+      ],
+      "properties": {
+        "owner_email": "network-team@company.com",
+        "owner": "Network-Team",
+        "public_ip": "203.0.113.100",
+        "name": "ingress-slb-01",
+        "type": "SLB",
+        "status": "Active",
+        "algorithm": "RoundRobin"
+      },
+      "elementId": "34212"
+    },
+    "r": {
+      "identity": 192552,
+      "start": 34212,
+      "end": 34200,
+      "type": "ROUTES_TO",
+      "properties": {
+        "weight": 70
+      },
+      "elementId": "192552",
+      "startNodeElementId": "34212",
+      "endNodeElementId": "34200"
+    },
+    "m": {
+      "identity": 34200,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.10",
+        "name": "prod-server-01",
+        "location": "IDC-A",
+        "cpu_usage": 0.85
+      },
+      "elementId": "34200"
+    }
+  },
+  {
+    "n": {
+      "identity": 34212,
+      "labels": [
+        "Infra",
+        "LoadBalancer"
+      ],
+      "properties": {
+        "owner_email": "network-team@company.com",
+        "owner": "Network-Team",
+        "public_ip": "203.0.113.100",
+        "name": "ingress-slb-01",
+        "type": "SLB",
+        "status": "Active",
+        "algorithm": "RoundRobin"
+      },
+      "elementId": "34212"
+    },
+    "r": {
+      "identity": 192553,
+      "start": 34212,
+      "end": 34202,
+      "type": "ROUTES_TO",
+      "properties": {
+        "weight": 30
+      },
+      "elementId": "192553",
+      "startNodeElementId": "34212",
+      "endNodeElementId": "34202"
+    },
+    "m": {
+      "identity": 34202,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.13",
+        "name": "prod-server-03",
+        "location": "IDC-C",
+        "cpu_usage": 0.2
+      },
+      "elementId": "34202"
+    }
+  },
+  {
+    "n": {
+      "identity": 34214,
+      "labels": [
+        "Infra",
+        "Middleware"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "qps_limit": 10000,
+        "name": "api-gateway-nginx",
+        "type": "Gateway",
+        "version": "1.20.0",
+        "status": "Running"
+      },
+      "elementId": "34214"
+    },
+    "r": {
+      "identity": 192577,
+      "start": 34214,
+      "end": 34224,
+      "type": "ROUTES_TO",
+      "properties": {},
+      "elementId": "192577",
+      "startNodeElementId": "34214",
+      "endNodeElementId": "34224"
+    },
+    "m": {
+      "identity": 34224,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "port": 8081,
+        "name": "user-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.101"
+      },
+      "elementId": "34224"
+    }
+  },
+  {
+    "n": {
+      "identity": 34214,
+      "labels": [
+        "Infra",
+        "Middleware"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "qps_limit": 10000,
+        "name": "api-gateway-nginx",
+        "type": "Gateway",
+        "version": "1.20.0",
+        "status": "Running"
+      },
+      "elementId": "34214"
+    },
+    "r": {
+      "identity": 192576,
+      "start": 34214,
+      "end": 34223,
+      "type": "ROUTES_TO",
+      "properties": {},
+      "elementId": "192576",
+      "startNodeElementId": "34214",
+      "endNodeElementId": "34223"
+    },
+    "m": {
+      "identity": 34223,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34223"
+    }
+  },
+  {
+    "n": {
+      "identity": 34214,
+      "labels": [
+        "Infra",
+        "Middleware"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "qps_limit": 10000,
+        "name": "api-gateway-nginx",
+        "type": "Gateway",
+        "version": "1.20.0",
+        "status": "Running"
+      },
+      "elementId": "34214"
+    },
+    "r": {
+      "identity": 192563,
+      "start": 34214,
+      "end": 34218,
+      "type": "ROUTES_TO",
+      "properties": {},
+      "elementId": "192563",
+      "startNodeElementId": "34214",
+      "endNodeElementId": "34218"
+    },
+    "m": {
+      "identity": 34218,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34218"
+    }
+  },
+  {
+    "n": {
+      "identity": 34214,
+      "labels": [
+        "Infra",
+        "Middleware"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "qps_limit": 10000,
+        "name": "api-gateway-nginx",
+        "type": "Gateway",
+        "version": "1.20.0",
+        "status": "Running"
+      },
+      "elementId": "34214"
+    },
+    "r": {
+      "identity": 192564,
+      "start": 34214,
+      "end": 34219,
+      "type": "ROUTES_TO",
+      "properties": {},
+      "elementId": "192564",
+      "startNodeElementId": "34214",
+      "endNodeElementId": "34219"
+    },
+    "m": {
+      "identity": 34219,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "port": 8081,
+        "name": "user-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.101"
+      },
+      "elementId": "34219"
+    }
+  },
+  {
+    "n": {
+      "identity": 34214,
+      "labels": [
+        "Infra",
+        "Middleware"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "qps_limit": 10000,
+        "name": "api-gateway-nginx",
+        "type": "Gateway",
+        "version": "1.20.0",
+        "status": "Running"
+      },
+      "elementId": "34214"
+    },
+    "r": {
+      "identity": 192554,
+      "start": 34214,
+      "end": 34212,
+      "type": "PROXIES_TO",
+      "properties": {},
+      "elementId": "192554",
+      "startNodeElementId": "34214",
+      "endNodeElementId": "34212"
+    },
+    "m": {
+      "identity": 34212,
+      "labels": [
+        "Infra",
+        "LoadBalancer"
+      ],
+      "properties": {
+        "owner_email": "network-team@company.com",
+        "owner": "Network-Team",
+        "public_ip": "203.0.113.100",
+        "name": "ingress-slb-01",
+        "type": "SLB",
+        "status": "Active",
+        "algorithm": "RoundRobin"
+      },
+      "elementId": "34212"
+    }
+  },
+  {
+    "n": {
+      "identity": 34215,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34215"
+    },
+    "r": {
+      "identity": 192583,
+      "start": 34215,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192583",
+      "startNodeElementId": "34215",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34215,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34215"
+    },
+    "r": {
+      "identity": 192591,
+      "start": 34215,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192591",
+      "startNodeElementId": "34215",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34215,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34215"
+    },
+    "r": {
+      "identity": 192643,
+      "start": 34215,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192643",
+      "startNodeElementId": "34215",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34215,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34215"
+    },
+    "r": {
+      "identity": 192651,
+      "start": 34215,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192651",
+      "startNodeElementId": "34215",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34215,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34215"
+    },
+    "r": {
+      "identity": 192623,
+      "start": 34215,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192623",
+      "startNodeElementId": "34215",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34215,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34215"
+    },
+    "r": {
+      "identity": 192631,
+      "start": 34215,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192631",
+      "startNodeElementId": "34215",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34215,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34215"
+    },
+    "r": {
+      "identity": 192611,
+      "start": 34215,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192611",
+      "startNodeElementId": "34215",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34215,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34215"
+    },
+    "r": {
+      "identity": 192603,
+      "start": 34215,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192603",
+      "startNodeElementId": "34215",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34215,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34215"
+    },
+    "r": {
+      "identity": 192567,
+      "start": 34215,
+      "end": 34205,
+      "type": "DEPENDS_ON",
+      "properties": {},
+      "elementId": "192567",
+      "startNodeElementId": "34215",
+      "endNodeElementId": "34205"
+    },
+    "m": {
+      "identity": 34205,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "db_type": "Redis",
+        "memory": "32GB",
+        "port": 6379,
+        "name": "session-cache-redis",
+        "status": "Running"
+      },
+      "elementId": "34205"
+    }
+  },
+  {
+    "n": {
+      "identity": 34215,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34215"
+    },
+    "r": {
+      "identity": 192557,
+      "start": 34215,
+      "end": 34200,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192557",
+      "startNodeElementId": "34215",
+      "endNodeElementId": "34200"
+    },
+    "m": {
+      "identity": 34200,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.10",
+        "name": "prod-server-01",
+        "location": "IDC-A",
+        "cpu_usage": 0.85
+      },
+      "elementId": "34200"
+    }
+  },
+  {
+    "n": {
+      "identity": 34215,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34215"
+    },
+    "r": {
+      "identity": 192566,
+      "start": 34215,
+      "end": 34203,
+      "type": "DEPENDS_ON",
+      "properties": {},
+      "elementId": "192566",
+      "startNodeElementId": "34215",
+      "endNodeElementId": "34203"
+    },
+    "m": {
+      "identity": 34203,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "volume": "500GB",
+        "db_type": "MySQL",
+        "port": 3306,
+        "name": "user-mysql-master",
+        "status": "Running"
+      },
+      "elementId": "34203"
+    }
+  },
+  {
+    "n": {
+      "identity": 34216,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.2.3",
+        "name": "order-pod-k9bd3",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34216"
+    },
+    "r": {
+      "identity": 192568,
+      "start": 34216,
+      "end": 34203,
+      "type": "DEPENDS_ON",
+      "properties": {},
+      "elementId": "192568",
+      "startNodeElementId": "34216",
+      "endNodeElementId": "34203"
+    },
+    "m": {
+      "identity": 34203,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "volume": "500GB",
+        "db_type": "MySQL",
+        "port": 3306,
+        "name": "user-mysql-master",
+        "status": "Running"
+      },
+      "elementId": "34203"
+    }
+  },
+  {
+    "n": {
+      "identity": 34216,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.2.3",
+        "name": "order-pod-k9bd3",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34216"
+    },
+    "r": {
+      "identity": 192558,
+      "start": 34216,
+      "end": 34202,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192558",
+      "startNodeElementId": "34216",
+      "endNodeElementId": "34202"
+    },
+    "m": {
+      "identity": 34202,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.13",
+        "name": "prod-server-03",
+        "location": "IDC-C",
+        "cpu_usage": 0.2
+      },
+      "elementId": "34202"
+    }
+  },
+  {
+    "n": {
+      "identity": 34217,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34217"
+    },
+    "r": {
+      "identity": 192585,
+      "start": 34217,
+      "end": 34227,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192585",
+      "startNodeElementId": "34217",
+      "endNodeElementId": "34227"
+    },
+    "m": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    }
+  },
+  {
+    "n": {
+      "identity": 34217,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34217"
+    },
+    "r": {
+      "identity": 192592,
+      "start": 34217,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192592",
+      "startNodeElementId": "34217",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34217,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34217"
+    },
+    "r": {
+      "identity": 192602,
+      "start": 34217,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192602",
+      "startNodeElementId": "34217",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34217,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34217"
+    },
+    "r": {
+      "identity": 192632,
+      "start": 34217,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192632",
+      "startNodeElementId": "34217",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34217,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34217"
+    },
+    "r": {
+      "identity": 192635,
+      "start": 34217,
+      "end": 34227,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192635",
+      "startNodeElementId": "34217",
+      "endNodeElementId": "34227"
+    },
+    "m": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    }
+  },
+  {
+    "n": {
+      "identity": 34217,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34217"
+    },
+    "r": {
+      "identity": 192642,
+      "start": 34217,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192642",
+      "startNodeElementId": "34217",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34217,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34217"
+    },
+    "r": {
+      "identity": 192595,
+      "start": 34217,
+      "end": 34227,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192595",
+      "startNodeElementId": "34217",
+      "endNodeElementId": "34227"
+    },
+    "m": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    }
+  },
+  {
+    "n": {
+      "identity": 34217,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34217"
+    },
+    "r": {
+      "identity": 192625,
+      "start": 34217,
+      "end": 34227,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192625",
+      "startNodeElementId": "34217",
+      "endNodeElementId": "34227"
+    },
+    "m": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    }
+  },
+  {
+    "n": {
+      "identity": 34217,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34217"
+    },
+    "r": {
+      "identity": 192559,
+      "start": 34217,
+      "end": 34200,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192559",
+      "startNodeElementId": "34217",
+      "endNodeElementId": "34200"
+    },
+    "m": {
+      "identity": 34200,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.10",
+        "name": "prod-server-01",
+        "location": "IDC-A",
+        "cpu_usage": 0.85
+      },
+      "elementId": "34200"
+    }
+  },
+  {
+    "n": {
+      "identity": 34217,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34217"
+    },
+    "r": {
+      "identity": 192569,
+      "start": 34217,
+      "end": 34203,
+      "type": "DEPENDS_ON",
+      "properties": {},
+      "elementId": "192569",
+      "startNodeElementId": "34217",
+      "endNodeElementId": "34203"
+    },
+    "m": {
+      "identity": 34203,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "volume": "500GB",
+        "db_type": "MySQL",
+        "port": 3306,
+        "name": "user-mysql-master",
+        "status": "Running"
+      },
+      "elementId": "34203"
+    }
+  },
+  {
+    "n": {
+      "identity": 34218,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34218"
+    },
+    "r": {
+      "identity": 192604,
+      "start": 34218,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192604",
+      "startNodeElementId": "34218",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34218,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34218"
+    },
+    "r": {
+      "identity": 192584,
+      "start": 34218,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192584",
+      "startNodeElementId": "34218",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34218,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34218"
+    },
+    "r": {
+      "identity": 192614,
+      "start": 34218,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192614",
+      "startNodeElementId": "34218",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34218,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34218"
+    },
+    "r": {
+      "identity": 192594,
+      "start": 34218,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192594",
+      "startNodeElementId": "34218",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34218,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34218"
+    },
+    "r": {
+      "identity": 192561,
+      "start": 34218,
+      "end": 34216,
+      "type": "SELECTS",
+      "properties": {},
+      "elementId": "192561",
+      "startNodeElementId": "34218",
+      "endNodeElementId": "34216"
+    },
+    "m": {
+      "identity": 34216,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.2.3",
+        "name": "order-pod-k9bd3",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34216"
+    }
+  },
+  {
+    "n": {
+      "identity": 34218,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34218"
+    },
+    "r": {
+      "identity": 192560,
+      "start": 34218,
+      "end": 34215,
+      "type": "SELECTS",
+      "properties": {},
+      "elementId": "192560",
+      "startNodeElementId": "34218",
+      "endNodeElementId": "34215"
+    },
+    "m": {
+      "identity": 34215,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34215"
+    }
+  },
+  {
+    "n": {
+      "identity": 34219,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "port": 8081,
+        "name": "user-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.101"
+      },
+      "elementId": "34219"
+    },
+    "r": {
+      "identity": 192562,
+      "start": 34219,
+      "end": 34217,
+      "type": "SELECTS",
+      "properties": {},
+      "elementId": "192562",
+      "startNodeElementId": "34219",
+      "endNodeElementId": "34217"
+    },
+    "m": {
+      "identity": 34217,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34217"
+    }
+  },
+  {
+    "n": {
+      "identity": 34220,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34220"
+    },
+    "r": {
+      "identity": 192641,
+      "start": 34220,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192641",
+      "startNodeElementId": "34220",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34220,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34220"
+    },
+    "r": {
+      "identity": 192593,
+      "start": 34220,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192593",
+      "startNodeElementId": "34220",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34220,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34220"
+    },
+    "r": {
+      "identity": 192633,
+      "start": 34220,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192633",
+      "startNodeElementId": "34220",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34220,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34220"
+    },
+    "r": {
+      "identity": 192653,
+      "start": 34220,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192653",
+      "startNodeElementId": "34220",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34220,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34220"
+    },
+    "r": {
+      "identity": 192661,
+      "start": 34220,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192661",
+      "startNodeElementId": "34220",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34220,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34220"
+    },
+    "r": {
+      "identity": 192613,
+      "start": 34220,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192613",
+      "startNodeElementId": "34220",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34220,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34220"
+    },
+    "r": {
+      "identity": 192601,
+      "start": 34220,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192601",
+      "startNodeElementId": "34220",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34220,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34220"
+    },
+    "r": {
+      "identity": 192621,
+      "start": 34220,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192621",
+      "startNodeElementId": "34220",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34220,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34220"
+    },
+    "r": {
+      "identity": 192579,
+      "start": 34220,
+      "end": 34203,
+      "type": "DEPENDS_ON",
+      "properties": {},
+      "elementId": "192579",
+      "startNodeElementId": "34220",
+      "endNodeElementId": "34203"
+    },
+    "m": {
+      "identity": 34203,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "volume": "500GB",
+        "db_type": "MySQL",
+        "port": 3306,
+        "name": "user-mysql-master",
+        "status": "Running"
+      },
+      "elementId": "34203"
+    }
+  },
+  {
+    "n": {
+      "identity": 34220,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34220"
+    },
+    "r": {
+      "identity": 192580,
+      "start": 34220,
+      "end": 34205,
+      "type": "DEPENDS_ON",
+      "properties": {},
+      "elementId": "192580",
+      "startNodeElementId": "34220",
+      "endNodeElementId": "34205"
+    },
+    "m": {
+      "identity": 34205,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "db_type": "Redis",
+        "memory": "32GB",
+        "port": 6379,
+        "name": "session-cache-redis",
+        "status": "Running"
+      },
+      "elementId": "34205"
+    }
+  },
+  {
+    "n": {
+      "identity": 34220,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34220"
+    },
+    "r": {
+      "identity": 192570,
+      "start": 34220,
+      "end": 34200,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192570",
+      "startNodeElementId": "34220",
+      "endNodeElementId": "34200"
+    },
+    "m": {
+      "identity": 34200,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.10",
+        "name": "prod-server-01",
+        "location": "IDC-A",
+        "cpu_usage": 0.85
+      },
+      "elementId": "34200"
+    }
+  },
+  {
+    "n": {
+      "identity": 34221,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.2.3",
+        "name": "order-pod-k9bd3",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34221"
+    },
+    "r": {
+      "identity": 192571,
+      "start": 34221,
+      "end": 34202,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192571",
+      "startNodeElementId": "34221",
+      "endNodeElementId": "34202"
+    },
+    "m": {
+      "identity": 34202,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.13",
+        "name": "prod-server-03",
+        "location": "IDC-C",
+        "cpu_usage": 0.2
+      },
+      "elementId": "34202"
+    }
+  },
+  {
+    "n": {
+      "identity": 34221,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.2.3",
+        "name": "order-pod-k9bd3",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34221"
+    },
+    "r": {
+      "identity": 192581,
+      "start": 34221,
+      "end": 34203,
+      "type": "DEPENDS_ON",
+      "properties": {},
+      "elementId": "192581",
+      "startNodeElementId": "34221",
+      "endNodeElementId": "34203"
+    },
+    "m": {
+      "identity": 34203,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "volume": "500GB",
+        "db_type": "MySQL",
+        "port": 3306,
+        "name": "user-mysql-master",
+        "status": "Running"
+      },
+      "elementId": "34203"
+    }
+  },
+  {
+    "n": {
+      "identity": 34222,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34222"
+    },
+    "r": {
+      "identity": 192615,
+      "start": 34222,
+      "end": 34227,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192615",
+      "startNodeElementId": "34222",
+      "endNodeElementId": "34227"
+    },
+    "m": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    }
+  },
+  {
+    "n": {
+      "identity": 34222,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34222"
+    },
+    "r": {
+      "identity": 192622,
+      "start": 34222,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192622",
+      "startNodeElementId": "34222",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34222,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34222"
+    },
+    "r": {
+      "identity": 192612,
+      "start": 34222,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192612",
+      "startNodeElementId": "34222",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34222,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34222"
+    },
+    "r": {
+      "identity": 192662,
+      "start": 34222,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192662",
+      "startNodeElementId": "34222",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34222,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34222"
+    },
+    "r": {
+      "identity": 192655,
+      "start": 34222,
+      "end": 34227,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192655",
+      "startNodeElementId": "34222",
+      "endNodeElementId": "34227"
+    },
+    "m": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    }
+  },
+  {
+    "n": {
+      "identity": 34222,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34222"
+    },
+    "r": {
+      "identity": 192645,
+      "start": 34222,
+      "end": 34227,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192645",
+      "startNodeElementId": "34222",
+      "endNodeElementId": "34227"
+    },
+    "m": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    }
+  },
+  {
+    "n": {
+      "identity": 34222,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34222"
+    },
+    "r": {
+      "identity": 192652,
+      "start": 34222,
+      "end": 34230,
+      "type": "READS_CONFIG_FROM",
+      "properties": {},
+      "elementId": "192652",
+      "startNodeElementId": "34222",
+      "endNodeElementId": "34230"
+    },
+    "m": {
+      "identity": 34230,
+      "labels": [
+        "Infra",
+        "ConfigCenter"
+      ],
+      "properties": {
+        "owner_email": "middleware-team@company.com",
+        "owner": "Middleware-Team",
+        "ip": "192.168.1.100",
+        "name": "nacos-prod",
+        "type": "Nacos",
+        "version": "2.1.0"
+      },
+      "elementId": "34230"
+    }
+  },
+  {
+    "n": {
+      "identity": 34222,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34222"
+    },
+    "r": {
+      "identity": 192605,
+      "start": 34222,
+      "end": 34227,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192605",
+      "startNodeElementId": "34222",
+      "endNodeElementId": "34227"
+    },
+    "m": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    }
+  },
+  {
+    "n": {
+      "identity": 34222,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34222"
+    },
+    "r": {
+      "identity": 192572,
+      "start": 34222,
+      "end": 34200,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192572",
+      "startNodeElementId": "34222",
+      "endNodeElementId": "34200"
+    },
+    "m": {
+      "identity": 34200,
+      "labels": [
+        "Infra",
+        "Server"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "ip": "192.168.1.10",
+        "name": "prod-server-01",
+        "location": "IDC-A",
+        "cpu_usage": 0.85
+      },
+      "elementId": "34200"
+    }
+  },
+  {
+    "n": {
+      "identity": 34222,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34222"
+    },
+    "r": {
+      "identity": 192582,
+      "start": 34222,
+      "end": 34203,
+      "type": "DEPENDS_ON",
+      "properties": {},
+      "elementId": "192582",
+      "startNodeElementId": "34222",
+      "endNodeElementId": "34203"
+    },
+    "m": {
+      "identity": 34203,
+      "labels": [
+        "Infra",
+        "Database"
+      ],
+      "properties": {
+        "owner_email": "dba-team@company.com",
+        "owner": "DBA-Team",
+        "volume": "500GB",
+        "db_type": "MySQL",
+        "port": 3306,
+        "name": "user-mysql-master",
+        "status": "Running"
+      },
+      "elementId": "34203"
+    }
+  },
+  {
+    "n": {
+      "identity": 34223,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34223"
+    },
+    "r": {
+      "identity": 192644,
+      "start": 34223,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192644",
+      "startNodeElementId": "34223",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34223,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34223"
+    },
+    "r": {
+      "identity": 192624,
+      "start": 34223,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192624",
+      "startNodeElementId": "34223",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34223,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34223"
+    },
+    "r": {
+      "identity": 192654,
+      "start": 34223,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192654",
+      "startNodeElementId": "34223",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34223,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34223"
+    },
+    "r": {
+      "identity": 192634,
+      "start": 34223,
+      "end": 34226,
+      "type": "BELONGS_TO",
+      "properties": {},
+      "elementId": "192634",
+      "startNodeElementId": "34223",
+      "endNodeElementId": "34226"
+    },
+    "m": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    }
+  },
+  {
+    "n": {
+      "identity": 34223,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34223"
+    },
+    "r": {
+      "identity": 192573,
+      "start": 34223,
+      "end": 34220,
+      "type": "SELECTS",
+      "properties": {},
+      "elementId": "192573",
+      "startNodeElementId": "34223",
+      "endNodeElementId": "34220"
+    },
+    "m": {
+      "identity": 34220,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.1.5",
+        "name": "order-pod-x7as2",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34220"
+    }
+  },
+  {
+    "n": {
+      "identity": 34223,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "port": 8080,
+        "name": "order-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.100"
+      },
+      "elementId": "34223"
+    },
+    "r": {
+      "identity": 192574,
+      "start": 34223,
+      "end": 34221,
+      "type": "SELECTS",
+      "properties": {},
+      "elementId": "192574",
+      "startNodeElementId": "34223",
+      "endNodeElementId": "34221"
+    },
+    "m": {
+      "identity": 34221,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "image": "order-service:v2.1",
+        "ip": "10.244.2.3",
+        "name": "order-pod-k9bd3",
+        "status": "Running",
+        "cpu_request": "500m"
+      },
+      "elementId": "34221"
+    }
+  },
+  {
+    "n": {
+      "identity": 34224,
+      "labels": [
+        "App",
+        "Service"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "port": 8081,
+        "name": "user-service-k8s",
+        "type": "ClusterIP",
+        "cluster_ip": "10.96.0.101"
+      },
+      "elementId": "34224"
+    },
+    "r": {
+      "identity": 192575,
+      "start": 34224,
+      "end": 34222,
+      "type": "SELECTS",
+      "properties": {},
+      "elementId": "192575",
+      "startNodeElementId": "34224",
+      "endNodeElementId": "34222"
+    },
+    "m": {
+      "identity": 34222,
+      "labels": [
+        "App",
+        "Pod"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "image": "user-service:v1.5",
+        "ip": "N/A",
+        "name": "user-pod-m2kl1",
+        "status": "Pending"
+      },
+      "elementId": "34222"
+    }
+  },
+  {
+    "n": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    },
+    "r": {
+      "identity": 192656,
+      "start": 34226,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192656",
+      "startNodeElementId": "34226",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    },
+    "r": {
+      "identity": 192596,
+      "start": 34226,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192596",
+      "startNodeElementId": "34226",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    },
+    "r": {
+      "identity": 192616,
+      "start": 34226,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192616",
+      "startNodeElementId": "34226",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    },
+    "r": {
+      "identity": 192636,
+      "start": 34226,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192636",
+      "startNodeElementId": "34226",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    },
+    "r": {
+      "identity": 192586,
+      "start": 34226,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192586",
+      "startNodeElementId": "34226",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    },
+    "r": {
+      "identity": 192646,
+      "start": 34226,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192646",
+      "startNodeElementId": "34226",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    },
+    "r": {
+      "identity": 192626,
+      "start": 34226,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192626",
+      "startNodeElementId": "34226",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34226,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "order-team@company.com",
+        "owner": "Order-Team",
+        "quota": "4Core/8Gi",
+        "name": "order-namespace"
+      },
+      "elementId": "34226"
+    },
+    "r": {
+      "identity": 192606,
+      "start": 34226,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192606",
+      "startNodeElementId": "34226",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    },
+    "r": {
+      "identity": 192587,
+      "start": 34227,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192587",
+      "startNodeElementId": "34227",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    },
+    "r": {
+      "identity": 192617,
+      "start": 34227,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192617",
+      "startNodeElementId": "34227",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    },
+    "r": {
+      "identity": 192627,
+      "start": 34227,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192627",
+      "startNodeElementId": "34227",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    },
+    "r": {
+      "identity": 192647,
+      "start": 34227,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192647",
+      "startNodeElementId": "34227",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    },
+    "r": {
+      "identity": 192607,
+      "start": 34227,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192607",
+      "startNodeElementId": "34227",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    },
+    "r": {
+      "identity": 192597,
+      "start": 34227,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192597",
+      "startNodeElementId": "34227",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    },
+    "r": {
+      "identity": 192637,
+      "start": 34227,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192637",
+      "startNodeElementId": "34227",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  },
+  {
+    "n": {
+      "identity": 34227,
+      "labels": [
+        "App",
+        "Namespace"
+      ],
+      "properties": {
+        "owner_email": "user-team@company.com",
+        "owner": "User-Team",
+        "quota": "2Core/4Gi",
+        "name": "user-namespace"
+      },
+      "elementId": "34227"
+    },
+    "r": {
+      "identity": 192657,
+      "start": 34227,
+      "end": 34225,
+      "type": "RUNS_ON",
+      "properties": {},
+      "elementId": "192657",
+      "startNodeElementId": "34227",
+      "endNodeElementId": "34225"
+    },
+    "m": {
+      "identity": 34225,
+      "labels": [
+        "Infra",
+        "Cluster"
+      ],
+      "properties": {
+        "owner_email": "infra-team@company.com",
+        "owner": "Infra-Team",
+        "name": "prod-k8s-cluster-01",
+        "region": "cn-hangzhou",
+        "version": "1.22"
+      },
+      "elementId": "34225"
+    }
+  }
+]

@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: neo4j
+  namespace: aiops
+  labels:
+    app: neo4j
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: neo4j
+  template:
+    metadata:
+      labels:
+        app: neo4j
+    spec:
+      enableServiceLinks: false
+      containers:
+      - name: neo4j
+        image: neo4j:5.15.0
+        ports:
+        - containerPort: 7474
+          name: http
+        - containerPort: 7687
+          name: bolt
+        - containerPort: 7473
+          name: https
+        env:
+        - name: NEO4J_AUTH
+          value: "neo4j/password"
+        - name: NEO4J_server_bolt_advertised__address
+          value: "8.136.226.231:30687"
+        - name: NEO4J_server_http_advertised__address
+          value: "8.136.226.231:30747"
+        - name: NEO4J_server_memory_pagecache_size
+          value: "512M"
+        - name: NEO4J_server_memory_heap_initial__size
+          value: "512M"
+        - name: NEO4J_server_memory_heap_max__size
+          value: "1G"
+        - name: NEO4J_PLUGINS
+          value: '["apoc"]'
+        - name: NEO4J_dbms_security_procedures_unrestricted
+          value: "apoc.*"
+        volumeMounts:
+        - name: neo4j-data
+          mountPath: /data
+        - name: neo4j-logs
+          mountPath: /logs
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+        readinessProbe:
+          tcpSocket:
+            port: 7687
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 7687
+          initialDelaySeconds: 60
+          periodSeconds: 30
+      volumes:
+      - name: neo4j-data
+        persistentVolumeClaim:
+          claimName: neo4j-pvc
+      - name: neo4j-logs
+        emptyDir: {}

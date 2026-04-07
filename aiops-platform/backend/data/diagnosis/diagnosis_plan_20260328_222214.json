@@ -1,0 +1,12 @@
+{
+  "plan_name": "memory_usage_diagnosis",
+  "check_type": "memory",
+  "commands": [
+    "free -m",
+    "ps -eo pid,ppid,cmd,%mem --sort=-%mem | head -10",
+    "grep -i 'Out of memory' /var/log/messages || dmesg | grep -i oom"
+  ],
+  "reasoning": "根据skill文件3.2节，需先检查内存总量与可用量，再定位高内存进程，最后确认OOM事件。所有命令均为只读、低风险操作。",
+  "expected_findings": [],
+  "created_at": "2026-03-28T22:22:14.464855"
+}

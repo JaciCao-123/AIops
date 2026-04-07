@@ -1,0 +1,354 @@
+from typing import Optional, List, Dict, Any
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+import httpx
+from neo4j import GraphDatabase
+
+from app.core.config import settings
+
+router = APIRouter(prefix="/api/knowledge", tags=["knowledge"])
+
+class KGQueryRequest(BaseModel):
+    query: str
+    service: Optional[str] = None
+
+class KGQueryResponse(BaseModel):
+    query: str
+    cypher: Optional[str] = None
+    result: Optional[dict] = None
+    error: Optional[str] = None
+
+class RAGQueryRequest(BaseModel):
+    query: str
+    top_k: int = 5
+
+class RAGQueryResponse(BaseModel):
+    query: str
+    answer: str
+    documents: List[dict]
+    source: str
+    best_score: float = 0.0
+    use_context: bool = False
+    mode: str = "RAG"
+
+def get_neo4j_driver():
+    return GraphDatabase.driver(
+        settings.NEO4J_URI,
+        auth=(settings.NEO4J_USER, settings.NEO4J_PASSWORD)
+    )
+
+@router.get("/query")
+async def query_knowledge_graph(service: str = None, query: str = None):
+    try:
+        driver = get_neo4j_driver()
+        
+        with driver.session() as session:
+            if service:
+                result = _query_service_info(session, service)
+            elif query:
+                result = _query_by_natural_language(session, query)
+            else:
+                return {"error": "请提供 service 或 query 参数"}
+        
+        driver.close()
+        
+        return {
+            "query": query or f"查询 {service} 的详细信息",
+            "result": result,
+            "source": "neo4j_kg"
+        }
+        
+    except Exception as e:
+        return {
+            "query": query or service,
+            "error": str(e),
+            "fallback": _get_mock_kg_data(service)
+        }
+
+def _query_service_info(session, service_name: str) -> Dict:
+    result = session.run("""
+        MATCH (s {name: $name})
+        OPTIONAL MATCH (s)-[r:DEPENDS_ON]->(dep)
+        OPTIONAL MATCH (s)-[r2:RUNS_ON]->(run)
+        OPTIONAL MATCH (s)-[r3:CONNECTED_TO]->(conn)
+        RETURN s, 
+               collect(DISTINCT {name: dep.name, type: labels(dep)[0]}) as dependencies,
+               collect(DISTINCT {name: run.name, type: labels(run)[0]}) as runs_on,
+               collect(DISTINCT {name: conn.name, type: labels(conn)[0]}) as connections
+    """, name=service_name)
+    
+    record = result.single()
+    if not record:
+        return {"error": f"未找到服务: {service_name}"}
+    
+    node = dict(record["s"]) if record["s"] else {}
+    
+    return {
+        "service": service_name,
+        "properties": node,
+        "dependencies": [d for d in record["dependencies"] if d["name"]],
+        "runs_on": [r for r in record["runs_on"] if r["name"]],
+        "connections": [c for c in record["connections"] if c["name"]]
+    }
+
+def _extract_service_name(query: str) -> Optional[str]:
+    import re
+    patterns = [
+        r'([a-zA-Z][a-zA-Z0-9\-]+)',
+    ]
+    for pattern in patterns:
+        matches = re.findall(pattern, query)
+        for match in matches:
+            if len(match) > 3 and '-' in match:
+                return match
+    return None
+
+def _query_by_natural_language(session, query: str) -> Dict:
+    query_lower = query.lower()
+    service_name = _extract_service_name(query)
+    
+    if "运行" in query and "服务器" in query:
+        if service_name:
+            result = session.run("""
+                MATCH (s {name: $name})-[r:RUNS_ON]->(server)
+                RETURN s.name as service, collect({name: server.name, ip: server.ip, type: labels(server)[0]}) as servers
+            """, name=service_name)
+            record = result.single()
+            if record and record["servers"]:
+                return {
+                    "service": record["service"],
+                    "servers": [s for s in record["servers"] if s["name"]],
+                    "query_type": "runs_on_server"
+                }
+    
+    if "依赖" in query or "depend" in query_lower:
+        if service_name:
+            result = session.run("""
+                MATCH (s {name: $name})-[r:DEPENDS_ON]->(dep)
+                RETURN s.name as service, collect({name: dep.name, type: labels(dep)[0]}) as deps
+            """, name=service_name)
+            record = result.single()
+            if record:
+                return {
+                    "service": record["service"],
+                    "dependencies": record["deps"]
+                }
+    
+    if ("服务器" in query or "server" in query_lower) and not service_name:
+        result = session.run("MATCH (s:Server) RETURN s.name as name, s.ip as ip LIMIT 10")
+        servers = [{"name": r["name"], "ip": r["ip"]} for r in result]
+        return {"servers": servers}
+    
+    if ("数据库" in query or "database" in query_lower) and not service_name:
+        result = session.run("MATCH (d:Database) RETURN d.name as name, d.type as type LIMIT 10")
+        databases = [{"name": r["name"], "type": r["type"]} for r in result]
+        return {"databases": databases}
+    
+    if service_name:
+        result = session.run("""
+            MATCH (s {name: $name})
+            OPTIONAL MATCH (s)-[r:DEPENDS_ON]->(dep)
+            OPTIONAL MATCH (s)-[r2:RUNS_ON]->(run)
+            OPTIONAL MATCH (s)-[r3:CONNECTED_TO]->(conn)
+            RETURN s, 
+                   collect(DISTINCT {name: dep.name, type: labels(dep)[0]}) as dependencies,
+                   collect(DISTINCT {name: run.name, type: labels(run)[0]}) as runs_on,
+                   collect(DISTINCT {name: conn.name, type: labels(conn)[0]}) as connections
+        """, name=service_name)
+        record = result.single()
+        if record and record["s"]:
+            node = dict(record["s"])
+            return {
+                "service": service_name,
+                "properties": node,
+                "dependencies": [d for d in record["dependencies"] if d["name"]],
+                "runs_on": [r for r in record["runs_on"] if r["name"]],
+                "connections": [c for c in record["connections"] if c["name"]]
+            }
+    
+    result = session.run("""
+        CALL db.index.fulltext.queryNodes('entityIndex', $query) 
+        YIELD node 
+        RETURN labels(node)[0] as type, node.name as name, node as properties 
+        LIMIT 5
+    """, query=query)
+    
+    nodes = [{"type": r["type"], "name": r["name"], "properties": dict(r["properties"])} for r in result]
+    
+    if not nodes:
+        result = session.run("""
+            MATCH (n) 
+            WHERE n.name CONTAINS $keyword OR n.ip CONTAINS $keyword
+            RETURN labels(n)[0] as type, n.name as name, n as properties 
+            LIMIT 5
+        """, keyword=query.split()[0] if query.split() else query)
+        nodes = [{"type": r["type"], "name": r["name"], "properties": dict(r["properties"])} for r in result]
+    
+    return {"matched_nodes": nodes}
+
+@router.post("/rag/query", response_model=RAGQueryResponse)
+async def query_rag(request: RAGQueryRequest):
+    try:
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            response = await client.post(
+                f"{settings.RAG_SERVICE_URL}/api/chat",
+                json={"query": request.query}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                return RAGQueryResponse(
+                    query=request.query,
+                    answer=data.get("answer", ""),
+                    documents=data.get("documents", []),
+                    source="ops_rag_service",
+                    best_score=data.get("best_score", 0.0),
+                    use_context=data.get("use_context", False),
+                    mode=data.get("mode", "RAG")
+                )
+            else:
+                return RAGQueryResponse(
+                    query=request.query,
+                    answer="RAG 服务暂时不可用",
+                    documents=_get_mock_rag_docs(request.query),
+                    source="mock_data"
+                )
+                
+    except Exception as e:
+        return RAGQueryResponse(
+            query=request.query,
+            answer=f"查询出错: {str(e)}",
+            documents=_get_mock_rag_docs(request.query),
+            source="mock_data"
+        )
+
+@router.get("/topology")
+async def get_topology(service: str = None, depth: int = 2):
+    try:
+        driver = get_neo4j_driver()
+        
+        with driver.session() as session:
+            if service:
+                result = session.run(f"""
+                    MATCH path = (s {{name: $name}})-[*1..{depth}]-(related)
+                    RETURN s, related, relationships(path) as rels
+                """, name=service)
+            else:
+                result = session.run(f"""
+                    MATCH path = (a)-[r:DEPENDS_ON|RUNS_ON|CONNECTED_TO*1..{depth}]-(b)
+                    RETURN a, b, relationships(path) as rels
+                    LIMIT 50
+                """)
+            
+            nodes = {}
+            edges = []
+            
+            for record in result:
+                source = record.get("s") or record.get("a")
+                target = record.get("related") or record.get("b")
+                
+                if source:
+                    source_id = source.element_id
+                    if source_id not in nodes:
+                        nodes[source_id] = {
+                            "id": source_id,
+                            "label": dict(source).get("name", "unknown"),
+                            "type": list(source.labels)[0] if source.labels else "Node",
+                            "properties": dict(source)
+                        }
+                
+                if target:
+                    target_id = target.element_id
+                    if target_id not in nodes:
+                        nodes[target_id] = {
+                            "id": target_id,
+                            "label": dict(target).get("name", "unknown"),
+                            "type": list(target.labels)[0] if target.labels else "Node",
+                            "properties": dict(target)
+                        }
+                
+                rels = record.get("rels", [])
+                for rel in rels:
+                    edges.append({
+                        "source": rel.start_node.element_id if hasattr(rel, 'start_node') else None,
+                        "target": rel.end_node.element_id if hasattr(rel, 'end_node') else None,
+                        "type": rel.type
+                    })
+        
+        driver.close()
+        
+        return {
+            "nodes": list(nodes.values()),
+            "edges": edges,
+            "source": "neo4j_kg"
+        }
+        
+    except Exception as e:
+        return {
+            "nodes": [],
+            "edges": [],
+            "error": str(e),
+            "source": "error"
+        }
+
+@router.get("/qa/chat")
+async def chat_with_knowledge(question: str):
+    from app.agents import IntentParseAgent, KnowledgeExpertAgent
+    
+    intent_agent = IntentParseAgent()
+    knowledge_agent = KnowledgeExpertAgent()
+    
+    intent = await intent_agent.parse(question)
+    
+    service = intent.get("entities", {}).get("service", "unknown")
+    symptom = intent.get("entities", {}).get("symptom", "unknown")
+    
+    knowledge = await knowledge_agent.query(service, symptom)
+    
+    rag_answer = await _query_rag_for_context(question)
+    
+    return {
+        "question": question,
+        "intent": intent,
+        "knowledge": knowledge,
+        "rag_context": rag_answer,
+        "answer": knowledge.get("knowledge_report", "未找到相关知识")
+    }
+
+async def _query_rag_for_context(question: str) -> str:
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{settings.RAG_SERVICE_URL}/api/chat",
+                json={"query": question}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                return data.get("answer", "")
+    except:
+        pass
+    return ""
+
+def _get_mock_kg_data(service: str) -> dict:
+    return {
+        "service": service,
+        "dependencies": {
+            "upstream": ["api-gateway"],
+            "downstream": ["mysql-master", "redis-cluster"]
+        },
+        "status": "running",
+        "owner": "ops-team"
+    }
+
+def _get_mock_rag_docs(query: str) -> List[dict]:
+    return [
+        {
+            "file": "sop-database.md",
+            "snippet": "数据库连接池应急扩容步骤：1. 检查当前连接池状态 2. 临时调大连接池上限..."
+        },
+        {
+            "file": "incident-2023-011.md",
+            "snippet": "order-service连接池耗尽故障复盘：根因是连接池配置不足，解决方案是..."
+        }
+    ]

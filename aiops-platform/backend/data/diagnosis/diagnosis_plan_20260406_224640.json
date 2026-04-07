@@ -1,0 +1,13 @@
+{
+  "plan_name": "lb_network_connectivity_check",
+  "check_type": "network",
+  "commands": [
+    "ping -c 4 lb-bp1bxqgw0jflid09i6xnq",
+    "nslookup lb-bp1bxqgw0jflid09i6xnq",
+    "telnet lb-bp1bxqgw0jflid09i6xnq 80",
+    "telnet lb-bp1bxqgw0jflid09i6xnq 443"
+  ],
+  "reasoning": "由于kubectl命令失败，需要转为网络层诊断。根据网络排查技能，先检查DNS解析和基本连通性，然后测试负载均衡器的HTTP/HTTPS端口是否可达",
+  "expected_findings": [],
+  "created_at": "2026-04-06T22:46:40.911737"
+}

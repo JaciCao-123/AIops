@@ -1,0 +1,15 @@
+{
+  "plan_name": "lb_service_diagnosis",
+  "check_type": "service",
+  "commands": [
+    "ping -c 4 lb-bp1bxqgw0jflid09i6xnq",
+    "nslookup lb-bp1bxqgw0jflid09i6xnq",
+    "netstat -tuln | grep :80",
+    "netstat -tuln | grep :443",
+    "systemctl status nginx 2>/dev/null || systemctl status haproxy 2>/dev/null || echo 'No common LB service found'",
+    "ps aux | grep -E '(nginx|haproxy|slb)' | grep -v grep"
+  ],
+  "reasoning": "针对负载均衡服务lb-bp1bxqgw0jflid09i6xnq，首先检查网络连通性和DNS解析，然后检查80/443端口监听状态，再检查常见的负载均衡服务（nginx/haproxy）状态，最后检查相关进程",
+  "expected_findings": [],
+  "created_at": "2026-04-06T17:38:32.752152"
+}

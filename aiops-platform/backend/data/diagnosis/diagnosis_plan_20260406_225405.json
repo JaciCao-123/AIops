@@ -1,0 +1,14 @@
+{
+  "plan_name": "lb_service_capacity_diagnosis",
+  "check_type": "service",
+  "commands": [
+    "kubectl get service lb-bp1bxqgw0jflid09i6xnq -o wide",
+    "kubectl get endpoints lb-bp1bxqgw0jflid09i6xnq",
+    "kubectl describe service lb-bp1bxqgw0jflid09i6xnq",
+    "kubectl get pods -l app=lb-bp1bxqgw0jflid09i6xnq",
+    "kubectl logs -l app=lb-bp1bxqgw0jflid09i6xnq --tail=50"
+  ],
+  "reasoning": "根据中间件排查技能，需要检查Service状态、Endpoints、Pod状态和日志。首先确认Service是否存在且配置正确，然后检查Endpoints是否匹配到健康的Pod，最后查看相关Pod的日志以确定服务能力问题。",
+  "expected_findings": [],
+  "created_at": "2026-04-06T22:54:05.090711"
+}

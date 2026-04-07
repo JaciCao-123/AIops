@@ -1,0 +1,12 @@
+{
+  "plan_name": "mysql_deadlock_diagnostics",
+  "check_type": "mysql_deadlock",
+  "commands": [
+    "docker exec ops_rag_mysql mysql -u test_user -pchangeme -e \"SHOW ENGINE INNODB STATUS\\G\"",
+    "docker exec ops_rag_mysql mysql -u test_user -pchangeme -e \"SELECT trx_id, trx_mysql_thread_id, trx_state, TIMESTAMPDIFF(SECOND, trx_started, NOW()) AS running_seconds, trx_query FROM information_schema.innodb_trx ORDER BY trx_started\"",
+    "docker exec ops_rag_mysql mysql -u test_user -pchangeme -e \"SELECT @@GLOBAL.transaction_isolation, @@SESSION.transaction_isolation\""
+  ],
+  "reasoning": "根据 mysql_deadlock_skill 的诊断流程，需要先获取死锁日志，然后检查当前活跃事务状态，最后检查事务隔离级别",
+  "expected_findings": [],
+  "created_at": "2026-04-04T18:34:41.294961"
+}

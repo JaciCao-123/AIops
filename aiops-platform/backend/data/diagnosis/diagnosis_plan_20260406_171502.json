@@ -1,0 +1,13 @@
+{
+  "plan_name": "lb_backend_health_check",
+  "check_type": "service",
+  "commands": [
+    "kubectl get svc lb-bp1bxqgw0jflid09i6xnq -o wide",
+    "kubectl get endpoints lb-bp1bxqgw0jflid09i6xnq",
+    "kubectl describe svc lb-bp1bxqgw0jflid09i6xnq",
+    "kubectl get pods --all-namespaces -l app=lb-bp1bxqgw0jflid09i6xnq"
+  ],
+  "reasoning": "根据中间件排查技能5.1场景，需要检查Service状态、Endpoints是否为空、Service详细信息以及相关Pod状态。如果Service是Kubernetes中的负载均衡，需要检查其Endpoints是否匹配到健康的Pod，以及Pod的就绪状态。",
+  "expected_findings": [],
+  "created_at": "2026-04-06T17:15:02.775850"
+}

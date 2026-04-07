@@ -1,0 +1,10 @@
+{
+  "plan_name": "slb_service_capacity_diagnosis",
+  "check_type": "network",
+  "commands": [
+    "python3 skills/network/scripts/slb_diagnosis.py lb-bp1bxqgw0jflid09i6xnq cn-hangzhou"
+  ],
+  "reasoning": "根据 lb_port_connectivity_skill 文件，推荐使用 Python 脚本进行诊断，该脚本会自动读取 .env 文件中的认证信息，使用阿里云 Python SDK 查询 SLB 实例状态、后端服务器健康状态、服务能力评估等。",
+  "expected_findings": [],
+  "created_at": "2026-04-06T23:32:30.024316"
+}

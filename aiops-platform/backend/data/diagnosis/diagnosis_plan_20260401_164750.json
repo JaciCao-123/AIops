@@ -1,0 +1,11 @@
+{
+  "plan_name": "memory_and_disk_high_usage_check",
+  "check_type": "memory,disk",
+  "commands": [
+    "free -m",
+    "df -h"
+  ],
+  "reasoning": "先执行低风险只读命令获取内存和磁盘整体使用概况，判断是否确实超标（如 available < 100MB 或 Use% > 90%），再决定是否深入排查。",
+  "expected_findings": [],
+  "created_at": "2026-04-01T16:47:50.969868"
+}

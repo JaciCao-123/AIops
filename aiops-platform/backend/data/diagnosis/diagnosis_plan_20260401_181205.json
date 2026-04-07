@@ -1,0 +1,11 @@
+{
+  "plan_name": "ssh_connectivity_check_8.136.226.231",
+  "check_type": "network",
+  "commands": [
+    "ping -c 4 8.136.226.231",
+    "nc -zv -w 3 8.136.226.231 22"
+  ],
+  "reasoning": "根据 debug_skill 1.1 场景：网络连通性异常，需先验证基础 ICMP 连通性，再验证 SSH 端口 TCP 连通性。两个命令均为低风险只读操作，可快速定位是网络层中断还是服务层问题。",
+  "expected_findings": [],
+  "created_at": "2026-04-01T18:12:05.482642"
+}

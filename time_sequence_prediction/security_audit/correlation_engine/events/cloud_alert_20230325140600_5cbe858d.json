@@ -1,0 +1,18 @@
+{
+    "alert_type": "Cloud_Anomaly_Detected",
+    "timestamp": "2023-03-25T14:06:00",
+    "severity": "HIGH",
+    "description": "Cloud API call rate 115/min exceeds threshold 1.00/min",
+    "entities": {
+        "source_ip": "103.24.77.55",
+        "user": "compromised_user@example.com",
+        "unique_actions": 7,
+        "denied_count": 77
+    },
+    "source_system": "cloud_detector",
+    "indicators": {
+        "has_dangerous_operations": true,
+        "high_denial_rate": true,
+        "potential_compromise": true
+    }
+}

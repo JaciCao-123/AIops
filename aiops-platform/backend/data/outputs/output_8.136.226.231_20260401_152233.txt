@@ -1,0 +1,7 @@
+[    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-3.10.0-1160.119.1.el7.x86_64 root=UUID=c8b5b2da-5565-4dc1-b002-2a8b07573e22 ro crashkernel=auto spectre_v2=retpoline rhgb quiet net.ifnames=0 console=tty0 console=ttyS0,115200n8 noibrs nvme_core.io_timeout=4294967295 nvme_core.admin_timeout=4294967295
+[    0.000000] Kernel command line: BOOT_IMAGE=/boot/vmlinuz-3.10.0-1160.119.1.el7.x86_64 root=UUID=c8b5b2da-5565-4dc1-b002-2a8b07573e22 ro crashkernel=auto spectre_v2=retpoline rhgb quiet net.ifnames=0 console=tty0 console=ttyS0,115200n8 noibrs nvme_core.io_timeout=4294967295 nvme_core.admin_timeout=4294967295
+[    0.202892] Switched APIC routing to physical x2apic.
+[    0.223617] ACPI: Using IOAPIC for interrupt routing
+[    0.287825] PCI: Using ACPI for IRQ routing
+[   11.824590] AliSecGuard: loading out-of-tree module taints kernel.
+

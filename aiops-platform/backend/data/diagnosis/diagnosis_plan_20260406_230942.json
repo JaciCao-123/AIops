@@ -1,0 +1,12 @@
+{
+  "plan_name": "slb_service_capacity_diagnosis",
+  "check_type": "network",
+  "commands": [
+    "aliyun slb DescribeLoadBalancerAttribute --LoadBalancerId lb-bp1bxqgw0jflid09i6xnq",
+    "aliyun slb DescribeLoadBalancerBackends --LoadBalancerId lb-bp1bxqgw0jflid09i6xnq",
+    "aliyun slb DescribeHealthStatus --LoadBalancerId lb-bp1bxqgw0jflid09i6xnq"
+  ],
+  "reasoning": "根据 lb_port_connectivity_skill，诊断负载均衡服务能力需要检查 SLB 实例状态、后端服务器列表和健康检查状态。这些是远程云服务诊断的第一步，用于评估服务能力百分比和识别异常服务器。",
+  "expected_findings": [],
+  "created_at": "2026-04-06T23:09:42.753373"
+}

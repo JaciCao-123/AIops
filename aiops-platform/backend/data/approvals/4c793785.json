@@ -1,0 +1,15 @@
+{
+  "approval_id": "4c793785",
+  "operation": "Kill high memory process stress (PID 1539)",
+  "risk": "medium",
+  "impact": "Killing stress process will release about 3GB memory",
+  "commands": [
+    "kill -9 1539"
+  ],
+  "target_host": "8.136.226.231",
+  "email": "18565693545@163.com",
+  "status": "pending",
+  "created_at": "2026-03-28T22:51:21.244814",
+  "approved_at": null,
+  "approved_by": null
+}

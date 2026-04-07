@@ -1,0 +1,21 @@
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        1.9G     0  1.9G   0% /dev
+tmpfs           1.9G  1.8G   95M  96% /dev/shm
+tmpfs           1.9G  3.8M  1.9G   1% /run
+tmpfs           1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/vda1        20G  8.9G  9.7G  48% /
+tmpfs           379M     0  379M   0% /run/user/1000
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/0410df92fc02483a111728d085fb984a1879af773379e7864705d5d12d8ded33/shm
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/3af4976435cab0607dced5eb4d0f6bd3ee5821ec87550d65497ad73125e52152/shm
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/fe0e756391935da3465ce0ecc1eebb739f7d1884c8afe649305e9ed1ff86af8d/shm
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/f13b7f2fa3b208e61c3f03551cbd8ceccf18c508d0351219083c27b55a7807ca/shm
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/3083fc4eec54c3481df685bae8d1484151cca1b4a75c931b7c5335f86d8bb2b8/shm
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/6222477f85883526a3c1b8fbf4f704b3dd020d623574235942bef9f249522434/shm
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/1d6ea4b9442a22d426a7c79af709f53e4c07f1095d548a46fbb2942cfc8aec64/shm
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/2d9a0358c7b8f9e49050ba6be3569837db35e32e045878d8b154667a094f7630/shm
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/448b5786559b15b6e7671d79c11fa4244d82e999f9357c21ee09dccaff882980/shm
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/d374f8f0f77f80afc94d56aa5475c053c9ac5ecfebe65f82a0ceab67761995d5/shm
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/2816611a15c5a747650e71b194e42f20f96f14316dc98f2f50a19ff0c80b7602/shm
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/9465813559cc63dc417a73d59c33f71b8c1f66594179164416419316d0636bfa/shm
+shm              64M     0   64M   0% /run/containerd/io.containerd.grpc.v1.cri/sandboxes/dc7e187a5f4733c0aea112eb72df557b3927e921b97be481422ab2d024e5b006/shm
+

@@ -1,0 +1,12 @@
+{
+  "plan_name": "mysql_deadlock_diagnosis",
+  "check_type": "mysql_deadlock",
+  "commands": [
+    "SHOW ENGINE INNODB STATUS",
+    "SELECT * FROM information_schema.innodb_trx",
+    "SHOW VARIABLES LIKE 'transaction_isolation'"
+  ],
+  "reasoning": "根据 mysql_deadlock_skill，先获取死锁日志，再检查当前事务状态和事务隔离级别",
+  "expected_findings": [],
+  "created_at": "2026-04-02T17:50:32.706918"
+}

@@ -1,0 +1,12 @@
+{
+  "plan_name": "slb_service_capacity_diagnosis",
+  "check_type": "network",
+  "commands": [
+    "aliyun slb DescribeLoadBalancerAttribute --LoadBalancerId lb-bp1bxqgw0jflid09i6xnq",
+    "aliyun slb DescribeLoadBalancerBackends --LoadBalancerId lb-bp1bxqgw0jflid09i6xnq",
+    "aliyun slb DescribeHealthStatus --LoadBalancerId lb-bp1bxqgw0jflid09i6xnq"
+  ],
+  "reasoning": "根据 lb_port_connectivity_skill，需要先查询 SLB 实例属性、后端服务器列表和健康检查状态来评估服务能力。服务能力 = 正常服务器数 / 总服务器数 * 100%。",
+  "expected_findings": [],
+  "created_at": "2026-04-06T23:22:32.735915"
+}
