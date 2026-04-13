@@ -198,6 +198,7 @@
 | Skill | 文件路径 | 触发关键词 | 适用场景 |
 |-------|---------|-----------|---------|
 | **database_ha_skill** | `database/database_ha_skill.md` | 主从切换, 复制中断, IO线程, SQL线程, Binlog, GTID, MHA, 数据库高可用 | 数据库高可用与复制故障排查 |
+| **mysql_failover_skill** | `database/mysql_failover_skill.md` | 主库故障, 主从切换, failover, 手动切换, 写入失败, 从库提升, 主库宕机 | MySQL 主从故障人工切换 |
 
 #### P1 - 常用数据库技能
 
@@ -208,6 +209,7 @@
 
 **选择指南**：
 - 数据库主从复制/高可用问题 → `@reference: database/database_ha_skill.md`
+- 主库故障需要人工切换 → `@reference: database/mysql_failover_skill.md`
 - PostgreSQL 锁/膨胀/VACUUM 问题 → `@reference: database/postgresql_skill.md`
 - MongoDB 副本集/分片问题 → `@reference: database/mongodb_skill.md`
 

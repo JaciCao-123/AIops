@@ -277,6 +277,18 @@ class SkillManager:
                 "慢查询", "连接池", "索引", "balancer"
             ]
         },
+        "mysql_failover_skill": {
+            "path": "database/mysql_failover_skill.md",
+            "category": "database",
+            "description": "MySQL 主从故障人工切换 (异常检测/主从切换/数据同步/测试验证)",
+            "keywords": [
+                "主库故障", "master down", "主库宕机", "主库不可用",
+                "主从切换", "failover", "手动切换", "人工切换",
+                "写入失败", "连接主库失败", "主库无响应",
+                "从库提升", "slave promote", "主从角色互换",
+                "切换到从库", "主库切换", "数据库切换"
+            ]
+        },
         "security_audit_skill": {
             "path": "security/security_audit_skill.md",
             "category": "security",
@@ -804,6 +816,23 @@ class SkillManager:
             },
             "alias": {}
         },
+        "mysql_failover_skill": {
+            "core": {
+                "主库故障": 10, "master down": 10, "主库宕机": 10,
+                "主从切换": 10, "failover": 10, "手动切换": 9,
+                "人工切换": 9, "数据库切换": 8
+            },
+            "symptom": {
+                "写入失败": 9, "连接主库失败": 9, "主库无响应": 9,
+                "从库提升": 8, "slave promote": 8, "主从角色互换": 8,
+                "切换到从库": 8, "主库不可用": 9, "主库down": 9
+            },
+            "component": {
+                "主库": 5, "master": 5, "从库": 5, "slave": 5,
+                "mysql": 5, "数据库": 4, "复制": 4
+            },
+            "alias": {}
+        },
         "security_audit_skill": {
             "core": {
                 "安全审计": 10, "入侵检测": 10, "安全事件": 9
@@ -1240,12 +1269,33 @@ class SkillManager:
         
         sorted_skills = sorted(scores.items(), key=lambda x: x[1], reverse=True)
         
+        has_server_target = bool(has_ip or has_server_keyword)
+        
         top_skills = []
+        login_skill_added = False
+        debug_skill_added = False
+        
         for skill_name, score in sorted_skills:
-            if score >= 5 or len(top_skills) < 3:
-                top_skills.append(skill_name)
+            if skill_name == "login_skill" and has_server_target:
+                if not login_skill_added:
+                    top_skills.insert(0, skill_name)
+                    login_skill_added = True
+            elif skill_name == "debug_skill":
+                debug_skill_added = True
+                if score >= 5 or len(top_skills) < 4:
+                    top_skills.append(skill_name)
+            else:
+                if score >= 5 or len(top_skills) < 4:
+                    top_skills.append(skill_name)
+            
             if len(top_skills) >= 5:
                 break
+        
+        if has_server_target and not login_skill_added:
+            top_skills.insert(0, "login_skill")
+        
+        if not debug_skill_added and len(top_skills) < 5:
+            top_skills.append("debug_skill")
         
         return top_skills
     

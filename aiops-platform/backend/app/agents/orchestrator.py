@@ -47,8 +47,10 @@ class MultiAgentOrchestrator:
         
         流程：
         1. 意图识别（固定步骤）
-        2. LLM 根据 skill 文件动态规划并执行
-        3. 返回结果
+        2. 检查是否需要 SSH 登录 → 优先匹配 login_skill
+        3. 根据问题类型匹配 debug_skill 等诊断类 skill
+        4. LLM 根据 skill 文件动态规划并执行
+        5. 返回结果
         """
         start_time = datetime.now()
         
@@ -66,6 +68,43 @@ class MultiAgentOrchestrator:
             result["stages"]["intent_parsing"] = await self._stage_intent_parsing(user_query)
             
             intent_data = result["stages"]["intent_parsing"]
+            
+            entities = intent_data.get("entities", {})
+            ssh_users = entities.get("ssh_users", [])
+            servers = entities.get("servers", [])
+            
+            need_ssh_login = bool(servers) and not ssh_users
+            
+            if need_ssh_login:
+                result["stages"]["login_check"] = {
+                    "requires_ssh": True,
+                    "servers": servers,
+                    "ssh_users_known": False,
+                    "status": "needs_user_info",
+                    "message": f"需要连接服务器 {servers}，请提供 SSH 登录用户名"
+                }
+                
+                result["final_decision"] = {
+                    "decision": "NEEDS_CONFIRMATION",
+                    "confirmation_request": {
+                        "success": True,
+                        "requires_confirmation": True,
+                        "operation": f"确认 SSH 登录信息",
+                        "risk": "低风险（仅信息收集）",
+                        "impact": f"需要获取 SSH 用户名才能连接服务器 {servers[0]['value'] if servers else ''} 进行诊断",
+                        "message": f"需要连接服务器进行诊断，请提供 SSH 登录用户名"
+                    }
+                }
+                
+                end_time = datetime.now()
+                result["end_time"] = end_time.isoformat()
+                result["duration_seconds"] = (end_time - start_time).total_seconds()
+                
+                query_id = start_time.strftime("%Y%m%d_%H%M%S")
+                full_result_file = self.file_manager.save_full_result(result, query_id)
+                result["saved_to"] = full_result_file
+                
+                return result
             
             matched_skills = self.skill_manager.search_relevant_skills(user_query, intent_data)
             skills_content = self.skill_manager.get_relevant_skills_content(matched_skills)

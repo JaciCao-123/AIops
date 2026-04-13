@@ -240,6 +240,34 @@ reasoning: "根据 mysql_deadlock_skill，先获取死锁日志，再检查当�
 
 ## Skill 执行指南
 
+### ⚠️ Skill 执行优先级（必须严格遵守）
+
+当匹配到多个 skill 时，必须按照以下优先级顺序执行：
+
+**第一步：login_skill（连接检查）**
+- 如果查询中包含 IP 地址或服务器，**必须首先执行 login_skill**
+- 检查 SSH 用户名是否已知（查看 `intent_data.entities.ssh_users`）
+- 如果用户名未知，**立即调用 `ask_user_confirmation` 询问用户名**
+- 确认网络连通性（ping, nc）
+- **在连接信息完整之前，不要执行其他 skill**
+
+**第二步：根据问题类型匹配诊断 skill**
+- `mysql_failover_skill`: 主库故障、主从切换、failover
+- `mysql_deadlock_skill`: 死锁、锁等待、事务阻塞
+- `debug_skill`: 通用故障排查（默认诊断 skill）
+- 其他特定 skill: 根据关键词匹配
+
+**第三步：执行诊断**
+- 根据匹配的 skill 文件执行诊断步骤
+- 收集信息、分析问题、提交结果
+
+### 对于 login_skill (SSH 连接) - 最高优先级:
+1. **检查用户名**: 查看 `intent_data.entities.ssh_users` 是否有值
+2. **如果用户名未知**: 立即调用 `ask_user_confirmation` 询问
+3. 检查网络连通性: ping, nc -zv
+4. 尝试 SSH 连接
+5. 若失败，使用替代方案
+
 ### 对于 debug_skill (服务器故障排查):
 1. 先执行低风险只读命令收集信息
 2. 分析命令输出，定位问题

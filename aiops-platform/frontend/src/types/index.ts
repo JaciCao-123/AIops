@@ -157,6 +157,16 @@ export interface Decision {
   root_cause?: string;
   impact?: string;
   recommendation?: string;
+  confirmation_request?: ConfirmationRequest;
+}
+
+export interface ConfirmationRequest {
+  success: boolean;
+  requires_confirmation: boolean;
+  operation: string;
+  risk: string;
+  impact: string;
+  message: string;
 }
 
 export interface ActionResult {

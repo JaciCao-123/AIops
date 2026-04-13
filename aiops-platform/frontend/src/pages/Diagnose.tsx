@@ -76,10 +76,18 @@ const Diagnose = () => {
         .filter((h: any) => h.tool === 'save_execution_output')
         .map((h: any) => h.result);
       
+      const dynamicStatus = data.stages?.dynamic_execution?.status;
+      let taskStatus: 'completed' | 'processing' | 'needs_confirmation' = 'processing';
+      if (dynamicStatus === 'completed') {
+        taskStatus = 'completed';
+      } else if (dynamicStatus === 'needs_confirmation' || data.final_decision?.decision === 'NEEDS_CONFIRMATION') {
+        taskStatus = 'needs_confirmation';
+      }
+      
       setCurrentTask({
         task_id: 'multi-agent-' + Date.now(),
         user_input: input,
-        status: data.stages?.dynamic_execution?.status === 'completed' ? 'completed' : 'processing',
+        status: taskStatus,
         intent_data: data.stages?.intent_parsing || null,
         analysis_report: data.stages?.observability_analysis || {
           analysis_report: data.raw_response || '',
@@ -440,6 +448,27 @@ const Diagnose = () => {
             )}
           </Collapse>
         </>
+      )}
+
+      {currentTask && currentTask.status === 'needs_confirmation' && currentTask.decision?.confirmation_request && (
+        <Card style={{ marginBottom: 16, backgroundColor: '#fffbe6', borderColor: '#ffe58f' }}>
+          <div style={{ padding: 20 }}>
+            <Title level={4} style={{ color: '#d48806', marginBottom: 16 }}>⚠️ 需要用户确认</Title>
+            <Paragraph style={{ fontSize: 16, marginBottom: 16 }}>
+              <Text strong>操作：</Text>{currentTask.decision.confirmation_request.operation}
+            </Paragraph>
+            <Paragraph style={{ marginBottom: 8 }}>
+              <Text strong>风险：</Text>
+              <Tag color="orange">{currentTask.decision.confirmation_request.risk}</Tag>
+            </Paragraph>
+            <Paragraph style={{ marginBottom: 8 }}>
+              <Text strong>影响：</Text>{currentTask.decision.confirmation_request.impact}
+            </Paragraph>
+            <Paragraph style={{ marginTop: 16, color: '#666' }}>
+              {currentTask.decision.confirmation_request.message}
+            </Paragraph>
+          </div>
+        </Card>
       )}
 
       {currentTask && currentTask.status === 'processing' && (
