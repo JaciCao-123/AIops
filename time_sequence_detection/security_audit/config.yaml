@@ -1,0 +1,80 @@
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+detection:
+  start_date: "2023-03-01"
+  auth:
+    anomaly_day: 25
+    anomaly_day_end: 25
+    training_days: 30
+    min_failure_threshold: 10
+    min_training_samples: 1000
+    normal_failures_per_day: 150
+    leaked_user: "leaked_user@example.com"
+    target_app: "app1"
+    attack_attempts: 200
+    credential_stuffing_ip_threshold: 50
+    targeted_attack_ip_threshold: 10
+    targeted_attack_failure_threshold: 20
+  cloud:
+    anomaly_day: 25
+    anomaly_day_end: 25
+    training_days: 30
+    min_api_calls_threshold: 100
+    min_training_samples: 1000
+    normal_api_calls_per_day: 5000
+    attack_ip: "103.24.77.55"
+    attack_attempts: 500
+  app_server:
+    anomaly_day: 25
+    anomaly_day_end: 25
+    training_days: 30
+    min_error_threshold: 50
+    min_training_samples: 1000
+    normal_errors_per_day: 200
+    attack_service: "payment-service"
+    error_types: ["500", "502", "503", "504"]
+  ssh:
+    anomaly_day: 25
+    anomaly_day_end: 25
+    training_days: 30
+    min_failure_threshold: 5
+    min_training_samples: 500
+    normal_failures_per_day: 50
+    attack_ip: "198.51.100.123"
+    attack_user: "root"
+    attack_host: "prod-server-01"
+    attack_attempts: 300
+
+correlation:
+  time_window_minutes: 15
+  severity_threshold: "HIGH"
+  rules:
+    - name: "coordinated_attack"
+      description: "SSH暴力破解 + 身份认证撞库协同攻击"
+      sources: ["ssh", "auth"]
+      severity: "CRITICAL"
+    - name: "cloud_breach"
+      description: "云平台异常访问 + 应用错误激增"
+      sources: ["cloud", "app_server"]
+      severity: "HIGH"
+    - name: "multi_vector_attack"
+      description: "多向量攻击：三个及以上系统同时异常"
+      min_sources: 3
+      severity: "CRITICAL"
+
+model:
+  prophet:
+    daily_seasonality: true
+    weekly_seasonality: true
+    ssh_changepoint_prior_scale: 0.05
+    auth_changepoint_prior_scale: 0.1
+    cloud_changepoint_prior_scale: 0.05
+    app_server_changepoint_prior_scale: 0.08
+
+paths:
+  raw_data_dir: "data/raw"
+  cleaned_data_dir: "data/cleaned"
+  model_dir: "models"
+  events_dir: "../correlation_engine/events"

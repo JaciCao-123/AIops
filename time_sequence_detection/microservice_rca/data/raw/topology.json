@@ -1,0 +1,120 @@
+{
+  "services": [
+    "user-service",
+    "order-service",
+    "payment-service",
+    "inventory-service",
+    "notification-service",
+    "auth-service",
+    "gateway-service",
+    "config-service",
+    "cache-service",
+    "db-service",
+    "api-service",
+    "worker-service",
+    "scheduler-service",
+    "logger-service",
+    "monitor-service",
+    "search-service",
+    "recommend-service",
+    "analytics-service",
+    "storage-service",
+    "queue-service"
+  ],
+  "service_types": {
+    "user-service": "database",
+    "order-service": "frontend",
+    "payment-service": "backend",
+    "inventory-service": "backend",
+    "notification-service": "database",
+    "auth-service": "database",
+    "gateway-service": "queue",
+    "config-service": "frontend",
+    "cache-service": "backend",
+    "db-service": "frontend",
+    "api-service": "backend",
+    "worker-service": "backend",
+    "scheduler-service": "frontend",
+    "logger-service": "backend",
+    "monitor-service": "database",
+    "search-service": "backend",
+    "recommend-service": "backend",
+    "analytics-service": "backend",
+    "storage-service": "cache",
+    "queue-service": "frontend"
+  },
+  "topology": {
+    "user-service": [
+      "monitor-service",
+      "worker-service"
+    ],
+    "order-service": [],
+    "payment-service": [
+      "config-service",
+      "db-service",
+      "search-service"
+    ],
+    "inventory-service": [
+      "config-service",
+      "auth-service",
+      "api-service"
+    ],
+    "notification-service": [
+      "api-service"
+    ],
+    "auth-service": [
+      "search-service",
+      "api-service",
+      "gateway-service"
+    ],
+    "gateway-service": [
+      "search-service",
+      "cache-service",
+      "logger-service",
+      "storage-service"
+    ],
+    "config-service": [],
+    "cache-service": [
+      "logger-service",
+      "storage-service",
+      "monitor-service",
+      "scheduler-service",
+      "analytics-service"
+    ],
+    "db-service": [],
+    "api-service": [
+      "worker-service"
+    ],
+    "worker-service": [
+      "recommend-service",
+      "scheduler-service"
+    ],
+    "scheduler-service": [],
+    "logger-service": [
+      "monitor-service",
+      "analytics-service"
+    ],
+    "monitor-service": [
+      "storage-service",
+      "analytics-service",
+      "search-service"
+    ],
+    "search-service": [
+      "storage-service",
+      "recommend-service",
+      "analytics-service"
+    ],
+    "recommend-service": [
+      "queue-service",
+      "analytics-service",
+      "storage-service"
+    ],
+    "analytics-service": [
+      "storage-service"
+    ],
+    "storage-service": [
+      "queue-service"
+    ],
+    "queue-service": []
+  }
+}

@@ -1,0 +1,19 @@
+{
+    "alert_type": "SSH_BruteForce_Detected",
+    "timestamp": "2023-03-25T14:02:00",
+    "severity": "CRITICAL",
+    "description": "SSH failure rate 57/min exceeds threshold 0.27/min",
+    "entities": {
+        "source_ip": "198.51.100.123",
+        "target_user": "root",
+        "target_host": "prod-server-01",
+        "unique_users_tried": 1,
+        "total_attempts": 83
+    },
+    "source_system": "ssh_detector",
+    "indicators": {
+        "is_root_attack": true,
+        "is_distributed_attack": false,
+        "is_single_target": true
+    }
+}

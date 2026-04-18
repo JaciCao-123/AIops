@@ -1,0 +1,7 @@
+{
+  "num_nodes": 15,
+  "feature_dim": 64,
+  "topo_path": "/Users/jaci-j/AIops/time_sequence_detection/time_sequence_prediction/gnn_root_cause_analysis/data/raw/20260417_132956_topology.json",
+  "alerts_path": "/Users/jaci-j/AIops/time_sequence_detection/time_sequence_prediction/gnn_root_cause_analysis/data/raw/20260417_132956_alerts.csv",
+  "graph_path": "/Users/jaci-j/AIops/time_sequence_detection/time_sequence_prediction/gnn_root_cause_analysis/data/graphs/graph_data_20260417_132956.npz"
+}

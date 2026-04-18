@@ -1,0 +1,397 @@
+{
+  "nodes": [
+    {
+      "id": "gateway_1",
+      "name": "Gateway-1",
+      "layer": "gateway",
+      "type": "ingress",
+      "cpu_baseline": 49.488118488734344,
+      "mem_baseline": 47.611713131379304,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "api_services_1",
+      "name": "Api-Services-1",
+      "layer": "api_services",
+      "type": "application",
+      "cpu_baseline": 48.779397354658805,
+      "mem_baseline": 61.514214601358916,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "api_services_2",
+      "name": "Api-Services-2",
+      "layer": "api_services",
+      "type": "application",
+      "cpu_baseline": 36.199845677035704,
+      "mem_baseline": 59.96422668841687,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "api_services_3",
+      "name": "Api-Services-3",
+      "layer": "api_services",
+      "type": "application",
+      "cpu_baseline": 31.705095372659486,
+      "mem_baseline": 46.517862575345966,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "core_services_1",
+      "name": "Core-Services-1",
+      "layer": "core_services",
+      "type": "business",
+      "cpu_baseline": 38.407685909592914,
+      "mem_baseline": 59.9669797131991,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "core_services_2",
+      "name": "Core-Services-2",
+      "layer": "core_services",
+      "type": "business",
+      "cpu_baseline": 44.549486807470906,
+      "mem_baseline": 58.442143292235194,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "core_services_3",
+      "name": "Core-Services-3",
+      "layer": "core_services",
+      "type": "business",
+      "cpu_baseline": 32.08447007302691,
+      "mem_baseline": 51.59364036989257,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "core_services_4",
+      "name": "Core-Services-4",
+      "layer": "core_services",
+      "type": "business",
+      "cpu_baseline": 50.06661398949639,
+      "mem_baseline": 64.75331226774068,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "core_services_5",
+      "name": "Core-Services-5",
+      "layer": "core_services",
+      "type": "business",
+      "cpu_baseline": 52.04882295418696,
+      "mem_baseline": 59.96901132660244,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "data_services_1",
+      "name": "Data-Services-1",
+      "layer": "data_services",
+      "type": "data",
+      "cpu_baseline": 38.79874320613504,
+      "mem_baseline": 51.096774538267866,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "data_services_2",
+      "name": "Data-Services-2",
+      "layer": "data_services",
+      "type": "data",
+      "cpu_baseline": 57.023488697756264,
+      "mem_baseline": 47.6487237746349,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "data_services_3",
+      "name": "Data-Services-3",
+      "layer": "data_services",
+      "type": "data",
+      "cpu_baseline": 59.388682153380316,
+      "mem_baseline": 41.87134679625759,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "data_services_4",
+      "name": "Data-Services-4",
+      "layer": "data_services",
+      "type": "data",
+      "cpu_baseline": 49.23522690737996,
+      "mem_baseline": 61.8223021157618,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "infra_services_1",
+      "name": "Infra-Services-1",
+      "layer": "infra_services",
+      "type": "infrastructure",
+      "cpu_baseline": 34.353024889753925,
+      "mem_baseline": 58.915904660111494,
+      "is_root_cause_candidate": true
+    },
+    {
+      "id": "infra_services_2",
+      "name": "Infra-Services-2",
+      "layer": "infra_services",
+      "type": "infrastructure",
+      "cpu_baseline": 32.25624507807509,
+      "mem_baseline": 41.78399970668349,
+      "is_root_cause_candidate": true
+    }
+  ],
+  "edges": [
+    {
+      "source": "gateway_1",
+      "target": "api_services_1",
+      "call_frequency": 84,
+      "latency_avg": 8.234688908677738,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "gateway_1",
+      "target": "api_services_2",
+      "call_frequency": 51,
+      "latency_avg": 29.54614542508899,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "gateway_1",
+      "target": "api_services_3",
+      "call_frequency": 55,
+      "latency_avg": 25.726275465761915,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_1",
+      "target": "core_services_2",
+      "call_frequency": 165,
+      "latency_avg": 34.94211759978373,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_1",
+      "target": "core_services_3",
+      "call_frequency": 99,
+      "latency_avg": 41.65381089756619,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_1",
+      "target": "core_services_4",
+      "call_frequency": 66,
+      "latency_avg": 25.849057550916044,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_1",
+      "target": "core_services_5",
+      "call_frequency": 67,
+      "latency_avg": 48.80959913822841,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_2",
+      "target": "core_services_1",
+      "call_frequency": 133,
+      "latency_avg": 9.637966580850577,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_2",
+      "target": "core_services_3",
+      "call_frequency": 169,
+      "latency_avg": 23.23884363891466,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_2",
+      "target": "core_services_4",
+      "call_frequency": 71,
+      "latency_avg": 40.986323409687365,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_2",
+      "target": "core_services_5",
+      "call_frequency": 88,
+      "latency_avg": 25.174850017223942,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_3",
+      "target": "core_services_1",
+      "call_frequency": 72,
+      "latency_avg": 8.390118049126102,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_3",
+      "target": "core_services_2",
+      "call_frequency": 118,
+      "latency_avg": 40.25213341868406,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_3",
+      "target": "core_services_3",
+      "call_frequency": 92,
+      "latency_avg": 32.47620712640018,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_3",
+      "target": "core_services_4",
+      "call_frequency": 139,
+      "latency_avg": 48.79147428846808,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_3",
+      "target": "core_services_5",
+      "call_frequency": 179,
+      "latency_avg": 38.64642900011049,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "api_services_3",
+      "target": "api_services_1",
+      "call_frequency": 278,
+      "latency_avg": 6.545201637227479,
+      "dependency_type": "async",
+      "reliability": 0.995
+    },
+    {
+      "source": "core_services_1",
+      "target": "data_services_2",
+      "call_frequency": 132,
+      "latency_avg": 23.94651185921441,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "core_services_1",
+      "target": "data_services_4",
+      "call_frequency": 188,
+      "latency_avg": 46.502548279966156,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "core_services_1",
+      "target": "infra_services_1",
+      "call_frequency": 200,
+      "latency_avg": 34.10211778483668,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "core_services_1",
+      "target": "infra_services_2",
+      "call_frequency": 157,
+      "latency_avg": 35.59719647226728,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "core_services_2",
+      "target": "data_services_1",
+      "call_frequency": 61,
+      "latency_avg": 28.70330837174184,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "core_services_3",
+      "target": "data_services_3",
+      "call_frequency": 107,
+      "latency_avg": 43.665412506580246,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "core_services_3",
+      "target": "data_services_4",
+      "call_frequency": 61,
+      "latency_avg": 35.363312198301216,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "core_services_3",
+      "target": "infra_services_2",
+      "call_frequency": 90,
+      "latency_avg": 36.810382538593345,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "core_services_4",
+      "target": "data_services_2",
+      "call_frequency": 107,
+      "latency_avg": 40.27562601426373,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "core_services_4",
+      "target": "infra_services_2",
+      "call_frequency": 148,
+      "latency_avg": 23.64234687030921,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "core_services_4",
+      "target": "core_services_1",
+      "call_frequency": 450,
+      "latency_avg": 2.3503579991569854,
+      "dependency_type": "async",
+      "reliability": 0.995
+    },
+    {
+      "source": "core_services_5",
+      "target": "data_services_1",
+      "call_frequency": 198,
+      "latency_avg": 10.366235882789134,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "core_services_5",
+      "target": "data_services_3",
+      "call_frequency": 140,
+      "latency_avg": 9.609180418093933,
+      "dependency_type": "synchronous",
+      "reliability": 0.999
+    },
+    {
+      "source": "data_services_1",
+      "target": "data_services_4",
+      "call_frequency": 121,
+      "latency_avg": 4.538030656626081,
+      "dependency_type": "async",
+      "reliability": 0.995
+    },
+    {
+      "source": "infra_services_2",
+      "target": "infra_services_1",
+      "call_frequency": 202,
+      "latency_avg": 8.093705073601487,
+      "dependency_type": "async",
+      "reliability": 0.995
+    }
+  ]
+}

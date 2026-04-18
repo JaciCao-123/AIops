@@ -1,0 +1,25 @@
+{
+  "num_nodes": 15,
+  "num_edges": 58,
+  "feature_dim": 64,
+  "num_root_causes": 7,
+  "num_normal": 8,
+  "created_at": "2026-04-17T13:21:52.812810",
+  "node_id_mapping": {
+    "gateway_1": 0,
+    "api_services_1": 1,
+    "api_services_2": 2,
+    "api_services_3": 3,
+    "core_services_1": 4,
+    "core_services_2": 5,
+    "core_services_3": 6,
+    "core_services_4": 7,
+    "core_services_5": 8,
+    "data_services_1": 9,
+    "data_services_2": 10,
+    "data_services_3": 11,
+    "data_services_4": 12,
+    "infra_services_1": 13,
+    "infra_services_2": 14
+  }
+}
