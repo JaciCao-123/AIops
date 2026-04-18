@@ -1,0 +1,13 @@
+{
+  "plan_name": "mysql_failover_diagnosis",
+  "check_type": "mysql_failover",
+  "commands": [
+    "ping -c 4 47.111.171.30",
+    "ping -c 4 8.136.226.231",
+    "nc -zv -w 5 47.111.171.30 22",
+    "nc -zv -w 5 8.136.226.231 22"
+  ],
+  "reasoning": "根据 login_skill 要求，首先检查网络连通性和 SSH 端口可达性，为主从切换做准备",
+  "expected_findings": [],
+  "created_at": "2026-04-13T13:31:07.759273"
+}

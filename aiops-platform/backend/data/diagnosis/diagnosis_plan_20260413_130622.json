@@ -1,0 +1,12 @@
+{
+  "plan_name": "mysql_failover_diagnosis",
+  "check_type": "mysql_failover",
+  "commands": [
+    "ping -c 4 47.114.77.62",
+    "nc -zv -w 5 47.114.77.62 22",
+    "ssh -o ConnectTimeout=5 -o BatchMode=yes jaci@47.114.77.62 'echo test'"
+  ],
+  "reasoning": "根据 login_skill 第 7 节，SSH 连通性验证必须分三步：1) ping 检查网络层；2) nc 检查端口层；3) ssh 尝试实际连接。这是执行 mysql_failover_skill 前的强制前置步骤。",
+  "expected_findings": [],
+  "created_at": "2026-04-13T13:06:22.079610"
+}

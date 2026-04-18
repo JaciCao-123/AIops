@@ -1,0 +1,16 @@
+{
+  "plan_name": "data_writer_service_diagnosis",
+  "check_type": "service",
+  "commands": [
+    "ping -c 4 47.114.77.62",
+    "nc -zv -w 3 47.114.77.62 22",
+    "systemctl status data-writer",
+    "ps aux | grep data-writer",
+    "journalctl -u data-writer --since '1 hour ago' | tail -20",
+    "df -h",
+    "free -m"
+  ],
+  "reasoning": "根据debug_skill，首先验证网络连通性和SSH端口，然后检查data-writer服务状态、进程是否存在、最近日志、磁盘和内存使用情况，这是标准的服务故障排查流程",
+  "expected_findings": [],
+  "created_at": "2026-04-10T12:58:35.718133"
+}

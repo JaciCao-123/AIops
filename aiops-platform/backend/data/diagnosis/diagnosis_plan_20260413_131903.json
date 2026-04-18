@@ -1,0 +1,15 @@
+{
+  "plan_name": "mysql_failover_diagnosis",
+  "check_type": "mysql_failover",
+  "commands": [
+    "ping -c 4 47.114.77.62",
+    "ping -c 4 8.136.226.231",
+    "nc -zv 47.114.77.62 22",
+    "nc -zv 8.136.226.231 22",
+    "ssh jaci@47.114.77.62 'systemctl status mysqld'",
+    "ssh jaci@8.136.226.231 'mysql -e \"SHOW SLAVE STATUS\\G\"'"
+  ],
+  "reasoning": "根据 login_skill 和 mysql_failover_skill，首先验证主从服务器网络连通性和 SSH 可达性，再检查主库 MySQL 服务状态和从库复制状态。",
+  "expected_findings": [],
+  "created_at": "2026-04-13T13:19:03.921274"
+}

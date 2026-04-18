@@ -1,0 +1,12 @@
+{
+  "plan_name": "mysql_failover_diagnosis",
+  "check_type": "mysql_failover",
+  "commands": [
+    "check_master_health",
+    "check_slave_status",
+    "execute_failover"
+  ],
+  "reasoning": "根据 mysql_failover_skill，需先确认主库宕机、再评估从库状态、最后执行切换。当前缺少从库IP和SSH用户名，需先获取。",
+  "expected_findings": [],
+  "created_at": "2026-04-13T11:53:24.250327"
+}

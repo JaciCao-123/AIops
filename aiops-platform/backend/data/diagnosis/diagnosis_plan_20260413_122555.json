@@ -1,0 +1,12 @@
+{
+  "plan_name": "mysql_failover_diagnosis",
+  "check_type": "mysql_failover",
+  "commands": [
+    "ping -c 4 47.114.77.62",
+    "nc -zv -w 5 47.114.77.62 3306",
+    "mysql -h 47.114.77.62 -u root -p'Root@123456' -e 'SELECT 1'"
+  ],
+  "reasoning": "根据 mysql_failover_skill，首先需要确认主库确实宕机，执行网络连通性、端口可达性和MySQL连接性检测",
+  "expected_findings": [],
+  "created_at": "2026-04-13T12:25:55.294428"
+}

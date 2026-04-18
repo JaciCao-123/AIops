@@ -1,0 +1,13 @@
+{
+  "plan_name": "mysql_failover_diagnosis",
+  "check_type": "mysql_failover",
+  "commands": [
+    "ping -c 4 47.114.77.62",
+    "nc -zv -w 5 47.114.77.62 22",
+    "nc -zv -w 5 47.114.77.62 3306",
+    "mysql -h 47.114.77.62 -u root -p'Root@123456' -e 'SELECT 1'"
+  ],
+  "reasoning": "根据 mysql_failover_skill，需先验证主库连通性（login_skill Step 1&2），再验证MySQL服务（mysql_failover_skill 3.1）。用户提供了SSH用户jaci，但MySQL凭据未知，需使用默认root密码尝试；若失败则需询问。最关键的是，用户未提供从库IP，此为切换前提，必须立即询问。",
+  "expected_findings": [],
+  "created_at": "2026-04-13T13:11:14.537062"
+}

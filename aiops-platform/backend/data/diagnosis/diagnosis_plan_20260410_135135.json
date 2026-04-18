@@ -1,0 +1,15 @@
+{
+  "plan_name": "data_writer_service_diagnosis",
+  "check_type": "service",
+  "commands": [
+    "systemctl status data-writer.service",
+    "systemctl is-enabled data-writer.service",
+    "journalctl -u data-writer.service -n 50 --no-pager",
+    "systemctl cat data-writer.service",
+    "df -h",
+    "free -m"
+  ],
+  "reasoning": "根据systemd_autostart_skill，首先检查服务状态、自启动配置、日志和服务文件配置；同时根据debug_skill检查磁盘和内存等基础资源状况",
+  "expected_findings": [],
+  "created_at": "2026-04-10T13:51:35.270004"
+}

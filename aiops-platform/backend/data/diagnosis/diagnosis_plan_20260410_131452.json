@@ -1,0 +1,12 @@
+{
+  "plan_name": "aliyun_ecs_connectivity_diagnosis",
+  "check_type": "network",
+  "commands": [
+    "ping -c 4 47.114.77.62",
+    "nc -zv -w 3 47.114.77.62 22",
+    "systemctl status data-writer.service"
+  ],
+  "reasoning": "根据 debug_skill 的 7.5 节，阿里云 ECS 连接问题通常与实例状态、安全组配置或公网 IP 绑定有关。所有网络命令超时表明服务器完全不可达，需要检查阿里云控制台中的实例状态和安全组配置。",
+  "expected_findings": [],
+  "created_at": "2026-04-10T13:14:52.305611"
+}

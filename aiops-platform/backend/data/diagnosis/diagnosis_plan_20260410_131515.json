@@ -1,0 +1,13 @@
+{
+  "plan_name": "systemctl_enable_failure_diagnosis",
+  "check_type": "service",
+  "commands": [
+    "systemctl list-unit-files | grep disabled",
+    "ls -la /etc/systemd/system/*.service",
+    "systemctl cat <service_name>",
+    "systemctl is-enabled <service_name>"
+  ],
+  "reasoning": "根据 systemd_autostart_skill，需要检查服务文件是否存在、权限是否正确、配置是否有效，以及服务是否被禁用。首先列出所有禁用的服务，然后检查服务文件位置和权限，再查看具体服务配置。",
+  "expected_findings": [],
+  "created_at": "2026-04-10T13:15:15.493556"
+}

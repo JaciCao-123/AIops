@@ -1,0 +1,12 @@
+{
+  "plan_name": "mysql_master_failover_diagnosis",
+  "check_type": "mysql_failover",
+  "commands": [
+    "timeout 5 bash -c \"cat < /dev/null > /dev/tcp/47.114.77.62/3306\"",
+    "mysql -h \"47.114.77.62\" -u \"root\" -p\"Root@123456\" -e \"SELECT 1\"",
+    "mysql -h \"47.114.77.62\" -u \"root\" -p\"Root@123456\" -e \"INSERT INTO test_replication.health_check (check_time) VALUES (NOW());\""
+  ],
+  "reasoning": "根据 mysql_failover_skill，首先执行主库健康检查，包括 TCP 端口检测、MySQL 连接检测和写入测试，以确认主库是否真的宕机。",
+  "expected_findings": [],
+  "created_at": "2026-04-13T11:44:30.338274"
+}

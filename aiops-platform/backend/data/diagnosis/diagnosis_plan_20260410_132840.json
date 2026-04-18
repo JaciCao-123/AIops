@@ -1,0 +1,13 @@
+{
+  "plan_name": "data_writer_service_diagnosis",
+  "check_type": "service",
+  "commands": [
+    "systemctl status data-writer.service",
+    "systemctl is-enabled data-writer.service",
+    "journalctl -u data-writer.service -n 50 --no-pager",
+    "systemctl cat data-writer.service"
+  ],
+  "reasoning": "根据 systemd_autostart_skill，需要先检查服务状态、自启动配置、日志和配置文件，以确定服务是否运行、是否设置开机自启、是否有启动错误以及配置是否正确",
+  "expected_findings": [],
+  "created_at": "2026-04-10T13:28:40.679508"
+}

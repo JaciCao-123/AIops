@@ -1,0 +1,14 @@
+{
+  "plan_name": "mysql_failover_precheck",
+  "check_type": "mysql_failover",
+  "commands": [
+    "ping -c 4 47.111.171.30",
+    "ping -c 4 8.136.226.231",
+    "nc -zv -w 5 47.111.171.30 22",
+    "nc -zv -w 5 8.136.226.231 22",
+    "nc -zv -w 5 8.136.226.231 3306"
+  ],
+  "reasoning": "根据 login_skill 和 mysql_failover_skill，需先验证主库是否宕机（网络层+SSH端口）、从库是否可达（网络+SSH+MySQL端口），为后续 failover 提供基础连通性保障。",
+  "expected_findings": [],
+  "created_at": "2026-04-13T13:48:37.076178"
+}

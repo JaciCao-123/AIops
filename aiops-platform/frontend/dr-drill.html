@@ -1,0 +1,2864 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DR Drill - 灾难恢复演练平台</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', 'Space Grotesk', sans-serif;
+            background-color: #060b18;
+            color: #e2e8f0;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .font-space {
+            font-family: 'Space Grotesk', monospace;
+        }
+        
+        .bg-grid {
+            background-image: 
+                linear-gradient(rgba(0, 229, 160, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 160, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        
+        .card-bg {
+            background-color: #0f1729;
+            border: 1px solid rgba(0, 229, 160, 0.1);
+        }
+        
+        .accent-green {
+            color: #00e5a0;
+        }
+        
+        .accent-blue {
+            color: #38bdf8;
+        }
+        
+        .bg-accent-green {
+            background-color: rgba(0, 229, 160, 0.15);
+        }
+        
+        .bg-accent-blue {
+            background-color: rgba(56, 189, 248, 0.15);
+        }
+        
+        .pulse-dot {
+            position: relative;
+        }
+        
+        .pulse-dot::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #10b981;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.5);
+            }
+        }
+        
+        .divider {
+            width: 1px;
+            height: 32px;
+            background: linear-gradient(180deg, transparent, rgba(0, 229, 160, 0.3), transparent);
+        }
+        
+        .btn-outline {
+            border: 1px solid rgba(0, 229, 160, 0.5);
+            color: #00e5a0;
+            background: transparent;
+            transition: all 0.2s;
+        }
+        
+        .btn-outline:hover {
+            background: rgba(0, 229, 160, 0.1);
+            border-color: #00e5a0;
+        }
+        
+        .btn-danger {
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #ef4444;
+            background: transparent;
+            transition: all 0.2s;
+        }
+        
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #00e5a0, #00c896);
+            color: #060b18;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #00c896, #00ab7c);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 229, 160, 0.3);
+        }
+        
+        .rto-warning {
+            background-color: rgba(239, 68, 68, 0.15) !important;
+            color: #ef4444 !important;
+        }
+        
+        .rto-warning .font-space {
+            color: #ef4444 !important;
+        }
+        
+        /* 左侧导航 - 步骤条样式 */
+        .step-item {
+            position: relative;
+            display: flex;
+            gap: 12px;
+            padding: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .step-item:hover {
+            background: rgba(0, 229, 160, 0.05);
+        }
+        
+        .step-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 28px;
+        }
+        
+        .step-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step-line {
+            width: 2px;
+            height: 20px;
+            background: #374151;
+            margin-top: 4px;
+        }
+        
+        /* 已完成状态 */
+        .step-item.completed .step-circle {
+            background: #00e5a0;
+            border-color: #00e5a0;
+            color: #060b18;
+        }
+        
+        .step-item.completed .step-line {
+            background: #00e5a0;
+        }
+        
+        .step-item.completed .step-name {
+            color: #00e5a0;
+        }
+        
+        /* 当前活跃状态 */
+        .step-item.active {
+            background: rgba(0, 229, 160, 0.05);
+            border-left: 3px solid #00e5a0;
+            margin-left: -16px;
+            padding-left: 13px;
+        }
+        
+        .step-item.active .step-circle {
+            border-color: #00e5a0;
+            color: #00e5a0;
+            box-shadow: 0 0 20px rgba(0, 229, 160, 0.4);
+            animation: active-pulse 2s ease-in-out infinite;
+        }
+        
+        .step-item.active .step-circle::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid #00e5a0;
+            animation: ripple 2s ease-out infinite;
+        }
+        
+        @keyframes active-pulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(0, 229, 160, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(0, 229, 160, 0.6);
+            }
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.8);
+                opacity: 0;
+            }
+        }
+        
+        .step-item.active .step-name {
+            color: #00e5a0;
+            font-weight: 600;
+        }
+        
+        /* 待执行状态 */
+        .step-item.pending .step-circle {
+            border-color: #374151;
+            color: #6b7280;
+        }
+        
+        .step-item.pending .step-name {
+            color: #6b7280;
+        }
+        
+        .step-item.pending .step-desc {
+            color: #4b5563;
+        }
+        
+        /* 参演人员样式 */
+        .member-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #060b18;
+        }
+        
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+        }
+        
+        /* 中央工作区样式 */
+        .main-content {
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: rgba(0, 229, 160, 0.05);
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 229, 160, 0.2);
+            border-radius: 3px;
+        }
+        
+        /* 场景概要卡片 */
+        .scenario-card {
+            background: linear-gradient(135deg, rgba(15, 23, 41, 0.8), rgba(15, 23, 41, 0.95));
+            border: 1px solid rgba(0, 229, 160, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .scenario-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: rgba(0, 229, 160, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .scenario-info {
+            flex: 1;
+        }
+        
+        .scenario-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .scenario-desc {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+        
+        .scenario-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 160px;
+        }
+        
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+        
+        .metric-label {
+            color: #64748b;
+        }
+        
+        .metric-value {
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        
+        /* Agent 协同看板 */
+        .agent-board {
+            margin-top: 20px;
+        }
+        
+        .board-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .board-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        .board-badge {
+            background: rgba(0, 229, 160, 0.15);
+            color: #00e5a0;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        
+        .agent-card {
+            background: linear-gradient(135deg, rgba(15, 23, 41, 0.6), rgba(15, 23, 41, 0.8));
+            border: 1px solid rgba(0, 229, 160, 0.1);
+            border-radius: 10px;
+            padding: 16px;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .agent-card:hover {
+            border-color: rgba(0, 229, 160, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .agent-card.running::before {
+            background: #00e5a0;
+        }
+        
+        .agent-card.completed::before {
+            background: rgba(0, 229, 160, 0.5);
+        }
+        
+        .agent-card.waiting::before {
+            background: #f59e0b;
+        }
+        
+        .agent-card.idle::before {
+            background: #374151;
+        }
+        
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .agent-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #060b18;
+        }
+        
+        .agent-info {
+            flex: 1;
+        }
+        
+        .agent-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .agent-role {
+            font-size: 11px;
+            color: #64748b;
+        }
+        
+        .agent-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        
+        .status-dot.running {
+            background: #00e5a0;
+            animation: status-pulse 2s ease-in-out infinite;
+        }
+        
+        .status-dot.completed {
+            background: #00e5a0;
+        }
+        
+        .status-dot.waiting {
+            background: #f59e0b;
+        }
+        
+        .status-dot.idle {
+            background: #6b7280;
+        }
+        
+        @keyframes status-pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+        
+        .status-text {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        
+        .agent-task {
+            font-size: 12px;
+            color: #cbd5e1;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 36px;
+        }
+        
+        .progress-bar {
+            height: 3px;
+            background: rgba(0, 229, 160, 0.1);
+            border-radius: 2px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00e5a0, #00c896);
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+        
+        .agent-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .skill-tag {
+            background: #192240;
+            color: #94a3b8;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 500;
+        }
+
+        /* 执行步骤时间线样式 */
+        .timeline-section {
+            margin-top: 24px;
+        }
+
+        .timeline-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .timeline-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .timeline-badge {
+            background: rgba(0, 229, 160, 0.15);
+            color: #00e5a0;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .timeline-container {
+            background: linear-gradient(135deg, rgba(15, 23, 41, 0.6), rgba(15, 23, 41, 0.8));
+            border: 1px solid rgba(0, 229, 160, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .timeline-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .timeline-container::-webkit-scrollbar-track {
+            background: rgba(0, 229, 160, 0.05);
+        }
+
+        .timeline-container::-webkit-scrollbar-thumb {
+            background: rgba(0, 229, 160, 0.2);
+            border-radius: 3px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 12px;
+            position: relative;
+            padding-bottom: 16px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 22px;
+        }
+
+        .timeline-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .timeline-icon.completed {
+            background: #00e5a0;
+            color: #060b18;
+        }
+
+        .timeline-icon.running {
+            background: rgba(0, 229, 160, 0.2);
+            border: 2px solid #00e5a0;
+            color: #00e5a0;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .timeline-icon.pending {
+            background: rgba(75, 85, 99, 0.3);
+            border: 2px solid #4b5563;
+            color: #6b7280;
+        }
+
+        .timeline-line {
+            width: 1px;
+            flex: 1;
+            background: #374151;
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+
+        .timeline-line.completed {
+            background: rgba(0, 229, 160, 0.5);
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding-bottom: 4px;
+        }
+
+        .timeline-item:last-child .timeline-line:last-child {
+            display: none;
+        }
+
+        .timeline-item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .timeline-step-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .timeline-step-name.completed {
+            color: #00e5a0;
+        }
+
+        .timeline-step-name.running {
+            color: #00e5a0;
+        }
+
+        .timeline-step-desc {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+
+        .timeline-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 11px;
+        }
+
+        .meta-item {
+            color: #64748b;
+        }
+
+        .meta-value {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .agent-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #060b18;
+        }
+
+        .agent-tag.orchestrator {
+            background: #a855f7;
+        }
+
+        .agent-tag.precheck {
+            background: #38bdf8;
+        }
+
+        .agent-tag.monitor {
+            background: #f59e0b;
+        }
+
+        .agent-tag.failover {
+            background: #00e5a0;
+        }
+
+        .agent-tag.validation {
+            background: #ec4899;
+        }
+
+        .agent-tag.report {
+            background: #8b5cf6;
+        }
+
+        .approval-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid #f59e0b;
+            color: #f59e0b;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .approval-btn:hover {
+            background: rgba(245, 158, 11, 0.25);
+            border-color: #fbbf24;
+        }
+
+        .approval-btn i {
+            font-size: 10px;
+        }
+
+        /* 右侧面板 Tab 样式 */
+        .right-panel-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(0, 229, 160, 0.1);
+            height: 48px;
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 0 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .tab-item:hover {
+            color: #94a3b8;
+            background: rgba(0, 229, 160, 0.03);
+        }
+
+        .tab-item.active {
+            color: #00e5a0;
+        }
+
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #00e5a0;
+        }
+
+        .tab-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #f59e0b;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* Agent 日志样式 */
+        .agent-logs {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .agent-logs::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .agent-logs::-webkit-scrollbar-track {
+            background: rgba(0, 229, 160, 0.05);
+        }
+
+        .agent-logs::-webkit-scrollbar-thumb {
+            background: rgba(0, 229, 160, 0.2);
+            border-radius: 2px;
+        }
+
+        .log-entry {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 11px;
+            line-height: 1.5;
+            padding: 6px 8px;
+            border-radius: 4px;
+            background: rgba(15, 23, 42, 0.3);
+            animation: log-fade-in 0.3s ease;
+        }
+
+        @keyframes log-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .log-entry:hover {
+            background: rgba(0, 229, 160, 0.05);
+        }
+
+        .log-time {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 10px;
+            color: #64748b;
+            min-width: 56px;
+            flex-shrink: 0;
+        }
+
+        .log-agent-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+        .log-agent-dot.orchestrator { background: #a855f7; }
+        .log-agent-dot.precheck { background: #38bdf8; }
+        .log-agent-dot.monitor { background: #f59e0b; }
+        .log-agent-dot.failover { background: #00e5a0; }
+        .log-agent-dot.validation { background: #ec4899; }
+        .log-agent-dot.report { background: #8b5cf6; }
+        .log-agent-dot.system { background: #64748b; }
+
+        .log-message {
+            flex: 1;
+            color: #cbd5e1;
+            word-break: break-word;
+        }
+
+        .log-message strong {
+            font-weight: 600;
+        }
+
+        .log-message .highlight {
+            color: #00e5a0;
+            font-weight: 500;
+        }
+
+        .log-message .warn {
+            color: #f59e0b;
+            font-weight: 500;
+        }
+
+        .log-message .err {
+            color: #ef4444;
+            font-weight: 500;
+        }
+
+        /* Tab 占位内容 */
+        .tab-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            color: #4b5563;
+            font-size: 12px;
+        }
+
+        /* Skills 链样式 */
+        .skills-chain {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .skills-chain::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .skills-chain::-webkit-scrollbar-track {
+            background: rgba(0, 229, 160, 0.05);
+        }
+
+        .skills-chain::-webkit-scrollbar-thumb {
+            background: rgba(0, 229, 160, 0.2);
+            border-radius: 2px;
+        }
+
+        .skill-phase {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .phase-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .phase-title.pending {
+            opacity: 0.5;
+        }
+
+        .skill-nodes {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .skill-node {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .skill-node:hover {
+            background: rgba(0, 229, 160, 0.03);
+            border-color: rgba(0, 229, 160, 0.2);
+        }
+
+        .skill-node.active {
+            border-color: #00e5a0;
+            box-shadow: 0 0 12px rgba(0, 229, 160, 0.3);
+            background: rgba(0, 229, 160, 0.05);
+        }
+
+        .skill-node.completed {
+            opacity: 0.9;
+        }
+
+        .skill-node.pending {
+            opacity: 0.4;
+        }
+
+        .skill-node.pending-phase {
+            opacity: 0.5;
+        }
+
+        .node-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .node-icon.blue {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+        }
+
+        .node-icon.yellow {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .node-icon.red {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .node-icon.green {
+            background: rgba(0, 229, 160, 0.2);
+            color: #00e5a0;
+        }
+
+        .node-icon.gray {
+            background: rgba(75, 85, 99, 0.2);
+            color: #6b7280;
+        }
+
+        .node-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .node-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 2px;
+        }
+
+        .node-detail {
+            font-size: 9px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .node-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .node-duration {
+            font-size: 10px;
+            font-family: 'Space Grotesk', monospace;
+            color: #64748b;
+        }
+
+        .node-status {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .node-status.completed {
+            color: #00e5a0;
+        }
+
+        .node-status.active {
+            color: #00e5a0;
+            animation: pulse-opacity 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-opacity {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .node-status.pending {
+            color: #6b7280;
+        }
+
+        .arrow-connector {
+            display: flex;
+            justify-content: center;
+            padding: 4px 0;
+            color: #4b5563;
+            font-size: 16px;
+        }
+
+        .arrow-connector.green {
+            color: rgba(0, 229, 160, 0.5);
+        }
+
+        /* 阶段三的紧凑布局 */
+        .compact-nodes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .compact-node {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid rgba(75, 85, 99, 0.2);
+            border-radius: 6px;
+            opacity: 0.5;
+        }
+
+        .compact-node .node-icon {
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+        }
+
+        .compact-node .node-name {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .compact-node .node-status {
+            width: 12px;
+            height: 12px;
+            font-size: 10px;
+            margin-left: auto;
+        }
+
+        /* 决策审批 Tab 样式 */
+        .approval-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .approval-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .approval-content::-webkit-scrollbar-track {
+            background: rgba(0, 229, 160, 0.05);
+        }
+
+        .approval-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 229, 160, 0.2);
+            border-radius: 2px;
+        }
+
+        .approval-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+            border-radius: 10px;
+            padding: 14px;
+            transition: all 0.2s;
+        }
+
+        .approval-card.approved {
+            opacity: 0.6;
+        }
+
+        .approval-card.pending {
+            border-color: rgba(245, 158, 11, 0.5);
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
+        }
+
+        .approval-card.locked {
+            opacity: 0.3;
+        }
+
+        .approval-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .approval-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .approval-icon.green {
+            background: rgba(0, 229, 160, 0.2);
+            color: #00e5a0;
+        }
+
+        .approval-icon.yellow {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .approval-icon.gray {
+            background: rgba(75, 85, 99, 0.2);
+            color: #6b7280;
+        }
+
+        .approval-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+            flex: 1;
+        }
+
+        .approval-desc {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .approval-code-block {
+            background: rgba(6, 11, 24, 0.8);
+            border: 1px solid rgba(75, 85, 99, 0.2);
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 12px;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .code-line {
+            display: flex;
+            gap: 8px;
+        }
+
+        .code-key {
+            color: #64748b;
+            min-width: 80px;
+        }
+
+        .code-value {
+            color: #e2e8f0;
+        }
+
+        .code-value.success {
+            color: #00e5a0;
+        }
+
+        .code-value.warning {
+            color: #f59e0b;
+        }
+
+        .approval-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 8px;
+        }
+
+        .approval-meta {
+            font-size: 10px;
+            color: #64748b;
+        }
+
+        .approval-meta .approved {
+            color: #00e5a0;
+            font-weight: 500;
+        }
+
+        .approval-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-approve {
+            background: #00e5a0;
+            color: #060b18;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-approve:hover {
+            background: #00c896;
+            box-shadow: 0 0 8px rgba(0, 229, 160, 0.4);
+        }
+
+        .btn-reject {
+            background: transparent;
+            color: #ef4444;
+            border: 1px solid #ef4444;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-reject:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Toast 通知样式 */
+        .toast-container {
+            position: fixed;
+            top: 68px;
+            right: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            min-width: 280px;
+            animation: toast-slide-in 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes toast-slide-in {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.hiding {
+            animation: toast-slide-out 0.3s ease forwards;
+        }
+
+        @keyframes toast-slide-out {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+
+        .toast.success {
+            background: rgba(0, 229, 160, 0.95);
+            color: #060b18;
+        }
+
+        .toast.warning {
+            background: rgba(245, 158, 11, 0.95);
+            color: #060b18;
+        }
+
+        .toast.error {
+            background: rgba(239, 68, 68, 0.95);
+            color: white;
+        }
+
+        .toast-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(6, 11, 24, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background: #0f172a;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .modal-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #ef4444;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ef4444;
+        }
+
+        .modal-desc {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid #4b5563;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(75, 85, 99, 0.2);
+            border-color: #6b7280;
+        }
+
+        .btn-terminate {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-terminate:hover {
+            background: #dc2626;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-grid">
+    <div class="grid-container" style="display: grid; grid-template-columns: 224px 1fr 352px; grid-template-rows: 56px 1fr; height: 100vh;">
+        
+        <!-- 顶部状态栏 -->
+        <header class="col-span-3 card-bg flex items-center px-6 justify-between" style="border-bottom: 1px solid rgba(0, 229, 160, 0.1);">
+            
+            <!-- 左侧区域 -->
+            <div class="flex items-center gap-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-shield-halved text-2xl accent-green"></i>
+                    <span class="text-xl font-bold accent-green font-space">DR Drill</span>
+                </div>
+                
+                <!-- 分隔线 -->
+                <div class="divider"></div>
+                
+                <!-- 当前演练名称 -->
+                <div>
+                    <div class="text-base font-semibold">DB主库故障切换演练</div>
+                    <div class="text-xs text-gray-500">2024-Q4</div>
+                </div>
+                
+                <!-- 分隔线 -->
+                <div class="divider"></div>
+                
+                <!-- 状态徽章 -->
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full" style="background: rgba(16, 185, 129, 0.1);">
+                    <div class="w-2 h-2 rounded-full bg-green-500 pulse-dot"></div>
+                    <span class="text-sm text-green-400 font-medium">执行中</span>
+                </div>
+            </div>
+            
+            <!-- 右侧区域 -->
+            <div class="flex items-center gap-4">
+                <!-- 分隔线 -->
+                <div class="divider"></div>
+                
+                <!-- RTO 倒计时框 -->
+                <div id="rto-box" class="px-4 py-2 rounded-lg bg-accent-green flex items-center gap-2">
+                    <span class="text-xs text-gray-400">RTO</span>
+                    <span id="rto-value" class="font-space text-lg font-semibold accent-green">00:00</span>
+                    <span class="text-xs text-gray-500">/ 05:00</span>
+                </div>
+                
+                <!-- RPO 指标框 -->
+                <div class="px-4 py-2 rounded-lg bg-accent-blue flex items-center gap-2">
+                    <span class="text-xs text-gray-400">RPO</span>
+                    <span class="font-space text-lg font-semibold accent-blue">12s</span>
+                    <span class="text-xs text-gray-500">/ 30s</span>
+                </div>
+                
+                <!-- 分隔线 -->
+                <div class="divider"></div>
+                
+                <!-- 操作按钮 -->
+                <div class="flex items-center gap-3">
+                    <button class="btn-outline px-4 py-2 rounded-lg text-sm font-medium">
+                        <i class="fas fa-pause mr-2"></i>暂停
+                    </button>
+                    <button class="btn-danger px-4 py-2 rounded-lg text-sm font-medium">
+                        <i class="fas fa-stop mr-2"></i>终止
+                    </button>
+                    <button class="btn-primary px-4 py-2 rounded-lg text-sm">
+                        <i class="fas fa-file-export mr-2"></i>导出报告
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 左侧导航 -->
+        <aside class="card-bg flex flex-col" style="border-right: 1px solid rgba(0, 229, 160, 0.1); overflow-y: auto;">
+            <div class="p-4">
+                <!-- 顶部小标题 -->
+                <div class="text-xs text-gray-500 font-semibold mb-4" style="letter-spacing: 2px; text-transform: uppercase;">
+                    演练流程
+                </div>
+                
+                <!-- 步骤列表 -->
+                <div class="space-y-1">
+                    <!-- 步骤 1: 已完成 -->
+                    <div class="step-item completed" data-step="1">
+                        <div class="step-left">
+                            <div class="step-circle">
+                                <i class="fas fa-check text-xs"></i>
+                            </div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="step-name text-sm font-medium">场景规划</div>
+                            <div class="step-desc text-xs text-gray-500 mt-0.5">定义演练场景与目标</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 步骤 2: 已完成 -->
+                    <div class="step-item completed" data-step="2">
+                        <div class="step-left">
+                            <div class="step-circle">
+                                <i class="fas fa-check text-xs"></i>
+                            </div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="step-name text-sm font-medium">环境准备</div>
+                            <div class="step-desc text-xs text-gray-500 mt-0.5">前置检查与资源就绪</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 步骤 3: 当前活跃 -->
+                    <div class="step-item active" data-step="3">
+                        <div class="step-left">
+                            <div class="step-circle">3</div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="step-name text-sm font-medium">演练执行</div>
+                            <div class="step-desc text-xs text-gray-500 mt-0.5">故障注入与切换操作</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 步骤 4: 待执行 -->
+                    <div class="step-item pending" data-step="4">
+                        <div class="step-left">
+                            <div class="step-circle">4</div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="step-name text-sm font-medium">监控观测</div>
+                            <div class="step-desc text-xs text-gray-500 mt-0.5">指标监控与异常检测</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 步骤 5: 待执行 -->
+                    <div class="step-item pending" data-step="5">
+                        <div class="step-left">
+                            <div class="step-circle">5</div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="step-name text-sm font-medium">演练评估</div>
+                            <div class="step-desc text-xs text-gray-500 mt-0.5">RTO/RPO达标分析</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 步骤 6: 待执行 -->
+                    <div class="step-item pending" data-step="6">
+                        <div class="step-left">
+                            <div class="step-circle">6</div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="step-name text-sm font-medium">归档复盘</div>
+                            <div class="step-desc text-xs text-gray-500 mt-0.5">报告生成与知识沉淀</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 参演人员区块 -->
+                <div class="mt-8 pt-4" style="border-top: 1px solid rgba(0, 229, 160, 0.1);">
+                    <div class="text-xs text-gray-500 font-semibold mb-3" style="letter-spacing: 2px; text-transform: uppercase;">
+                        参演人员
+                    </div>
+                    
+                    <div class="space-y-1">
+                        <!-- 张伟 -->
+                        <div class="member-item">
+                            <div class="member-avatar" style="background: #00e5a0;">张</div>
+                            <div class="flex-1">
+                                <div class="text-sm font-medium">张伟</div>
+                                <div class="text-xs text-gray-500">演练指挥</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 李明 -->
+                        <div class="member-item">
+                            <div class="member-avatar" style="background: #38bdf8;">李</div>
+                            <div class="flex-1">
+                                <div class="text-sm font-medium">李明</div>
+                                <div class="text-xs text-gray-500">DBA</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 王芳 -->
+                        <div class="member-item">
+                            <div class="member-avatar" style="background: #fbbf24;">王</div>
+                            <div class="flex-1">
+                                <div class="text-sm font-medium">王芳</div>
+                                <div class="text-xs text-gray-500">SRE</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- 中央工作区 -->
+        <main class="card-bg main-content" style="border-left: 1px solid rgba(0, 229, 160, 0.1); border-right: 1px solid rgba(0, 229, 160, 0.1);">
+            
+            <!-- 区块一：场景概要卡片 -->
+            <div class="scenario-card">
+                <div class="scenario-icon">
+                    <i class="fas fa-database text-xl accent-green"></i>
+                </div>
+                <div class="scenario-info">
+                    <div class="scenario-title">MySQL 主从集群故障切换</div>
+                    <div class="scenario-desc">模拟主库宕机场景，验证自动故障检测与从库提权流程，确保业务连续性</div>
+                </div>
+                <div class="scenario-metrics">
+                    <div class="metric-item">
+                        <span class="metric-label">目标 RTO</span>
+                        <span class="metric-value">&lt; 5 min</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">目标 RPO</span>
+                        <span class="metric-value">&lt; 30s</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">影响范围</span>
+                        <span class="metric-value">3 集群</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">开始时间</span>
+                        <span class="metric-value font-space">14:30:00</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 区块二：Agent 协同看板 -->
+            <div class="agent-board">
+                <div class="board-header">
+                    <div class="board-title">Agent 协同看板</div>
+                    <div class="board-badge">6 agents</div>
+                </div>
+                
+                <div class="agent-grid">
+                    <!-- Agent 1: Orchestrator -->
+                    <div class="agent-card running">
+                        <div class="agent-header">
+                            <div class="agent-icon" style="background: #a855f7;">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <div class="agent-info">
+                                <div class="agent-name">Orchestrator</div>
+                                <div class="agent-role">编排协调</div>
+                            </div>
+                        </div>
+                        <div class="agent-status">
+                            <div class="status-dot running"></div>
+                            <span class="status-text">running</span>
+                        </div>
+                        <div class="agent-task">协调 Failover Agent 执行主库切换，等待人工审批后继续</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 58%;"></div>
+                        </div>
+                        <div class="agent-skills">
+                            <span class="skill-tag">任务编排</span>
+                            <span class="skill-tag">依赖解析</span>
+                            <span class="skill-tag">异常路由</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Agent 2: PreCheck -->
+                    <div class="agent-card completed">
+                        <div class="agent-header">
+                            <div class="agent-icon" style="background: #38bdf8;">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="agent-info">
+                                <div class="agent-name">PreCheck</div>
+                                <div class="agent-role">前置检查</div>
+                            </div>
+                        </div>
+                        <div class="agent-status">
+                            <div class="status-dot completed"></div>
+                            <span class="status-text">completed</span>
+                        </div>
+                        <div class="agent-task">全部检查项通过：从库延迟0.3s、磁盘余量72%</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%;"></div>
+                        </div>
+                        <div class="agent-skills">
+                            <span class="skill-tag">环境探查</span>
+                            <span class="skill-tag">健康检查</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Agent 3: Failover -->
+                    <div class="agent-card running">
+                        <div class="agent-header">
+                            <div class="agent-icon" style="background: #00e5a0;">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div class="agent-info">
+                                <div class="agent-name">Failover</div>
+                                <div class="agent-role">故障切换</div>
+                            </div>
+                        </div>
+                        <div class="agent-status">
+                            <div class="status-dot running"></div>
+                            <span class="status-text">running</span>
+                        </div>
+                        <div class="agent-task">故障注入完成，等待人工确认后执行从库提权</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 35%;"></div>
+                        </div>
+                        <div class="agent-skills">
+                            <span class="skill-tag">故障注入</span>
+                            <span class="skill-tag">主从切换</span>
+                            <span class="skill-tag">VIP漂移</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Agent 4: Monitor -->
+                    <div class="agent-card running">
+                        <div class="agent-header">
+                            <div class="agent-icon" style="background: #f59e0b;">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="agent-info">
+                                <div class="agent-name">Monitor</div>
+                                <div class="agent-role">监控观测</div>
+                            </div>
+                        </div>
+                        <div class="agent-status">
+                            <div class="status-dot running"></div>
+                            <span class="status-text">running</span>
+                        </div>
+                        <div class="agent-task">QPS从12.4k降至0，从库延迟保持0.3s</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 40%;"></div>
+                        </div>
+                        <div class="agent-skills">
+                            <span class="skill-tag">指标采集</span>
+                            <span class="skill-tag">异常检测</span>
+                            <span class="skill-tag">告警抑制</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Agent 5: Validation -->
+                    <div class="agent-card waiting">
+                        <div class="agent-header">
+                            <div class="agent-icon" style="background: #ec4899;">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <div class="agent-info">
+                                <div class="agent-name">Validation</div>
+                                <div class="agent-role">业务验证</div>
+                            </div>
+                        </div>
+                        <div class="agent-status">
+                            <div class="status-dot waiting"></div>
+                            <span class="status-text">waiting</span>
+                        </div>
+                        <div class="agent-task">等待 Failover 完成后执行拨测与数据校验</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="agent-skills">
+                            <span class="skill-tag">业务拨测</span>
+                            <span class="skill-tag">数据校验</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Agent 6: Report -->
+                    <div class="agent-card idle">
+                        <div class="agent-header">
+                            <div class="agent-icon" style="background: #8b5cf6;">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="agent-info">
+                                <div class="agent-name">Report</div>
+                                <div class="agent-role">报告生成</div>
+                            </div>
+                        </div>
+                        <div class="agent-status">
+                            <div class="status-dot idle"></div>
+                            <span class="status-text">idle</span>
+                        </div>
+                        <div class="agent-task">演练结束后自动采集数据生成报告</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="agent-skills">
+                            <span class="skill-tag">数据汇总</span>
+                            <span class="skill-tag">报告渲染</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 执行步骤时间线 -->
+            <div class="timeline-section">
+                <div class="timeline-header">
+                    <div class="timeline-title">执行步骤</div>
+                    <div class="timeline-badge">4/12 完成</div>
+                </div>
+
+                <div class="timeline-container">
+                    <!-- 步骤 1: 已完成 -->
+                    <div class="timeline-item">
+                        <div class="timeline-left">
+                            <div class="timeline-icon completed">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="timeline-line completed"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-item-header">
+                                <div class="timeline-step-name completed">演练环境初始化</div>
+                            </div>
+                            <div class="timeline-step-desc">准备演练所需的各类资源与配置</div>
+                            <div class="timeline-meta">
+                                <span class="meta-item">时间:</span>
+                                <span class="meta-value font-space">14:30:02</span>
+                                <span class="meta-item">耗时:</span>
+                                <span class="meta-value font-space">2.1s</span>
+                                <span class="agent-tag orchestrator">Orchestrator</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 步骤 2: 已完成 -->
+                    <div class="timeline-item">
+                        <div class="timeline-left">
+                            <div class="timeline-icon completed">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="timeline-line completed"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-item-header">
+                                <div class="timeline-step-name completed">前置健康检查</div>
+                            </div>
+                            <div class="timeline-step-desc">12/12 检查项全部通过</div>
+                            <div class="timeline-meta">
+                                <span class="meta-item">时间:</span>
+                                <span class="meta-value font-space">14:30:08</span>
+                                <span class="meta-item">耗时:</span>
+                                <span class="meta-value font-space">5.8s</span>
+                                <span class="agent-tag precheck">PreCheck</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 步骤 3: 已完成 -->
+                    <div class="timeline-item">
+                        <div class="timeline-left">
+                            <div class="timeline-icon completed">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="timeline-line completed"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-item-header">
+                                <div class="timeline-step-name completed">告警抑制策略生效</div>
+                            </div>
+                            <div class="timeline-step-desc">已抑制8条告警规则</div>
+                            <div class="timeline-meta">
+                                <span class="meta-item">时间:</span>
+                                <span class="meta-value font-space">14:30:12</span>
+                                <span class="meta-item">耗时:</span>
+                                <span class="meta-value font-space">3.6s</span>
+                                <span class="agent-tag monitor">Monitor</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 步骤 4: 已完成 -->
+                    <div class="timeline-item">
+                        <div class="timeline-left">
+                            <div class="timeline-icon completed">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="timeline-line completed"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-item-header">
+                                <div class="timeline-step-name completed">主库故障注入</div>
+                            </div>
+                            <div class="timeline-step-desc">模拟主库进程崩溃</div>
+                            <div class="timeline-meta">
+                                <span class="meta-item">时间:</span>
+                                <span class="meta-value font-space">14:30:18</span>
+                                <span class="meta-item">耗时:</span>
+                                <span class="meta-value font-space">5.4s</span>
+                                <span class="agent-tag failover">Failover</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 步骤 5: 执行中（待审批） -->
+                    <div class="timeline-item">
+                        <div class="timeline-left">
+                            <div class="timeline-icon running">
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <div class="timeline-line"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-item-header">
+                                <div class="timeline-step-name running">从库提权为主库</div>
+                                <button class="approval-btn" onclick="handleApproval(5)">
+                                    <i class="fas fa-hand-pointer"></i>
+                                    待审批
+                                </button>
+                            </div>
+                            <div class="timeline-step-desc">等待人工审批确认</div>
+                            <div class="timeline-meta">
+                                <span class="agent-tag failover">Failover</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 步骤 6: 待执行 -->
+                    <div class="timeline-item">
+                        <div class="timeline-left">
+                            <div class="timeline-icon pending">6</div>
+                            <div class="timeline-line"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-item-header">
+                                <div class="timeline-step-name">VIP漂移</div>
+                            </div>
+                            <div class="timeline-step-desc">将VIP从旧主切至新主</div>
+                            <div class="timeline-meta">
+                                <span class="agent-tag failover">Failover</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 步骤 7: 待执行 -->
+                    <div class="timeline-item">
+                        <div class="timeline-left">
+                            <div class="timeline-icon pending">7</div>
+                            <div class="timeline-line"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-item-header">
+                                <div class="timeline-step-name">流量切换验证</div>
+                            </div>
+                            <div class="timeline-step-desc">验证应用层连接路由正确</div>
+                            <div class="timeline-meta">
+                                <span class="agent-tag validation">Validation</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 步骤 8: 待执行 -->
+                    <div class="timeline-item">
+                        <div class="timeline-left">
+                            <div class="timeline-icon pending">8</div>
+                            <div class="timeline-line"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-item-header">
+                                <div class="timeline-step-name">业务拨测</div>
+                            </div>
+                            <div class="timeline-step-desc">执行核心接口拨测用例</div>
+                            <div class="timeline-meta">
+                                <span class="agent-tag validation">Validation</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 步骤 9: 待执行 -->
+                    <div class="timeline-item">
+                        <div class="timeline-left">
+                            <div class="timeline-icon pending">9</div>
+                            <div class="timeline-line"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-item-header">
+                                <div class="timeline-step-name">数据一致性校验</div>
+                            </div>
+                            <div class="timeline-step-desc">新旧主库数据比对</div>
+                            <div class="timeline-meta">
+                                <span class="agent-tag validation">Validation</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 步骤 10: 待执行 -->
+                    <div class="timeline-item">
+                        <div class="timeline-left">
+                            <div class="timeline-icon pending">10</div>
+                            <div class="timeline-line"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-item-header">
+                                <div class="timeline-step-name">演练环境恢复</div>
+                            </div>
+                            <div class="timeline-step-desc">恢复原始主从拓扑</div>
+                            <div class="timeline-meta">
+                                <span class="agent-tag failover">Failover</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 步骤 11: 待执行 -->
+                    <div class="timeline-item">
+                        <div class="timeline-left">
+                            <div class="timeline-icon pending">11</div>
+                            <div class="timeline-line"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-item-header">
+                                <div class="timeline-step-name">告警抑制解除</div>
+                            </div>
+                            <div class="timeline-step-desc">恢复告警规则</div>
+                            <div class="timeline-meta">
+                                <span class="agent-tag monitor">Monitor</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 步骤 12: 待执行 -->
+                    <div class="timeline-item">
+                        <div class="timeline-left">
+                            <div class="timeline-icon pending">12</div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-item-header">
+                                <div class="timeline-step-name">演练报告生成</div>
+                            </div>
+                            <div class="timeline-step-desc">汇总数据，生成评估报告</div>
+                            <div class="timeline-meta">
+                                <span class="agent-tag report">Report</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- 右侧面板 -->
+        <aside class="card-bg flex flex-col" style="border-left: 1px solid rgba(0, 229, 160, 0.1);">
+            <!-- Tab 栏 -->
+            <div class="right-panel-tabs">
+                <div class="tab-item active" data-tab="logs" onclick="switchTab('logs')">
+                    Agent 日志
+                </div>
+                <div class="tab-item" data-tab="skills" onclick="switchTab('skills')">
+                    Skills 链
+                </div>
+                <div class="tab-item" data-tab="approval" onclick="switchTab('approval')">
+                    决策审批
+                    <div class="tab-indicator"></div>
+                </div>
+            </div>
+
+            <!-- Agent 日志内容 -->
+            <div id="tab-logs" class="tab-content active">
+                <div class="agent-logs" id="agentLogs">
+                    <!-- 日志条目将在这里动态添加 -->
+                </div>
+            </div>
+
+            <!-- Skills 链内容 -->
+            <div id="tab-skills" class="tab-content">
+                <div class="skills-chain">
+                    <!-- 阶段一：环境准备 -->
+                    <div class="skill-phase">
+                        <div class="phase-title">环境准备</div>
+                        <div class="skill-nodes">
+                            <!-- 节点1: 环境探查 -->
+                            <div class="skill-node completed">
+                                <div class="node-icon blue">
+                                    <i class="fas fa-magnifying-glass"></i>
+                                </div>
+                                <div class="node-content">
+                                    <div class="node-name">环境探查</div>
+                                    <div class="node-detail">PreCheck Agent → 检测集群拓扑</div>
+                                </div>
+                                <div class="node-meta">
+                                    <span class="node-duration">2.1s</span>
+                                    <div class="node-status completed">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="arrow-connector">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+
+                            <!-- 节点2: 健康检查 -->
+                            <div class="skill-node completed">
+                                <div class="node-icon blue">
+                                    <i class="fas fa-heart-pulse"></i>
+                                </div>
+                                <div class="node-content">
+                                    <div class="node-name">健康检查</div>
+                                    <div class="node-detail">PreCheck Agent → 12项检查规则</div>
+                                </div>
+                                <div class="node-meta">
+                                    <span class="node-duration">3.7s</span>
+                                    <div class="node-status completed">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="arrow-connector">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+
+                            <!-- 节点3: 告警抑制 -->
+                            <div class="skill-node completed">
+                                <div class="node-icon yellow">
+                                    <i class="fas fa-bell-slash"></i>
+                                </div>
+                                <div class="node-content">
+                                    <div class="node-name">告警抑制</div>
+                                    <div class="node-detail">Monitor Agent → 加载抑制策略</div>
+                                </div>
+                                <div class="node-meta">
+                                    <span class="node-duration">3.6s</span>
+                                    <div class="node-status completed">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 阶段二：故障注入与切换 -->
+                    <div class="skill-phase">
+                        <div class="phase-title">故障注入与切换</div>
+                        <div class="skill-nodes">
+                            <!-- 节点4: 故障注入 -->
+                            <div class="skill-node completed">
+                                <div class="node-icon red">
+                                    <i class="fas fa-bug"></i>
+                                </div>
+                                <div class="node-content">
+                                    <div class="node-name">故障注入</div>
+                                    <div class="node-detail">Failover Agent → 模拟主库崩溃</div>
+                                </div>
+                                <div class="node-meta">
+                                    <span class="node-duration">5.4s</span>
+                                    <div class="node-status completed">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="arrow-connector green">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+
+                            <!-- 节点5: 主从切换（当前活跃） -->
+                            <div class="skill-node active">
+                                <div class="node-icon green">
+                                    <i class="fas fa-arrows-rotate"></i>
+                                </div>
+                                <div class="node-content">
+                                    <div class="node-name">主从切换</div>
+                                    <div class="node-detail">Failover Agent → 从库提权中</div>
+                                </div>
+                                <div class="node-meta">
+                                    <div class="node-status active">
+                                        <i class="fas fa-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="arrow-connector">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+
+                            <!-- 节点6: VIP漂移 -->
+                            <div class="skill-node pending">
+                                <div class="node-icon gray">
+                                    <i class="fas fa-network-wired"></i>
+                                </div>
+                                <div class="node-content">
+                                    <div class="node-name">VIP漂移</div>
+                                    <div class="node-detail">Failover Agent → 网络层切换</div>
+                                </div>
+                                <div class="node-meta">
+                                    <div class="node-status pending">
+                                        <i class="far fa-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 阶段三：验证与恢复 -->
+                    <div class="skill-phase">
+                        <div class="phase-title pending">验证与恢复</div>
+                        <div class="skill-nodes">
+                            <!-- 紧凑布局的节点 -->
+                            <div class="compact-nodes">
+                                <div class="compact-node">
+                                    <div class="node-icon gray">
+                                        <i class="fas fa-route"></i>
+                                    </div>
+                                    <div class="node-name">流量切换验证</div>
+                                    <div class="node-status pending">
+                                        <i class="far fa-circle"></i>
+                                    </div>
+                                </div>
+
+                                <div class="compact-node">
+                                    <div class="node-icon gray">
+                                        <i class="fas fa-play-circle"></i>
+                                    </div>
+                                    <div class="node-name">业务拨测</div>
+                                    <div class="node-status pending">
+                                        <i class="far fa-circle"></i>
+                                    </div>
+                                </div>
+
+                                <div class="compact-node">
+                                    <div class="node-icon gray">
+                                        <i class="fas fa-check-double"></i>
+                                    </div>
+                                    <div class="node-name">数据校验</div>
+                                    <div class="node-status pending">
+                                        <i class="far fa-circle"></i>
+                                    </div>
+                                </div>
+
+                                <div class="compact-node">
+                                    <div class="node-icon gray">
+                                        <i class="fas fa-undo"></i>
+                                    </div>
+                                    <div class="node-name">环境恢复</div>
+                                    <div class="node-status pending">
+                                        <i class="far fa-circle"></i>
+                                    </div>
+                                </div>
+
+                                <div class="compact-node" style="grid-column: span 2;">
+                                    <div class="node-icon gray">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div class="node-name">报告渲染</div>
+                                    <div class="node-status pending">
+                                        <i class="far fa-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 决策审批内容 -->
+            <div id="tab-approval" class="tab-content">
+                <div class="approval-content">
+                    <!-- 卡片1: 已批准 -->
+                    <div class="approval-card approved">
+                        <div class="approval-header">
+                            <div class="approval-icon green">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="approval-title">故障注入确认</div>
+                        </div>
+                        <div class="approval-desc">
+                            确认已通知所有相关人员，故障注入操作已执行完毕
+                        </div>
+                        <div class="approval-footer">
+                            <div class="approval-meta">
+                                <span class="approved">张伟 已批准</span> · 14:30:16
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片2: 待审批 -->
+                    <div class="approval-card pending" id="pendingApproval">
+                        <div class="approval-header">
+                            <div class="approval-icon yellow">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="approval-title">从库提权确认</div>
+                        </div>
+                        <div class="approval-desc">
+                            主库已确认宕机，从库延迟0.3s在可接受范围内，是否执行从库提权操作？
+                        </div>
+                        <div class="approval-code-block">
+                            <div class="code-line">
+                                <span class="code-key">从库:</span>
+                                <span class="code-value">db-slave-01</span>
+                            </div>
+                            <div class="code-line">
+                                <span class="code-key">延迟:</span>
+                                <span class="code-value success">0.3s <span style="color: #64748b;">(阈值: 10s)</span></span>
+                            </div>
+                            <div class="code-line">
+                                <span class="code-key">GTID:</span>
+                                <span class="code-value success">已对齐</span>
+                            </div>
+                            <div class="code-line">
+                                <span class="code-key">复制通道:</span>
+                                <span class="code-value success">正常</span>
+                            </div>
+                        </div>
+                        <div class="approval-footer">
+                            <div class="approval-meta"></div>
+                            <div class="approval-actions">
+                                <button class="btn-reject" onclick="handleReject()">拒绝</button>
+                                <button class="btn-approve" onclick="handleApprove()">批准执行</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片3: 锁定态 -->
+                    <div class="approval-card locked">
+                        <div class="approval-header">
+                            <div class="approval-icon gray">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div class="approval-title">数据一致性确认</div>
+                        </div>
+                        <div class="approval-desc">
+                            新旧主库数据一致性校验，前置步骤完成后解锁
+                        </div>
+                        <div class="approval-footer">
+                            <div class="approval-meta">等待前置步骤完成</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+    
+    <script>
+        // RTO 倒计时逻辑
+        let rtoSeconds = 0;
+        const maxRtoSeconds = 300; // 5分钟 = 300秒
+        const warningThreshold = 240; // 4分钟 = 240秒
+        
+        function updateRTO() {
+            rtoSeconds++;
+            
+            const minutes = Math.floor(rtoSeconds / 60);
+            const seconds = rtoSeconds % 60;
+            
+            const rtoValue = document.getElementById('rto-value');
+            const rtoBox = document.getElementById('rto-box');
+            
+            // 格式化时间显示
+            const timeString = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            rtoValue.textContent = timeString;
+            
+            // 超过4分钟变红
+            if (rtoSeconds >= warningThreshold) {
+                rtoBox.classList.add('rto-warning');
+            }
+            
+            // 超过5分钟停止
+            if (rtoSeconds >= maxRtoSeconds) {
+                clearInterval(rtoInterval);
+            }
+        }
+        
+        // 每秒更新一次
+        const rtoInterval = setInterval(updateRTO, 1000);
+        
+        // 按钮交互
+        document.querySelector('.btn-outline').addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('fa-pause')) {
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+                this.innerHTML = '<i class="fas fa-play mr-2"></i>继续';
+                clearInterval(rtoInterval);
+            } else {
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+                this.innerHTML = '<i class="fas fa-pause mr-2"></i>暂停';
+                setInterval(updateRTO, 1000);
+            }
+        });
+        
+        document.querySelector('.btn-danger').addEventListener('click', function() {
+            if (confirm('确定要终止当前演练吗？')) {
+                clearInterval(rtoInterval);
+                alert('演练已终止');
+            }
+        });
+        
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            alert('报告导出功能开发中...');
+        });
+        
+        // 步骤条点击交互
+        const stepItems = document.querySelectorAll('.step-item');
+        stepItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const stepNum = this.dataset.step;
+
+                // 移除所有 active 状态
+                stepItems.forEach(s => s.classList.remove('active'));
+
+                // 添加 active 状态到当前点击的步骤
+                this.classList.add('active');
+
+                // 更新步骤状态显示
+                console.log(`切换到步骤 ${stepNum}: ${this.querySelector('.step-name').textContent}`);
+            });
+        });
+
+        // Tab 切换功能
+        function switchTab(tabName) {
+            // 移除所有 tab 的 active 状态
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // 隐藏所有 tab 内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // 激活选中的 tab
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        // 初始化 Agent 日志
+        function initAgentLogs() {
+            const logsData = [
+                { time: '14:30:00', agent: 'orchestrator', message: '演练任务启动，加载场景配置 <strong>db-failover-2024q4</strong>' },
+                { time: '14:30:02', agent: 'orchestrator', message: '解析依赖关系，生成执行DAG，共 <span class="highlight">12</span> 个步骤' },
+                { time: '14:30:03', agent: 'precheck', message: '开始执行环境探查...' },
+                { time: '14:30:05', agent: 'precheck', message: '从库 <strong>db-slave-01</strong> 延迟 <span class="highlight">0.3s</span>，磁盘余量 <span class="highlight">72%</span>' },
+                { time: '14:30:06', agent: 'precheck', message: '从库 <strong>db-slave-02</strong> 延迟 <span class="highlight">0.5s</span>，磁盘余量 <span class="highlight">68%</span>' },
+                { time: '14:30:08', agent: 'precheck', message: '全部 <span class="highlight">12/12</span> 检查项通过' },
+                { time: '14:30:09', agent: 'orchestrator', message: '调度 <strong>Monitor</strong> 执行告警抑制' },
+                { time: '14:30:10', agent: 'monitor', message: '开始加载告警抑制策略...' },
+                { time: '14:30:12', agent: 'monitor', message: '已抑制 <span class="highlight">8</span> 条告警规则' },
+                { time: '14:30:13', agent: 'orchestrator', message: '调度 <strong>Failover</strong> 执行故障注入' },
+                { time: '14:30:14', agent: 'failover', message: '调用 <span class="highlight">[故障注入]</span> Skill，目标 <strong>db-master-01</strong>' },
+                { time: '14:30:18', agent: 'failover', message: '主库进程已终止，确认不可达' },
+                { time: '14:30:19', agent: 'monitor', message: '检测到 QPS 从 <span class="highlight">12.4k</span> 降至 <span class="warn">0</span>，符合预期' },
+                { time: '14:30:20', agent: 'orchestrator', message: '进入人工审批环节' },
+                { time: '14:30:20', agent: 'orchestrator', message: '等待人工确认：是否执行从库提权？' }
+            ];
+
+            const logsContainer = document.getElementById('agentLogs');
+
+            logsData.forEach((log, index) => {
+                setTimeout(() => {
+                    const logEntry = document.createElement('div');
+                    logEntry.className = 'log-entry';
+                    logEntry.innerHTML = `
+                        <span class="log-time">${log.time}</span>
+                        <div class="log-agent-dot ${log.agent}"></div>
+                        <span class="log-message">${log.message}</span>
+                    `;
+                    logsContainer.appendChild(logEntry);
+
+                    // 滚动到底部
+                    logsContainer.scrollTop = logsContainer.scrollHeight;
+                }, index * 50); // 每个日志延迟 50ms 添加
+            });
+        }
+
+        // 页面加载后初始化日志
+        window.addEventListener('load', initAgentLogs);
+
+        // Toast 通知函数
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+
+            const iconMap = {
+                success: 'fa-check-circle',
+                warning: 'fa-exclamation-circle',
+                error: 'fa-times-circle'
+            };
+
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="fas ${iconMap[type]}"></i>
+                </div>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            // 3秒后移除
+            setTimeout(() => {
+                toast.classList.add('hiding');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // 动态添加日志
+        function addLogEntry(time, agent, message) {
+            const logsContainer = document.getElementById('agentLogs');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <span class="log-time">${time}</span>
+                <div class="log-agent-dot ${agent}"></div>
+                <span class="log-message">${message}</span>
+            `;
+            logsContainer.appendChild(logEntry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+
+        // 审批通过处理
+        function handleApprove() {
+            // 1. 显示 toast
+            showToast('从库提权操作已触发', 'success');
+
+            // 2. 卡片变为已批准样式
+            const pendingCard = document.getElementById('pendingApproval');
+            pendingCard.classList.remove('pending');
+            pendingCard.classList.add('approved');
+
+            // 更新图标和内容
+            const iconDiv = pendingCard.querySelector('.approval-icon');
+            iconDiv.classList.remove('yellow');
+            iconDiv.classList.add('green');
+            iconDiv.innerHTML = '<i class="fas fa-check"></i>';
+
+            const titleDiv = pendingCard.querySelector('.approval-title');
+            titleDiv.innerHTML = '从库提权确认 <span style="color: #00e5a0; font-size: 11px; font-weight: normal;">(已批准)</span>';
+
+            pendingCard.querySelector('.approval-desc').textContent = '从库提权操作已批准，系统正在执行中...';
+
+            // 移除按钮
+            const actionsDiv = pendingCard.querySelector('.approval-actions');
+            actionsDiv.innerHTML = '';
+
+            const metaDiv = pendingCard.querySelector('.approval-meta');
+            metaDiv.innerHTML = '<span class="approved">张伟 已批准</span> · ' + new Date().toLocaleTimeString('zh-CN', { hour12: false });
+
+            // 3. 添加日志
+            const currentTime = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+            addLogEntry(currentTime, 'orchestrator', '审批通过，调度 <strong>Failover</strong> 执行从库提权');
+
+            // 4. 隐藏审批 Tab 的黄色脉冲圆点
+            const approvalTab = document.querySelector('[data-tab="approval"] .tab-indicator');
+            if (approvalTab) {
+                approvalTab.style.display = 'none';
+            }
+
+            // 5. 1.5秒后添加日志
+            setTimeout(() => {
+                const time1 = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+                addLogEntry(time1, 'failover', '调用 <span class="highlight">[主从切换]</span> Skill，正在提权从库...');
+            }, 1500);
+
+            // 6. 3秒后添加日志
+            setTimeout(() => {
+                const time2 = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+                addLogEntry(time2, 'failover', '从库提权完成，调用 <span class="highlight">[VIP漂移]</span> Skill');
+
+                // 7. 同时更新时间线
+                updateTimelineStep(5, 'completed');
+                updateTimelineStep(6, 'running');
+            }, 3000);
+        }
+
+        // 拒绝处理
+        function handleReject() {
+            showToast('已拒绝，演练将进入回滚流程', 'error');
+
+            const currentTime = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+            addLogEntry(currentTime, 'orchestrator', '<span class="err">人工审批拒绝，从库提权操作已取消，演练进入回滚流程</span>');
+        }
+
+        // 更新时间线步骤
+        function updateTimelineStep(stepNumber, status) {
+            // 找到对应的时间线步骤
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const stepItem = timelineItems[stepNumber - 1]; // 0-indexed
+
+            if (!stepItem) return;
+
+            const iconDiv = stepItem.querySelector('.timeline-icon');
+            const nameDiv = stepItem.querySelector('.timeline-step-name');
+            const lineDiv = stepItem.querySelector('.timeline-line');
+
+            if (status === 'completed') {
+                // 变为已完成
+                iconDiv.classList.remove('running', 'pending');
+                iconDiv.classList.add('completed');
+                iconDiv.innerHTML = '<i class="fas fa-check"></i>';
+
+                nameDiv.classList.remove('running');
+                nameDiv.classList.add('completed');
+
+                if (lineDiv) {
+                    lineDiv.classList.add('completed');
+                }
+
+                // 移除审批按钮
+                const approvalBtn = stepItem.querySelector('.approval-btn');
+                if (approvalBtn) {
+                    approvalBtn.remove();
+                }
+            } else if (status === 'running') {
+                // 变为运行中
+                iconDiv.classList.remove('pending');
+                iconDiv.classList.add('running');
+                iconDiv.innerHTML = '<i class="fas fa-sync-alt"></i>';
+
+                nameDiv.classList.add('running');
+            }
+        }
+
+        // 时间线待审批按钮点击处理
+        function handleApproval(stepNumber) {
+            // 切换到审批 Tab
+            switchTab('approval');
+
+            // 滚动到待审批卡片
+            setTimeout(() => {
+                const pendingCard = document.getElementById('pendingApproval');
+                pendingCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        // 终止模态框
+        function showTerminateModal() {
+            document.getElementById('terminateModal').classList.add('active');
+        }
+
+        function closeTerminateModal() {
+            document.getElementById('terminateModal').classList.remove('active');
+        }
+
+        function confirmTerminate() {
+            closeTerminateModal();
+            showToast('演练已终止', 'error');
+            clearInterval(rtoInterval);
+
+            const currentTime = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+            addLogEntry(currentTime, 'system', '<span class="err">演练被人工终止，所有进度丢失</span>');
+        }
+
+        // ESC 关闭模态框
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeTerminateModal();
+            }
+        });
+
+        // 点击遮罩关闭模态框
+        document.getElementById('terminateModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTerminateModal();
+            }
+        });
+
+        // 暂停按钮处理
+        document.querySelector('.btn-outline').addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('fa-pause')) {
+                icon.classList.remove('fa-pause');
+                icon.classList.add('fa-play');
+                this.innerHTML = '<i class="fas fa-play mr-2"></i>继续';
+                clearInterval(rtoInterval);
+                showToast('演练已暂停', 'warning');
+            } else {
+                icon.classList.remove('fa-play');
+                icon.classList.add('fa-pause');
+                this.innerHTML = '<i class="fas fa-pause mr-2"></i>暂停';
+                rtoInterval = setInterval(updateRTO, 1000);
+                showToast('演练已恢复', 'success');
+            }
+        });
+
+        // 终止按钮
+        document.querySelector('.btn-danger').addEventListener('click', showTerminateModal);
+
+        // 导出报告按钮
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            showToast('报告导出功能开发中...', 'warning');
+        });
+
+        // 实时监控日志（每4.5秒添加一条）
+        let monitorLogCount = 0;
+        const monitorMessages = [
+            { agent: 'monitor', msg: '从库延迟：<span class="highlight">0.3s</span>，正常范围' },
+            { agent: 'monitor', msg: '主库状态：<span class="err">不可达</span>，已确认宕机' },
+            { agent: 'monitor', msg: 'QPS：<span class="warn">0</span>，等待恢复' },
+            { agent: 'monitor', msg: '复制通道：<span class="highlight">正常</span>' },
+            { agent: 'monitor', msg: '检测到 VIP 漂移事件' },
+            { agent: 'monitor', msg: '从库负载：<span class="highlight">12%</span>' }
+        ];
+
+        setInterval(() => {
+            // 只有在演练进行中时才添加日志
+            if (document.querySelector('.btn-outline i.fa-pause')) {
+                const currentTime = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+                const msgData = monitorMessages[monitorLogCount % monitorMessages.length];
+                addLogEntry(currentTime, msgData.agent, msgData.msg);
+                monitorLogCount++;
+            }
+        }, 4500);
+    </script>
+
+    <!-- Toast 容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- 终止确认模态框 -->
+    <div class="modal-overlay" id="terminateModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="modal-title">确认终止演练</div>
+            </div>
+            <div class="modal-desc">
+                确定要终止当前演练吗？终止后所有进度将丢失，无法恢复。
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeTerminateModal()">取消</button>
+                <button class="btn-terminate" onclick="confirmTerminate()">确认终止</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
