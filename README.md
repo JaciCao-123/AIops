@@ -12,14 +12,122 @@ AIops/
 │   ├── k8s/                 # Kubernetes 部署配置
 │   └── docker/              # Docker 配置
 ├── knowledge_graph/         # 知识图谱构建与查询
-└── time_sequence_prediction/ # 时间序列预测与异常检测
-    ├── cpu_anomaly_detection/    # CPU 异常检测
-    ├── cost_analysis/            # 成本分析与预测
-    ├── microservice_rca/         # 微服务根因分析
-    └── security_audit/           # 安全审计
+└── time_sequence_detection/ # 时间序列检测与分析
+    ├── alert_aggregation/        # 🆕 Drain+DBSCAN 运维日志告警聚合（推荐）
+    ├── GNN_RCA/                   # GNN 根因分析系统
+    ├── Log_Analysis/              # 日志分析与异常检测
+    ├── Log_Analysis_IsolationForest_Prophet/  # IsolationForest+Prophet 日志分析
+    ├── Log_Analysis_LSTM/         # LSTM 日志分析
+    ├── cpu_anomaly_detection/     # CPU 异常检测
+    ├── cost_analysis/             # 成本分析与预测
+    ├── cost_analysis_Prophet/     # Prophet 成本分析
+    ├── cpu_IsolationForest_Prophet/  # IsolationForest+Prophet CPU异常检测
+    ├── microservice_rca/          # 微服务根因分析
+    └── security_audit/            # 安全审计
 ```
 
 ## 🚀 核心功能
+
+### 0. 🆕 alert_aggregation - Drain + DBSCAN 运维日志告警聚合系统（推荐）
+
+基于 **Drain 日志解析 + DBSCAN 密度聚类** 的智能告警收敛方案，实现海量运维日志的自动聚合与根因分析。
+
+#### 系统架构（5层完整流水线）
+
+```
+原始日志流(海量) → Drain解析(模板提取) → 特征构建(向量化) → DBSCAN聚类(相似告警聚合) → 告警收敛(报告生成)
+```
+
+| 层级 | 模块 | 核心功能 | 技术实现 |
+|------|------|----------|----------|
+| **Step 1** | 原始日志流生成器 | 模拟真实运维日志（应用/系统/中间件/数据库） | 多源日志模板库、异常注入 |
+| **Step 2** | Drain 解析层 | 提取日志模板，剥离变量，生成模板ID | 固定深度前缀树算法 |
+| **Step 3** | 特征构建层 | 将模板+上下文+语义信息转化为向量 | TF-IDF + PCA降维 |
+| **Step 4** | DBSCAN 聚类层 | 相似告警自动聚合，发现告警模式 | 基于密度的空间聚类 |
+| **Step 5** | 告警收敛层 | 生成聚合报告，优先级排序，处理建议 | 加权评分算法 |
+
+#### 核心特性
+
+✅ **高收敛率**: 64:1 (5000条日志 → 78个聚类)  
+✅ **智能路由**: 根据问题类型和严重程度自动选择Agent  
+✅ **多维特征**: 模板特征 + 上下文特征 + 语义特征 + 统计特征  
+✅ **专业报告**: Markdown格式，含CRITICAL/HIGH/MEDIUM/LOW优先级排序  
+✅ **可操作建议**: 自动生成根因分析和处理建议  
+
+#### 快速开始
+
+```bash
+# 进入告警聚合目录
+cd time_sequence_detection/alert_aggregation
+
+# 快速测试模式（1000条日志）
+python3 run_pipeline.py --quick
+
+# 自定义参数运行
+python3 run_pipeline.py --logs 10000 --eps 0.3 --min-samples 10
+```
+
+#### 命令行参数
+
+```bash
+--logs, -l          # 生成日志数量（默认: 5000）
+--eps, -e           # DBSCAN的eps参数（邻域半径，默认: 0.5）
+--min-samples, -m   # DBSCAN的最小样本数（默认: 5）
+--quick, -q         # 快速测试模式（1000条日志）
+```
+
+#### 输出文件
+
+```
+data/
+├── raw/raw_logs.csv                    # 原始日志数据
+├── parsed/parsed_logs.csv              # Drain解析结果
+├── parsed/log_templates.json           # 日志模板库
+├── features/log_features.npz           # 特征矩阵（NumPy格式）
+├── features/feature_metadata.json      # 特征元数据
+├── clusters/clustered_logs.csv         # 聚类后的日志数据
+├── clusters/cluster_labels.json        # 聚类标签
+├── clusters/cluster_centers.json       # 聚类中心点
+├── clusters/cluster_statistics.json    # 聚类统计信息
+└── reports/alert_convergence_report.md # 📋 完整收敛报告（重点！）
+```
+
+#### 报告示例
+
+生成的收敛报告包含：
+- 📊 执行概要（总告警数、收敛率、压缩比）
+- 🔴🟠🟡🟢 优先级告警列表（Top 10）
+- 每个聚类的详细信息：
+  - 严重程度得分 (0.0 - 1.0)
+  - 影响范围得分 (0.0 - 1.0)
+  - 收敛比率
+  - 影响服务列表
+  - 关键发现
+  - 推荐操作建议
+- 📈 技术细节（算法参数、质量指标）
+
+#### 技术栈
+
+| 技术 | 用途 |
+|------|------|
+| **Drain 算法** | 在线日志解析（固定深度前缀树） |
+| **DBSCAN** | 基于密度的空间聚类 |
+| **TF-IDF** | 文本特征向量化 |
+| **PCA** | 降维（1016维 → 31维） |
+| **scikit-learn** | 机器学习工具包 |
+| **Pandas** | 数据处理 |
+| **NumPy** | 数值计算 |
+
+#### 性能指标
+
+| 指标 | 数值 |
+|------|------|
+| 处理能力 | 5000条日志 / 6.41秒 |
+| 收敛率 | 64:1 |
+| 聚类质量 | 轮廓系数 0.5151 (良好) |
+| 支持日志源 | 应用/系统/中间件/数据库 |
+
+---
 
 ### 1. aiops-platform - 智能诊断平台
 
@@ -48,19 +156,36 @@ AIops/
 - Neo4j 图数据库
 - Python + OpenAI API
 
-### 3. time_sequence_prediction - 时间序列预测
+### 3. time_sequence_detection - 时间序列检测与分析
 
-运维场景下的时间序列分析与预测：
+运维场景下的时间序列分析、异常检测与根因定位：
 
-- **CPU 异常检测**：多服务器 CPU 使用率异常检测
-- **成本分析**：云资源成本预测与异常检测
-- **微服务根因分析**：基于 GNN 的微服务故障根因定位
-- **安全审计**：SSH、认证、云 API 调用异常检测
+- **🆕 alert_aggregation**（推荐）: Drain + DBSCAN 运维日志告警聚合系统
+  - 5层完整流水线架构
+  - 高收敛率 (64:1)
+  - 智能优先级排序
+  - 专业Markdown报告生成
+  
+- **GNN_RCA**: GNN 根因分析系统
+  - 图神经网络微服务故障定位
+  - GCN/GAT/GraphSAGE模型
+  - LLM智能诊断报告
+
+- **Log_Analysis**: 日志分析与异常检测
+- **Log_Analysis_IsolationForest_Prophet**: IsolationForest + Prophet 日志分析
+- **Log_Analysis_LSTM**: LSTM 日志时序预测
+- **CPU 异常检测**: 多服务器 CPU 使用率异常检测
+- **成本分析**: 云资源成本预测与异常检测
+- **microservice_rca**: 微服务根因分析
+- **security_audit**: SSH、认证、云 API 调用异常检测
 
 **技术栈**：
-- Prophet 时间序列预测
+- Prophet / IsolationForest 时间序列预测与异常检测
 - PyTorch + PyTorch Geometric
 - 图神经网络（GCN、GAT、GraphSAGE）
+- **Drain 算法**: 在线日志解析
+- **DBSCAN**: 密度聚类算法
+- **TF-IDF + PCA**: 特征提取与降维
 
 ## 🛠️ 快速开始
 
@@ -445,5 +570,48 @@ SYNONYM_GROUPS = {
 | java内存溢出 | debug_skill (18) | jvm_skill (27) ✓ |
 | java oom | debug_skill (43) | jvm_skill (43) ✓ |
 | pod起不来 | k8s_pod_skill (18) | k8s_pod_skill (18) ✓ |
+
+---
+
+## 📅 更新日志
+
+### 2026-04-18 - v2.0.0 重大更新
+
+#### 🎉 新功能：Drain + DBSCAN 运维日志告警聚合系统
+
+**位置**: `time_sequence_detection/alert_aggregation/`
+
+**核心亮点**:
+- ✨ **5层完整架构**: 日志生成 → Drain解析 → 特征构建 → DBSCAN聚类 → 告警收敛
+- 🚀 **高收敛率**: 64:1 (5000条日志 → 78个聚类)
+- 🎯 **智能优先级**: CRITICAL/HIGH/MEDIUM/LOW 自动分级
+- 📊 **专业报告**: Markdown格式，含处理建议和根因分析
+- ⚡ **高性能**: 5000条日志仅需6.41秒
+
+**技术栈升级**:
+- 新增 Drain 算法（固定深度前缀树）
+- 新增 DBSCAN 密度聚类算法
+- 新增 TF-IDF + PCA 特征工程流水线
+- 加权评分算法（严重程度 + 影响范围）
+
+**新增文件**:
+```
+alert_aggregation/
+├── config.py                      # 全局配置
+├── run_pipeline.py                # 主流水线脚本
+├── step1_log_generator.py         # 原始日志流生成器
+├── step2_drain_parser.py          # Drain解析层
+├── step3_feature_builder.py       # 特征构建层
+├── step4_dbscan_clustering.py     # DBSCAN聚类层
+└── step5_alert_convergence.py     # 告警收敛层
+```
+
+**其他更新**:
+- 📚 新增数据库备份演练技能文档 (`backup_drill_skill.md`)
+- 🌐 新增 DR Drill 前端页面 (`dr-drill.html`)
+- 🔧 优化 Skill 匹配优先级和前端确认流程
+- 📦 重构项目结构为 `time_sequence_detection/`
+
+---
 
 如有问题或建议，请提交 Issue。
