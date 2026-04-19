@@ -289,6 +289,19 @@ class SkillManager:
                 "切换到从库", "主库切换", "数据库切换"
             ]
         },
+        "backup_drill_skill": {
+            "path": "database/backup_drill_skill.md",
+            "category": "database",
+            "description": "数据库备份恢复演练与验证 (备份检查/恢复测试/数据校验/演练报告)",
+            "keywords": [
+                "备份演练", "恢复测试", "backup drill", "restore test",
+                "灾备验证", "dr drill", "灾难恢复演练", "备份有效性",
+                "数据恢复测试", "定期演练", "备份可用性", "恢复验证",
+                "mysqldump恢复", "pg_restore测试", "rds备份恢复",
+                "pitr", "时间点恢复", "binlog恢复", "wal恢复",
+                "xtrabackup恢复", "rdb恢复", "aof恢复"
+            ]
+        },
         "security_audit_skill": {
             "path": "security/security_audit_skill.md",
             "category": "security",
@@ -833,6 +846,28 @@ class SkillManager:
             },
             "alias": {}
         },
+        "backup_drill_skill": {
+            "core": {
+                "备份演练": 10, "恢复测试": 10, "backup drill": 10,
+                "restore test": 10, "灾备验证": 9, "dr drill": 9,
+                "灾难恢复演练": 9, "备份有效性": 9
+            },
+            "symptom": {
+                "数据恢复测试": 9, "定期演练": 8, "备份可用性": 8,
+                "恢复验证": 9, "备份数据验证": 8, "恢复演练": 9,
+                "pitr演练": 7, "时间点恢复测试": 7
+            },
+            "component": {
+                "mysqldump": 6, "pg_restore": 6, "xtrabackup": 6,
+                "binlog恢复": 6, "wal恢复": 6, "rdb恢复": 5,
+                "aof恢复": 5, "rds备份": 5, "备份文件": 5,
+                "checksum": 4, "数据一致性": 4
+            },
+            "alias": {
+                "备份测试": 8, "恢复检查": 8, "dr测试": 8,
+                "容灾演练": 9, "备份恢复": 7
+            }
+        },
         "security_audit_skill": {
             "core": {
                 "安全审计": 10, "入侵检测": 10, "安全事件": 9
@@ -1227,12 +1262,18 @@ class SkillManager:
             if "mysql" in db_type:
                 scores["mysql_deadlock_skill"] += 5
                 scores["mysql_slow_query_skill"] += 5
+                scores["backup_drill_skill"] += 3
             elif "postgresql" in db_type or "pg" in db_type:
                 scores["postgresql_skill"] += 5
+                scores["backup_drill_skill"] += 3
             elif "mongodb" in db_type or "mongo" in db_type:
                 scores["mongodb_skill"] += 5
             elif "redis" in db_type:
                 scores["redis_skill"] += 5
+                scores["backup_drill_skill"] += 3
+        
+        if "备份" in combined_text or "恢复" in combined_text or "演练" in combined_text or "drill" in combined_text.lower():
+            scores["backup_drill_skill"] += 5
         
         if "java" in combined_text or "jvm" in combined_text:
             scores["jvm_skill"] += 15

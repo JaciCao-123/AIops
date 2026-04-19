@@ -204,12 +204,14 @@
 
 | Skill | 文件路径 | 触发关键词 | 适用场景 |
 |-------|---------|-----------|---------|
+| **backup_drill_skill** | `database/backup_drill_skill.md` | 备份演练, 恢复测试, backup drill, restore test, 灾备验证, DR drill, 备份有效性, 数据恢复测试 | 数据库备份恢复演练与验证 |
 | **postgresql_skill** | `database/postgresql_skill.md` | PostgreSQL, PG, 锁等待, VACUUM, WAL, 膨胀, Bloat, 复制槽, Autovacuum | PostgreSQL 性能诊断与维护 |
 | **mongodb_skill** | `database/mongodb_skill.md` | MongoDB, 副本集, ReplicaSet, Oplog, 分片, Sharding, WiredTiger | MongoDB 副本集与分片诊断 |
 
 **选择指南**：
 - 数据库主从复制/高可用问题 → `@reference: database/database_ha_skill.md`
 - 主库故障需要人工切换 → `@reference: database/mysql_failover_skill.md`
+- **备份恢复演练与验证 → `@reference: database/backup_drill_skill.md`**
 - PostgreSQL 锁/膨胀/VACUUM 问题 → `@reference: database/postgresql_skill.md`
 - MongoDB 副本集/分片问题 → `@reference: database/mongodb_skill.md`
 
