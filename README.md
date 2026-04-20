@@ -111,34 +111,29 @@ AIops/
 | **MasterAgent** | 大脑中枢 | 动态规划、ReAct循环、最终决策 | 所有上下文 | `DiagnosisDecision` |
 | **ActionExecuteAgent** | 执行者 | 生成安全的执行指令、风险评估 | 修复方案 | `ActionResult` |
 
-### 🔐 安全体系
+### 🔐 安全体系（7层防护）
 
-#### 多层安全防护机制
+#### 多层安全防护架构
 
-```python
-# 1️⃣ 命令注入防护（已实现）
-DANGEROUS_COMMANDS = [
-    "rm -rf", "dd if=", "mkfs", "shutdown", "reboot",
-    ":(){ :|:& };:", "drop database", "> /dev/sda"
-]
-
-# 2️⃣ 注入模式检测（正则表达式）
-injection_patterns = [
-    r';\s*rm\s',       # 分号+删除
-    r'\$\(',           # 命令替换
-    r'/dev/tcp/',      # 反向Shell
-    r'bash\s+-i',      # 交互式Shell
-]
-
-# 3️⃣ 风险等级分级
-- LOW: 只读操作（cat, grep, docker ps）
-- MEDIUM: 需确认操作（重启服务、修改配置）
-- HIGH: 需审批操作（rm, systemctl stop）
-- BLOCKED: 禁止操作（rm -rf, shutdown）
-
-# 4️⃣ 审批工作流
-用户请求 → 邮件通知 → 管理员审批 → 执行命令 → 记录日志
 ```
+Layer 1: 命令注入防护 (12种正则模式) → Layer 2: 危险命令黑名单 (18种) → Layer 3: 安全命令白名单 (30+种)
+         ↓                              ↓                               ↓
+Layer 4: 风险等级分级 (LOW/MEDIUM/HIGH/BLOCKED) → Layer 5: 红线操作拦截 (5类)
+         ↓                                                        ↓
+Layer 6: 审批工作流 (邮件+API双通道) ← Layer 7: RBAC权限控制 (admin/user)
+```
+
+| 层级 | 防护能力 | 核心规则 | 触发动作 |
+|------|---------|---------|----------|
+| **L1** | 注入攻击检测 | `\$\(`, `/dev/tcp`, `bash -i`, `\|sh` 等12种 | ❌ 直接拒绝 |
+| **L2** | 危险命令拦截 | `rm -rf`, `dd if=`, `mkfs`, `shutdown`, `drop database` 等18种 | ❌ 直接拒绝 |
+| **L3** | 安全命令放行 | `ls/cat/grep/ps/docker ps/kubectl get` 等30+只读操作 | ✅ 直接执行 |
+| **L4** | 风险分级评估 | LOW(只读), MEDIUM(需确认), HIGH(需审批), BLOCKED(禁止) | 分级处理 |
+| **L5** | 红线操作拦截 | `delete/release/drop/truncate/restart_core_service` 等9种 | 🛑 强制审批 |
+| **L6** | 人工审批流程 | 邮件APPROVE/REJECT + API接口双通道 | 待批准后执行 |
+| **L7** | RBAC权限控制 | admin(全部权限) / user(只读+低风险) | 权限不足拒绝 |
+
+**关键文件**: [tool_registry.py](aiops-platform/backend/app/agents/tool_registry.py) · [config.py](aiops-platform/backend/app/core/config.py) · [action_execute.py](aiops-platform/backend/app/agents/action_execute.py) · [approval.py](aiops-platform/backend/app/api/approval.py) · [auth.py](aiops-platform/backend/app/api/auth.py)
 
 ### 🛠️ 技术栈
 
