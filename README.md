@@ -40,6 +40,7 @@ AIops/
 │   ├── alert_aggregation_Drain_DBSCAN/  # 🆕 Drain+DBSCAN 告警聚合（推荐）
 │   ├── GNN_RCA/                        # GNN 图神经网络根因分析
 │   ├── microservice_rca/               # 微服务根因分析
+│   ├── system_load_prediction/         # ⭐ 双层漏斗架构系统负载异常检测
 │   ├── security_audit/                 # 安全审计系统
 │   ├── cpu_IsolationForest_Prophet/    # CPU 异常检测
 │   ├── cost_analysis_Prophet/          # 成本分析与预测
@@ -385,9 +386,10 @@ export OTEL_ENDPOINT=http://localhost:4317
 | **1** | **alert_aggregation_Drain_DBSCAN** | Drain + DBSCAN | 运维日志告警聚合 | ⭐⭐⭐⭐⭐ 强烈推荐 |
 | **2** | **GNN_RCA** | 图神经网络 (GCN/GAT/GraphSAGE) | 微服务根因分析 | ⭐⭐⭐⭐⭐ 推荐 |
 | **3** | **microservice_rca** | GCN + GAT | 微服务故障定位 | ⭐⭐⭐⭐ 推荐 |
-| **4** | **security_audit** | 规则引擎 + 统计模型 | 安全事件检测 | ⭐⭐⭐⭐ 推荐 |
-| **5** | **cpu_IsolationForest_Prophet** | IsolationForest + Prophet | CPU使用率异常检测 | ⭐⭐⭐ 良好 |
-| **6** | **cost_analysis_Prophet** | Prophet 时序预测 | 云成本异常检测 | ⭐⭐⭐ 良好 |
+| **4** | **system_load_prediction** | IsolationForest + LSTM Autoencoder | 系统负载实时异常检测 | ⭐⭐⭐⭐⭐ 推荐 |
+| **5** | **security_audit** | 规则引擎 + 统计模型 | 安全事件检测 | ⭐⭐⭐⭐ 推荐 |
+| **6** | **cpu_IsolationForest_Prophet** | IsolationForest + Prophet | CPU使用率异常检测 | ⭐⭐⭐ 良好 |
+| **7** | **cost_analysis_Prophet** | Prophet 时序预测 | 云成本异常检测 | ⭐⭐⭐ 良好 |
 
 ---
 
@@ -536,7 +538,118 @@ python3 run_pipeline.py --epochs 50 --model gat
 
 ---
 
-### 🛡️ 4. security_audit - 安全审计系统
+### 🎯 4. system_load_prediction - 双层漏斗架构系统负载异常检测
+
+> 基于 **Isolation Forest + LSTM Autoencoder** 的实时异常检测与邮件报警系统
+
+#### 系统架构
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    双层漏斗检测架构                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  数据流模拟器                                                    │
+│      │                                                          │
+│      ▼                                                          │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │         Layer 1: Isolation Forest (快速初筛)             │   │
+│  │  ┌─────────────────────────────────────────────────┐    │   │
+│  │  │  score ≥ 0.05   → 🟢 正常 (放行)                 │    │   │
+│  │  │  score < -0.20  → 🔴 严重异常 (直接报警)          │    │   │
+│  │  │  中间区间        → 🟡 疑似 (推送 LSTM-AE)         │    │   │
+│  │  └─────────────────────────────────────────────────┘    │   │
+│  │  特征工程: 原始3维 + rolling统计 + 跨特征联动 = 14维     │   │
+│  └────────────────────────┬────────────────────────────────┘   │
+│                           │ (仅疑似点)                          │
+│                           ▼                                     │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │       Layer 2: LSTM Autoencoder (深度确诊)               │   │
+│  │  ┌─────────────────────────────────────────────────┐    │   │
+│  │  │  Encoder: BiLSTM(48) × 2层 → Latent(24d)        │    │   │
+│  │  │  Decoder: LSTM(48) × 2层 → Reconstructed        │    │   │
+│  │  │  判定: 重构误差 vs EWMA动态阈值                   │    │   │
+│  │  └─────────────────────────────────────────────────┘    │   │
+│  │  • error > 阈值 → 🟣 确诊异常 (报警)                     │   │
+│  │  • error ≤ 阈值 → 🟡 误报释放 (日志记录)                 │   │
+│  └────────────────────────┬────────────────────────────────┘   │
+│                           │                                     │
+│                           ▼                                     │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │            EmailAlerter (邮件报警)                        │   │
+│  │  • 防轰炸冷却机制 (60s 冷却期)                            │   │
+│  │  • 邮件内容: 异常时间 + 指标数值 + 判定来源               │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### 核心特性
+
+✅ **双层协同检测**: IF 快速过滤显性异常 + LSTM-AE 深度捕获隐性异常  
+✅ **实时数据流**: 模拟 24h 系统负载（CPU/Memory/DiskIO）+ 异常注入  
+✅ **智能误报抑制**: LSTM-AE 二次确认，大幅降低误报率  
+✅ **邮件报警**: SMTP 邮件通知 + 防轰炸冷却机制（60s）  
+✅ **动态阈值**: EWMA 自适应阈值，适应非平稳时序  
+
+#### 异常类型
+
+| 类型 | 描述 | 检测层 |
+|------|------|--------|
+| **显性异常** | CPU 飙至 99%、内存 OOM、磁盘风暴 | IF 直接拦截 |
+| **隐性异常** | CPU 锯齿波、内存缓慢泄漏、相关性断裂 | LSTM-AE 确诊 |
+
+#### 性能指标
+
+| 指标 | 仅 IF 单层 | 双层漏斗 | 改进 |
+|------|-----------|---------|------|
+| **Precision** | 64.8% | **87.5%** | +22.7% |
+| **误报率 (FAR)** | 16.9% | **0.1%** | -16.8% |
+
+#### 快速开始
+
+```bash
+cd time_sequence_detection/system_load_prediction
+
+# 运行实时监控系统
+python3 realtime_monitor.py
+
+# 运行离线批量检测（含可视化）
+python3 dual_funnel_detector.py
+```
+
+#### 输出文件
+
+```
+system_load_prediction/
+├── realtime_monitor.py          # 实时监控主脚本
+├── dual_funnel_detector.py      # 离线批量检测版
+├── usage.md                     # 详细使用文档
+├── data/                        # 数据目录
+│   ├── dual_funnel_system_load.csv    # 模拟数据
+│   └── dual_funnel_detected.csv       # 检测结果
+├── models/                      # 模型目录
+│   ├── rt_if_model.pkl          # Isolation Forest
+│   ├── rt_lstm_ae.pth           # LSTM Autoencoder
+│   └── rt_ae_scaler.pkl         # 归一化 Scaler
+└── output/                      # 输出目录
+    └── dual_funnel_detection_results.png  # 可视化大图
+```
+
+#### 技术栈
+
+| 技术 | 用途 |
+|------|------|
+| **PyTorch** | LSTM Autoencoder 模型 |
+| **scikit-learn** | Isolation Forest |
+| **smtplib** | 邮件报警 |
+| **numpy/pandas** | 数据处理 |
+
+**详细文档**: [usage.md](time_sequence_detection/system_load_prediction/usage.md)
+
+---
+
+### 🛡️ 5. security_audit - 安全审计系统
 
 > 运维安全事件的 **自动化检测与关联分析**
 
@@ -557,7 +670,7 @@ python3 run_pipeline.py --epochs 50 --model gat
 
 ---
 
-### 📈 5. cpu_IsolationForest_Prophet - CPU 异常检测
+### 📈 6. cpu_IsolationForest_Prophet - CPU 异常检测
 
 > 使用 **IsolationForest + Prophet** 双模型进行 CPU 使用率异常检测
 
@@ -576,7 +689,7 @@ python3 run_pipeline.py --epochs 50 --model gat
 
 ---
 
-### 💰 6. cost_analysis_Prophet - 成本分析与预测
+### 💰 7. cost_analysis_Prophet - 成本分析与预测
 
 > 基于 **Prophet 时序模型** 的云资源成本预测与异常检测
 
