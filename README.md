@@ -248,7 +248,133 @@ npm run dev
 
 ---
 
-## ⏱️ 二、算法引擎：time_sequence_detection（时间序列检测与分析）
+## 🔬 二、Observability 可观测性平台
+
+> ⭐ **集成 Prometheus、Grafana、OpenTelemetry、Tempo 的企业级可观测平台，联合 time_sequence_detection 算法库实现智能根因分析**
+
+### 📖 平台概述
+
+基于 **多数据源融合 + 多算法推理** 的新一代智能运维可观测平台：
+
+- 📊 **统一数据采集**: Prometheus 指标、Tempo 链路、OTel 追踪、Grafana 可视化
+- 🧠 **增强型根因分析**: GNN 图神经网络 + IsolationForest + Prophet 多算法融合
+- 🔄 **自动仪表盘生成**: Grafana Dashboard JSON 自动创建与部署
+- ⚡ **分布式追踪**: OpenTelemetry 全链路埋点与上下文传播
+- 🎯 **多维证据融合**: 加权置信度评估 + 自动修复建议
+
+### 🏗️ 架构设计
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                    AIOps 增强型根因分析平台                            │
+├──────────────────────────────────────────────────────────────────────┤
+│  ┌─────────────────────┐     ┌────────────────────────────────────┐ │
+│  │   Observability      │     │    time_sequence_detection         │ │
+│  │   (数据采集层)        │ ──▶ │    (算法引擎层)                    │ │
+│  ├─────────────────────┤     ├────────────────────────────────────┤ │
+│  │ • Prometheus 指标   │     │ • GNN_RCA (图神经网络)             │ │
+│  │ • Tempo 链路追踪    │     │ • IsolationForest + Prophet       │ │
+│  │ • OTEL 分布式追踪   │     │ • Drain + DBSCAN 告警聚合          │ │
+│  │ • Grafana 可视化    │     │ • LSTM 日志异常检测               │ │
+│  └─────────┬───────────┘     └────────────────┬───────────────────┘ │
+│            │                                  │                      │
+│            ▼                                  ▼                      │
+│  ┌─────────────────────────────────────────────────────────────────┐│
+│  │              Data Bridge Layer (数据桥接层)                       ││
+│  │  Prometheus → Pandas DataFrame | Tempo → Graph Structure        ││
+│  └─────────────────────────┬───────────────────────────────────────┘│
+│                            ▼                                        │
+│  ┌─────────────────────────────────────────────────────────────────┐│
+│  │           EnhancedRootCauseAnalyzer (增强型根因分析器)            ││
+│  │  ┌──────────────┐ ┌──────────────┐ ┌────────────────────────┐  ││
+│  │  │ IsolationForest│ │   Prophet    │ │   GNN Root Cause      │  ││
+│  │  │ 异常检测       │ │ 时序预测     │ │ 图神经网络推理         │  ││
+│  │  └──────┬─────────┘ └──────┬───────┘ └────────┬───────────────┘  ││
+│  │         └──────────────────┼───────────────────┘                 ││
+│  │                            ▼                                    ││
+│  │              Multi-Algorithm Fusion Engine                      ││
+│  └─────────────────────────────────────────────────────────────────┘│
+│                            ↓                                        │
+│              📊 Enhanced RCA Report (增强型报告)                     │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+### 📦 核心模块
+
+| 模块 | 文件位置 | 功能描述 |
+|------|----------|----------|
+| **config.py** | `backend/app/observability/config.py` | 统一配置管理（Pydantic模型） |
+| **prometheus_client.py** | `backend/app/observability/prometheus_client.py` | PromQL查询、指标采集、异常检测 |
+| **opentelemetry_tracer.py** | `backend/app/observability/opentelemetry_tracer.py` | OTel SDK初始化、自动埋点、Span管理 |
+| **tempo_query.py** | `backend/app/observability/tempo_query.py` | Trace查询、性能分析、服务依赖图 |
+| **root_cause_analyzer.py** | `backend/app/observability/root_cause_analyzer.py` | 基础RCA引擎（规则+统计） |
+| **grafana_dashboard.py** | `backend/app/observability/grafana_dashboard.py` | 4种模板仪表盘自动生成+部署 |
+| **enhanced_rca.py** | `backend/app/observability/enhanced_rca.py` | ⭐ 增强型RCA（联合算法） |
+
+### 🚀 快速开始
+
+```bash
+cd aiops-platform/backend
+pip install httpx opentelemetry-api opentelemetry-sdk \
+            opentelemetry-exporter-otlp numpy pydantic pandas \
+            scikit-learn prophet torch torch_geometric
+```
+
+```python
+import asyncio
+from app.observability.enhanced_rca import create_enhanced_analyzer
+
+async def enhanced_analysis():
+    async with create_enhanced_analyzer() as analyzer:
+        report = await analyzer.analyze_enhanced(
+            service_name="order-service",
+            time_window_minutes=30,
+        )
+        print(f"使用算法: {report.algorithms_used}")
+        for hyp in report.base_report.hypotheses[:3]:
+            print(f"根因: {hyp.title} (置信度: {hyp.confidence_score*100:.1f}%)")
+
+asyncio.run(enhanced_analysis())
+```
+
+### 📊 支持的算法集成
+
+| 算法 | 来源模块 | 适用场景 |
+|------|---------|---------|
+| **GNN (GCN/GAT)** | `microservice_rca`, `GNN_RCA` | 微服务级联故障 |
+| **IsolationForest** | `cpu_IsolationForest_Prophet` | CPU/内存突增 |
+| **Prophet** | `cpu_IsolationForest_Prophet`, `cost_analysis_Prophet` | 周期性模式破坏 |
+| **Drain + DBSCAN** | `alert_aggregation_Drain_DBSCAN` | 告警风暴处理 |
+
+### 📁 目录结构
+
+```
+aiops-platform/backend/app/observability/
+├── config.py                # Pydantic 配置模型
+├── prometheus_client.py     # Prometheus 查询客户端
+├── opentelemetry_tracer.py  # OTel 分布式追踪
+├── tempo_query.py           # Tempo 链路查询与分析
+├── root_cause_analyzer.py   # 基础根因分析引擎
+├── grafana_dashboard.py     # Grafana 仪表盘生成器
+├── enhanced_rca.py          # ⭐ 增强型RCA（联合算法）
+├── examples.py              # 基础使用示例
+└── enhanced_examples.py     # ⭐ 增强使用示例
+```
+
+### 🔧 配置说明
+
+```bash
+export PROMETHEUS_URL=http://localhost:9090
+export GRAFANA_URL=http://localhost:3000
+export TEMPO_URL=http://localhost:3200
+export OTEL_ENDPOINT=http://localhost:4317
+```
+
+**详细文档**: [examples.py](aiops-platform/backend/app/observability/examples.py) · [enhanced_examples.py](aiops-platform/backend/app/observability/enhanced_examples.py)
+
+---
+
+## ⏱️ 三、算法引擎：time_sequence_detection（时间序列检测与分析）
 
 > 包含多种运维场景下的时序数据分析、异常检测和根因定位算法
 
@@ -462,7 +588,7 @@ python3 run_pipeline.py --epochs 50 --model gat
 
 ---
 
-## 🧠 三、知识图谱：knowledge_graph（基础设施拓扑与查询）
+## 🧠 四、知识图谱：knowledge_graph（基础设施拓扑与查询）
 
 > 基于 **Neo4j** 的运维知识图谱，支持自然语言查询
 
@@ -521,7 +647,7 @@ python infra_text2cypher.py
 
 ---
 
-## 🛠️ 四、快速开始指南
+## 🛠️ 五、快速开始指南
 
 ### 环境要求
 
@@ -617,7 +743,7 @@ curl -X POST http://localhost:8000/api/auth/login \
 
 ---
 
-## 📚 五、详细文档
+## 📚 六、详细文档
 
 | 文档 | 路径 | 内容 |
 |------|------|------|
@@ -628,7 +754,7 @@ curl -X POST http://localhost:8000/api/auth/login \
 
 ---
 
-## 🔧 六、核心技术详解
+## 🔧 七、核心技术详解
 
 ### Multi-Agent ReAct 工作流程
 
@@ -729,7 +855,7 @@ data = await dsm.load_data(
 
 ---
 
-## 🎯 七、项目评级与改进路线图
+## 🎯 八、项目评级与改进路线图
 
 ### 📊 Code Review 总评: A- (82/100)
 
@@ -774,7 +900,7 @@ data = await dsm.load_data(
 
 ---
 
-## 📈 八、性能基准与最佳实践
+## 📈 九、性能基准与最佳实践
 
 ### 当前性能指标
 
@@ -836,7 +962,7 @@ METRICS = {
 
 ---
 
-## 🤝 九、贡献指南
+## 🤝 十、贡献指南
 
 ### 开发规范
 
@@ -887,300 +1013,5 @@ Copyright (c) 2024-2026 AIOps Team
 
 如有问题或建议，请提交 Issue 或联系维护团队。
 
-**最后更新**: 2026-04-18  
-**文档版本**: v3.0 (新增 Observability 可观测平台 + 增强型根因分析)
-
----
-
-## 🔬 五、Observability 可观测性平台（新增）
-
-> ⭐ **集成 Prometheus、Grafana、OpenTelemetry、Tempo 的企业级可观测平台，联合 time_sequence_detection 算法库实现智能根因分析**
-
-### 📖 平台概述
-
-基于 **多数据源融合 + 多算法推理** 的新一代智能运维可观测平台：
-
-- 📊 **统一数据采集**: Prometheus 指标、Tempo 链路、OTel 追踪、Grafana 可视化
-- 🧠 **增强型根因分析**: GNN 图神经网络 + IsolationForest + Prophet 多算法融合
-- 🔄 **自动仪表盘生成**: Grafana Dashboard JSON 自动创建与部署
-- ⚡ **分布式追踪**: OpenTelemetry 全链路埋点与上下文传播
-- 🎯 **多维证据融合**: 加权置信度评估 + 自动修复建议
-
-### 🏗️ 架构设计
-
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                    AIOps 增强型根因分析平台                            │
-├──────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  ┌─────────────────────┐     ┌────────────────────────────────────┐ │
-│  │   Observability      │     │    time_sequence_detection         │ │
-│  │   (数据采集层)        │ ──▶ │    (算法引擎层)                    │ │
-│  ├─────────────────────┤     ├────────────────────────────────────┤ │
-│  │ • Prometheus 指标   │     │ • GNN_RCA (图神经网络)             │ │
-│  │ • Tempo 链路追踪    │     │ • IsolationForest + Prophet       │ │
-│  │ • OTEL 分布式追踪   │     │ • Drain + DBSCAN 告警聚合          │ │
-│  │ • Grafana 可视化    │     │ • LSTM 日志异常检测               │ │
-│  └─────────┬───────────┘     └────────────────┬───────────────────┘ │
-│            │                                  │                      │
-│            ▼                                  ▼                      │
-│  ┌─────────────────────────────────────────────────────────────────┐│
-│  │              Data Bridge Layer (数据桥接层)                       ││
-│  │  Prometheus → Pandas DataFrame | Tempo → Graph Structure        ││
-│  └─────────────────────────┬───────────────────────────────────────┘│
-│                            │                                        │
-│  ┌─────────────────────────▼───────────────────────────────────────┐│
-│  │           EnhancedRootCauseAnalyzer (增强型根因分析器)            ││
-│  │  ┌──────────────┐ ┌──────────────┐ ┌────────────────────────┐  ││
-│  │  │ IsolationForest│ │   Prophet    │ │   GNN Root Cause      │  ││
-│  │  │ 异常检测       │ │ 时序预测     │ │ 图神经网络推理         │  ││
-│  │  └──────┬─────────┘ └──────┬───────┘ └────────┬───────────────┘  ││
-│  │         │                  │                   │                 ││
-│  │         └──────────────────┼───────────────────┘                 ││
-│  │                            ▼                                    ││
-│  │              Multi-Algorithm Fusion Engine                      ││
-│  └─────────────────────────────────────────────────────────────────┘│
-│                            │                                        │
-│                            ▼                                        │
-│              📊 Enhanced RCA Report (增强型报告)                     │
-│              • 多源证据融合  • 加权置信度  • 根因排序               │
-└──────────────────────────────────────────────────────────────────────┘
-```
-
-### 📦 核心模块
-
-| 模块 | 文件位置 | 功能描述 |
-|------|----------|----------|
-| **config.py** | `backend/app/observability/config.py` | 统一配置管理（Pydantic模型） |
-| **prometheus_client.py** | `backend/app/observability/prometheus_client.py` | PromQL查询、指标采集、异常检测 |
-| **opentelemetry_tracer.py** | `backend/app/observability/opentelemetry_tracer.py` | OTel SDK初始化、自动埋点、Span管理 |
-| **tempo_query.py** | `backend/app/observability/tempo_query.py` | Trace查询、性能分析、服务依赖图 |
-| **root_cause_analyzer.py** | `backend/app/observability/root_cause_analyzer.py` | 基础RCA引擎（规则+统计） |
-| **grafana_dashboard.py** | `backend/app/observability/grafana_dashboard.py` | 4种模板仪表盘自动生成+部署 |
-| **enhanced_rca.py** | `backend/app/observability/enhanced_rca.py` | ⭐ 增强型RCA（联合算法） |
-
-### 🚀 快速开始
-
-#### 安装依赖
-
-```bash
-cd aiops-platform/backend
-
-# 核心依赖
-pip install httpx opentelemetry-api opentelemetry-sdk \
-            opentelemetry-exporter-otlp opentelemetry-instrumentation-fastapi \
-            numpy pydantic pandas scikit-learn prophet torch torch_geometric
-```
-
-#### 基础使用（Prometheus + Tempo + RCA）
-
-```python
-import asyncio
-from app.observability import (
-    create_prometheus_client,
-    create_tempo_client,
-    create_root_cause_analyzer,
-)
-
-async def quick_start():
-    async with create_root_cause_analyzer() as rca:
-        report = await rca.analyze_incident(
-            service_name="order-service",
-            time_window_minutes=15,
-        )
-        
-        print(f"最可能原因: {report.top_hypothesis.title}")
-        print(f"置信度: {report.root_confidence*100:.1f}%")
-
-asyncio.run(quick_start())
-```
-
-#### 增强型使用（联合 GNN + IF + Prophet）
-
-```python
-import asyncio
-from app.observability.enhanced_rca import create_enhanced_analyzer
-
-async def enhanced_analysis():
-    async with create_enhanced_analyzer() as analyzer:
-        # 自动运行: 基础RCA + IsolationForest + Prophet + GNN
-        report = await analyzer.analyze_enhanced(
-            service_name="order-service",
-            time_window_minutes=30,
-        )
-        
-        print(f"使用算法: {report.algorithms_used}")
-        for hyp in report.base_report.hypotheses[:3]:
-            print(f"根因: {hyp.title} (置信度: {hyp.confidence_score*100:.1f}%)")
-            for ev in hyp.evidences:
-                print(f"  ✓ [{ev.source}] {ev.description}")
-
-asyncio.run(enhanced_analysis())
-```
-
-#### OpenTelemetry 追踪集成
-
-```python
-from app.observability.opentelemetry_tracer import (
-    initialize_observability,
-    trace_operation,
-    SpanKind,
-)
-
-# 初始化
-tracer = initialize_observability()
-
-# 装饰器方式自动埋点
-@trace_operation(name="database_query", kind=SpanKind.CLIENT)
-async def query_database(user_id):
-    result = await db.query(user_id)
-    return result
-
-# 上下文管理器方式
-async with tracer.async_span_context("api_request") as span:
-    tracer.set_attribute(span, "http.method", "GET")
-    # 业务逻辑...
-```
-
-#### Grafana 仪表盘自动部署
-
-```python
-import asyncio
-from app.observability.grafana_dashboard import (
-    create_dashboard_generator,
-    DashboardTemplate,
-)
-
-async def deploy_dashboards():
-    async with create_dashboard_generator() as gen:
-        # 生成系统监控仪表盘
-        dashboard = gen.generate_dashboard(
-            template=DashboardTemplate.SYSTEM_OVERVIEW,
-            title="AIOps - 系统资源监控",
-        )
-        
-        # 部署到 Grafana
-        result = await gen.deploy_to_grafana(dashboard)
-        print(f"仪表盘 URL: {result['url']}")
-
-asyncio.run(deploy_dashboards())
-```
-
-### 📊 支持的算法集成
-
-| 算法 | 来源模块 | 功能 | 适用场景 |
-|------|---------|------|---------|
-| **GNN (GCN/GAT)** | `microservice_rca`, `GNN_RCA` | 图神经网络微服务根因定位 | 微服务级联故障 |
-| **IsolationForest** | `cpu_IsolationForest_Prophet` | 无监督统计异常检测 | CPU/内存突增 |
-| **Prophet** | `cpu_IsolationForest_Prophet`, `cost_analysis_Prophet` | 时序趋势预测与偏差检测 | 周期性模式破坏 |
-| **Drain + DBSCAN** | `alert_aggregation_Drain_DBSCAN` | 日志告警聚合收敛 | 告警风暴处理 |
-| **Z-Score 统计** | 内置实现 | 实时异常评分 | 快速阈值告警 |
-
-### 🎯 使用场景示例
-
-#### 场景1: 服务故障自动诊断
-
-```bash
-# order-service 出现大量5xx错误，触发自动根因分析
-python -c "
-import asyncio
-from app.observability.enhanced_rca import create_enhanced_analyzer
-
-async def diagnose():
-    async with create_enhanced_analyzer() as rca:
-        report = await rca.analyze_enhanced(service='order-service')
-        print(report.to_dict())
-
-asyncio.run(diagnose())
-"
-```
-
-#### 场景2: 性能瓶颈定位
-
-```python
-# 分析慢请求的调用链瓶颈
-async with create_tempo_client() as tempo:
-    slow_traces = await tempo.search_slow_traces(min_duration="3s")
-    
-    for trace_info in slow_traces.traces[:5]:
-        analysis = await tempo.analyze_trace_performance(trace_info["traceID"])
-        for bn in analysis["bottleneck_analysis"]:
-            print(f"瓶颈: {bn['operation_name']} ({bn['duration_ms']:.0f}ms)")
-```
-
-#### 场景3: 全栈监控仪表盘
-
-```python
-# 一键生成并部署4种专业仪表盘
-templates = [
-    DashboardTemplate.SYSTEM_OVERVIEW,       # 系统资源监控
-    DashboardTemplate.APPLICATION_PERFORMANCE, # APM应用性能
-    DashboardTemplate.ROOT_CAUSE_ANALYSIS,     # 根因分析工作台
-    DashboardTemplate.SERVICE_MESH,           # 服务网格监控
-]
-
-for template in templates:
-    dashboard = gen.generate_dashboard(template=template)
-    await gen.deploy_to_grafana(dashboard)
-```
-
-### 📁 目录结构
-
-```
-aiops-platform/backend/app/observability/
-├── __init__.py              # 包导出（含增强模块）
-├── config.py                # Pydantic 配置模型
-├── prometheus_client.py     # Prometheus 查询客户端
-├── opentelemetry_tracer.py  # OTel 分布式追踪
-├── tempo_query.py           # Tempo 链路查询与分析
-├── root_cause_analyzer.py   # 基础根因分析引擎
-├── grafana_dashboard.py     # Grafana 仪表盘生成器
-├── enhanced_rca.py          # ⭐ 增强型RCA（联合算法）
-├── examples.py              # 基础使用示例
-└── enhanced_examples.py     # ⭐ 增强使用示例
-```
-
-### 🔧 配置说明
-
-通过环境变量或 Pydantic 模型配置各组件：
-
-```bash
-# Prometheus
-export PROMETHEUS_URL=http://localhost:9090
-
-# Grafana
-export GRAFANA_URL=http://localhost:3000
-export GRAFANA_API_KEY=your-api-key
-
-# Tempo
-export TEMPO_URL=http://localhost:3200
-
-# OpenTelemetry
-export OTEL_ENDPOINT=http://localhost:4317
-export OTEL_SERVICE_NAME=aiops-platform
-```
-
----
-
-## 📝 六、项目路线图
-
-### ✅ 已完成
-
-- [x] Multi-Agent 智能诊断系统
-- [x] 时间序列检测算法库（6个模块）
-- [x] Neo4j 知识图谱
-- [x] 安全审计系统
-- [x] **🆕 Observability 可观测性平台**
-- [x] **🆕 增强 RCA（GNN + IF + Prophet 联合）**
-
-### 🔄 进行中
-
-- [ ] LLM 增强的自然语言诊断报告生成
-- [ ] Kubernetes Operator 自动化运维
-- [ ] 更多数据源适配器开发
-
-### 📌 计划中
-
-- [ ] AIOps Agent Marketplace（技能市场）
-- [ ] 多租户隔离与企业版功能
-- [ ] 边缘计算节点支持
+**最后更新**: 2026-04-19  
+**文档版本**: v3.1 (优化章节结构 + 7层安全防护体系)
