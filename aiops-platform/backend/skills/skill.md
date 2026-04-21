@@ -50,6 +50,7 @@
 |-------|---------|-----------|---------|
 | **debug_skill** | `diagnosis/debug_skill.md` | 磁盘, 内存, CPU, 网络, 故障, 排查, OOM, 502, 504, SSH不通, 死锁, CrashLoopBackOff, 防火墙 | 服务器/数据库/中间件/K8S 全栈故障排查 |
 | **gnn_rca_skill** | `diagnosis/gnn_rca_skill.md` | 根因分析, RCA, GNN, 微服务, 拓扑 | 微服务根因分析 |
+| **microservice_rca_skill** | `diagnosis/microservice_rca_skill.md` | 微服务根因, GNN, 服务拓扑, 故障传播 | 微服务根因定位 (GNN) |
 | **time_series_rca_skill** | `diagnosis/time_series_rca_skill.md` | 时间序列, 预测, 异常检测, 趋势分析 | 时间序列根因分析 |
 | **mysql_deadlock_skill** | `diagnosis/mysql_deadlock_skill.md` | 死锁, deadlock, 锁等待, 事务阻塞 | MySQL 死锁排查与解决 |
 | **mysql_slow_query_skill** | `diagnosis/mysql_slow_query_skill.md` | 慢查询, slow query, SQL优化, 查询慢 | MySQL 慢查询分析 |
@@ -64,6 +65,7 @@
 **选择指南**：
 - 单机故障 → `@reference: diagnosis/debug_skill.md`
 - 微服务/多服务故障 → `@reference: diagnosis/gnn_rca_skill.md`
+- 微服务根因定位 → `@reference: diagnosis/microservice_rca_skill.md`
 - 时间序列/指标异常 → `@reference: diagnosis/time_series_rca_skill.md`
 - MySQL 死锁/锁等待 → `@reference: diagnosis/mysql_deadlock_skill.md`
 - MySQL 慢查询 → `@reference: diagnosis/mysql_slow_query_skill.md`
@@ -120,16 +122,24 @@
 | Skill | 文件路径 | 触发关键词 | 适用场景 |
 |-------|---------|-----------|---------|
 | **deeplog_anomaly_detection_skill** | `monitoring/deeplog_anomaly_detection_skill.md` | 日志异常检测, DeepLog, LSTM, 日志序列 | DeepLog 日志异常检测 |
+| **alert_cluster_skill** | `monitoring/alert_cluster_skill.md` | 告警聚合, 告警风暴, Drain, Word2Vec, DBSCAN | 智能告警聚合与压缩 |
+| **system_load_skill** | `monitoring/system_load_skill.md` | 系统负载, 双层漏斗, Isolation Forest, LSTM-AE | 系统负载异常检测 |
 
 #### P1 - 常用监控技能
 
 | Skill | 文件路径 | 触发关键词 | 适用场景 |
 |-------|---------|-----------|---------|
+| **cost_analysis_skill** | `monitoring/cost_analysis_skill.md` | 成本分析, 云成本, Prophet, 成本异常 | 云成本异常分析 |
+| **cpu_anomaly_skill** | `monitoring/cpu_anomaly_skill.md` | CPU异常, CPU使用率, Isolation Forest, Prophet | CPU 异常检测 |
 | **prometheus_skill** | `monitoring/prometheus_skill.md` | Prometheus, 监控, 指标, PromQL, 告警 | Prometheus 监控诊断 |
 | **log_analysis_skill** | `monitoring/log_analysis_skill.md` | 日志, log, ELK, Loki, 日志分析 | 日志分析与排查 |
 
 **选择指南**：
 - 日志异常检测 → `@reference: monitoring/deeplog_anomaly_detection_skill.md`
+- 告警风暴/告警聚合 → `@reference: monitoring/alert_cluster_skill.md`
+- 系统负载异常 → `@reference: monitoring/system_load_skill.md`
+- 云成本异常 → `@reference: monitoring/cost_analysis_skill.md`
+- CPU 异常检测 → `@reference: monitoring/cpu_anomaly_skill.md`
 - Prometheus 问题 → `@reference: monitoring/prometheus_skill.md`
 - 日志分析 → `@reference: monitoring/log_analysis_skill.md`
 
@@ -411,12 +421,32 @@
     │   ├─ 是 → gnn_rca_skill (根因分析)
     │   └─ 否 ↓
     │
+    ├─ 是否涉及微服务根因定位？
+    │   ├─ 是 → microservice_rca_skill (微服务根因定位)
+    │   └─ 否 ↓
+    │
     ├─ 是否涉及时间序列/指标预测？
     │   ├─ 是 → time_series_rca_skill (时间序列根因分析)
     │   └─ 否 ↓
     │
     ├─ 是否涉及日志异常检测？
     │   ├─ 是 → deeplog_anomaly_detection_skill (DeepLog 日志异常检测)
+    │   └─ 否 ↓
+    │
+    ├─ 是否涉及告警风暴/告警聚合？
+    │   ├─ 是 → alert_cluster_skill (智能告警聚合)
+    │   └─ 否 ↓
+    │
+    ├─ 是否涉及系统负载异常？
+    │   ├─ 是 → system_load_skill (系统负载异常检测)
+    │   └─ 否 ↓
+    │
+    ├─ 是否涉及云成本异常？
+    │   ├─ 是 → cost_analysis_skill (云成本异常分析)
+    │   └─ 否 ↓
+    │
+    ├─ 是否涉及 CPU 异常？
+    │   ├─ 是 → cpu_anomaly_skill (CPU 异常检测)
     │   └─ 否 ↓
     │
     ├─ 是否涉及数据库？
@@ -532,6 +562,14 @@
 | 日志异常检测, DeepLog, LSTM | `monitoring/deeplog_anomaly_detection_skill.md` |
 | 日志序列, 日志模式, 日志预测 | `monitoring/deeplog_anomaly_detection_skill.md` |
 | Drain, 日志解析, 事件模板 | `monitoring/deeplog_anomaly_detection_skill.md` |
+| 告警聚合, 告警风暴, 告警压缩 | `monitoring/alert_cluster_skill.md` |
+| Word2Vec, DBSCAN, 告警聚类 | `monitoring/alert_cluster_skill.md` |
+| 系统负载, 双层漏斗, Isolation Forest | `monitoring/system_load_skill.md` |
+| LSTM-AE, 负载异常, 实时监控 | `monitoring/system_load_skill.md` |
+| 成本分析, 云成本, 成本异常 | `monitoring/cost_analysis_skill.md` |
+| Prophet, 成本预测, 费用异常 | `monitoring/cost_analysis_skill.md` |
+| CPU异常, CPU使用率, CPU飙升 | `monitoring/cpu_anomaly_skill.md` |
+| CPU预测, 性能异常 | `monitoring/cpu_anomaly_skill.md` |
 | Prometheus, 监控, 指标 | `monitoring/prometheus_skill.md` |
 | PromQL, 告警, alert | `monitoring/prometheus_skill.md` |
 | 日志, log, ELK, Loki | `monitoring/log_analysis_skill.md` |
@@ -544,6 +582,8 @@
 | 时间序列, 时序预测, 指标预测 | `diagnosis/time_series_rca_skill.md` |
 | Prophet, 趋势分析, 容量规划 | `diagnosis/time_series_rca_skill.md` |
 | 异常检测, 故障预测, 性能分析 | `diagnosis/time_series_rca_skill.md` |
+| 微服务根因, 服务拓扑, 故障传播 | `diagnosis/microservice_rca_skill.md` |
+| GNN根因, 微服务故障定位 | `diagnosis/microservice_rca_skill.md` |
 
 ### 4.6 备份类关键词
 

@@ -49,6 +49,7 @@ class ToolRegistry:
         self.register("generate_rca_report", self._generate_rca_report)
         self.register("list_data_sources", self._list_data_sources)
         self.register("load_data_from_source", self._load_data_from_source)
+        self.register("detect_log_anomalies", self._detect_log_anomalies)
     
     def register(self, name: str, func: Callable):
         """
@@ -771,6 +772,86 @@ class ToolRegistry:
                 "data_type": data_type
             }
     
+    async def _detect_log_anomalies(
+        self,
+        logs: List[str] = None,
+        data_path: str = None,
+        model_path: str = None,
+        top_k: int = 3
+    ) -> Dict[str, Any]:
+        """
+        使用 DeepLog 模型检测日志异常（仅推理，不训练）
+        
+        Args:
+            logs: 原始日志列表（优先）
+            data_path: 结构化日志文件路径
+            model_path: 模型文件路径
+            top_k: 预测的 Top-k 事件数
+            
+        Returns:
+            检测结果
+        """
+        try:
+            import sys
+            log_analysis_dir = Path(__file__).parent.parent.parent.parent.parent / "time_sequence_detection" / "Log_Analysis_LSTM"
+            
+            if log_analysis_dir.exists():
+                sys.path.insert(0, str(log_analysis_dir.parent))
+                from Log_Analysis_LSTM.skill import LogAnalysisSkill
+                
+                default_model_path = log_analysis_dir / "models" / "deeplog_model.pth"
+                effective_model_path = model_path or str(default_model_path)
+                
+                skill = LogAnalysisSkill(
+                    model_path=effective_model_path,
+                    top_k=top_k,
+                    auto_load=True
+                )
+                
+                if logs:
+                    result = await skill.detect_logs(logs)
+                else:
+                    default_data_path = log_analysis_dir / "data" / "cleaned" / "logs_structured.csv"
+                    effective_data_path = data_path or str(default_data_path)
+                    result = await skill.detect_from_file(data_path=effective_data_path)
+                
+                anomalies_summary = []
+                for anomaly in result.anomalies[:10]:
+                    anomalies_summary.append({
+                        "timestamp": anomaly.timestamp,
+                        "expected_events": anomaly.expected_events,
+                        "actual_event": anomaly.actual_event,
+                        "actual_template": anomaly.actual_template
+                    })
+                
+                return {
+                    "success": True,
+                    "total_logs": result.total_logs,
+                    "total_predictions": result.total_predictions,
+                    "anomalies_detected": result.anomalies_detected,
+                    "anomaly_rate": result.anomaly_rate,
+                    "anomaly_event_stats": result.anomaly_event_stats,
+                    "anomalies_sample": anomalies_summary
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": f"Log analysis module not found at {log_analysis_dir}",
+                    "hint": "Please ensure the Log_Analysis_LSTM directory exists and model is trained"
+                }
+                
+        except FileNotFoundError as e:
+            return {
+                "success": False,
+                "error": f"Model file not found: {str(e)}",
+                "hint": "Please run training scripts first: python 1_generate_data.py && python 2_parse_logs.py && python 3_train_model.py"
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }
+    
     def get_tools_for_llm(self) -> List[Dict[str, Any]]:
         """
         获取 LLM function calling 格式的工具定义
@@ -1271,6 +1352,36 @@ class ToolRegistry:
                             }
                         },
                         "required": ["source_name", "data_type"]
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "detect_log_anomalies",
+                    "description": "使用 DeepLog 模型检测日志序列异常。基于 LSTM 学习日志事件的正常模式，预测下一个最可能出现的日志事件，如果实际事件不在预测的 Top-k 列表中则判定为异常。仅做推理，不进行训练。",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "logs": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "原始日志列表，每行一条日志。如果提供此参数则优先使用"
+                            },
+                            "data_path": {
+                                "type": "string",
+                                "description": "结构化日志文件路径（CSV格式），如果不提供 logs 则使用此路径"
+                            },
+                            "model_path": {
+                                "type": "string",
+                                "description": "模型文件路径，默认使用预训练模型"
+                            },
+                            "top_k": {
+                                "type": "integer",
+                                "description": "预测的 Top-k 事件数，默认为 3。值越小检测越敏感"
+                            }
+                        },
+                        "required": []
                     }
                 }
             }

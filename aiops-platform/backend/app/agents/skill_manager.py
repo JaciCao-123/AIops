@@ -170,7 +170,60 @@ class SkillManager:
                 "deeplog", "lstm", "日志序列", "日志模式",
                 "日志预测", "日志分析", "log analysis",
                 "时间序列", "time series", "日志模板",
-                "drain", "日志解析", "事件模板"
+                "drain", "日志解析", "事件模板",
+                "日志序列异常", "日志模式识别", "日志预测异常",
+                "detect_log_anomalies", "日志异常推理"
+            ]
+        },
+        "alert_cluster_skill": {
+            "path": "monitoring/alert_cluster_skill.md",
+            "category": "monitoring",
+            "description": "智能告警聚合 (Drain + Word2Vec + DBSCAN)",
+            "keywords": [
+                "告警聚合", "告警压缩", "告警风暴", "alert aggregation",
+                "drain", "word2vec", "dbscan", "聚类",
+                "相似告警", "告警收敛", "告警降噪",
+                "cluster_alerts", "告警分类"
+            ]
+        },
+        "cost_analysis_skill": {
+            "path": "monitoring/cost_analysis_skill.md",
+            "category": "monitoring",
+            "description": "云成本异常分析 (Prophet)",
+            "keywords": [
+                "成本分析", "成本异常", "云成本", "cost analysis",
+                "prophet", "成本预测", "成本激增", "费用异常",
+                "detect_cost_anomaly", "成本监控", "账单分析"
+            ]
+        },
+        "cpu_anomaly_skill": {
+            "path": "monitoring/cpu_anomaly_skill.md",
+            "category": "monitoring",
+            "description": "CPU 异常检测 (Isolation Forest + Prophet)",
+            "keywords": [
+                "cpu异常", "cpu使用率", "cpu飙升", "cpu anomaly",
+                "isolation forest", "prophet", "cpu预测",
+                "detect_cpu_anomaly", "cpu监控", "性能异常"
+            ]
+        },
+        "system_load_skill": {
+            "path": "monitoring/system_load_skill.md",
+            "category": "monitoring",
+            "description": "系统负载异常检测 (双层漏斗: IF + LSTM-AE)",
+            "keywords": [
+                "系统负载", "负载异常", "双层漏斗", "system load",
+                "isolation forest", "lstm autoencoder", "负载检测",
+                "detect_system_load_anomaly", "实时监控", "负载预测"
+            ]
+        },
+        "microservice_rca_skill": {
+            "path": "diagnosis/microservice_rca_skill.md",
+            "category": "diagnosis",
+            "description": "微服务根因分析 (GNN)",
+            "keywords": [
+                "微服务根因", "微服务故障", "服务根因", "microservice rca",
+                "gnn", "图神经网络", "服务拓扑", "故障传播",
+                "analyze_microservice_rca", "根因定位", "服务调用链"
             ]
         },
         "prometheus_skill": {

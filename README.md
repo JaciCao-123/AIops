@@ -1,75 +1,80 @@
 # AIops - 智能运维平台
 
-智能运维（AIOps）平台，集成 **Multi-Agent 智能体架构**、**知识图谱**、**时间序列预测** 和 **根因分析** 能力。
+智能运维（AIOps）平台，集成 **Multi-Agent 智能体架构**、**知识图谱**、**时间序列检测算法库** 和 **根因分析** 能力。
+
+---
+
+## 目录
+
+- [项目亮点](#-项目亮点)
+- [项目架构](#-项目架构)
+- [一、核心平台：aiops-platform](#一核心平台aiops-platform)
+  - [Multi-Agent 架构](#-multi-agent-协同架构)
+  - [安全防护体系](#-安全防护体系)
+  - [Skill 技能库](#-skill-技能库)
+  - [快速开始](#-快速开始)
+- [二、算法引擎：time_sequence_detection](#二算法引擎time_sequence_detection)
+  - [算法模块概览](#-算法模块概览)
+  - [各模块详解](#-各模块详解)
+- [三、可观测性平台](#三可观测性平台)
+- [四、部署指南](#四部署指南)
+- [技术栈](#-技术栈)
+
+---
 
 ## 🎯 项目亮点
 
-- 🤖 **Multi-Agent 协同架构**: 5个专业Agent协同工作，动态规划诊断流程
-- 🧠 **LLM 驱动决策**: ReAct 循环 + Function Calling 实现智能推理
-- 🔒 **企业级安全防护**: 命令注入防护、审批工作流、RBAC权限控制
-- 📊 **全栈算法支持**: GNN、Drain+DBSCAN、Prophet、IsolationForest 等
-- 🔬 **🆕 可观测性平台**: Prometheus + Grafana + OTel + Tempo 全链路监控
-- 🎯 **🆕 增强型根因分析**: GNN + IF + Prophet 多算法融合推理
-- 🌐 **统一数据源管理**: Prometheus、Elasticsearch、Loki、云监控等
+| 特性 | 描述 |
+|------|------|
+| 🤖 **Multi-Agent 协同** | 5个专业Agent协同工作，动态规划诊断流程 |
+| 🧠 **LLM 驱动决策** | ReAct 循环 + Function Calling 实现智能推理 |
+| 🔒 **企业级安全** | 7层安全防护、审批工作流、RBAC权限控制 |
+| 📊 **全栈算法支持** | GNN、Drain+DBSCAN、Prophet、IsolationForest、LSTM 等 |
+| 🔬 **可观测性平台** | Prometheus + Grafana + OTel + Tempo 全链路监控 |
+| 🌐 **统一数据源** | Prometheus、Elasticsearch、Loki、云监控等 |
 
 ---
 
-## 📁 项目架构总览
+## 📁 项目架构
 
 ```
 AIops/
-├── aiops-platform/              # ⭐ 核心智能诊断平台（Multi-Agent 架构）
-│   ├── backend/                 # FastAPI 后端服务
-│   │   ├── app/agents/          # Multi-Agent 系统（核心）
-│   │   ├── app/api/             # REST API 路由
-│   │   ├── app/core/            # 配置 & 数据库
-│   │   ├── app/utils/           # 工具类（数据源管理等）
-│   │   └── app/observability/   # 🔬 可观测性平台（新增）
-│   │       ├── config.py        # 统一配置管理
-│   │       ├── prometheus_client.py  # Prometheus 指标采集
-│   │       ├── opentelemetry_tracer.py  # OTel 分布式追踪
-│   │       ├── tempo_query.py    # Tempo 链路查询
-│   │       ├── root_cause_analyzer.py  # 基础RCA引擎
-│   │       ├── grafana_dashboard.py  # Grafana仪表盘生成
-│   │       └── enhanced_rca.py   # ⭐ 增强型RCA（联合算法）
-│   ├── frontend/                # React + TypeScript 前端
-│   ├── k8s/                     # Kubernetes 部署配置
-│   └── docker/                  # Docker 配置
-├── knowledge_graph/             # 🧠 运维知识图谱（Neo4j）
-├── time_sequence_detection/     # ⏱️ 时间序列检测算法库
-│   ├── alert_aggregation_Drain_DBSCAN/  # 🆕 Drain+DBSCAN 告警聚合（推荐）
-│   ├── GNN_RCA/                        # GNN 图神经网络根因分析
-│   ├── microservice_rca/               # 微服务根因分析
-│   ├── system_load_prediction/         # ⭐ 双层漏斗架构系统负载异常检测
-│   ├── security_audit/                 # 安全审计系统
-│   ├── cpu_IsolationForest_Prophet/    # CPU 异常检测
-│   ├── cost_analysis_Prophet/          # 成本分析与预测
-│   └── ...                             # 其他算法模块
+├── aiops-platform/                    # 核心智能诊断平台
+│   ├── backend/                       # FastAPI 后端服务
+│   │   ├── app/agents/                # Multi-Agent 系统
+│   │   ├── app/api/                   # REST API 路由
+│   │   ├── app/core/                  # 配置 & 数据库
+│   │   ├── app/utils/                 # 工具类
+│   │   ├── app/observability/         # 可观测性平台
+│   │   ├── algorithm/                 # 算法模块
+│   │   └── skills/                    # Skill 技能库 (40+)
+│   ├── frontend/                      # React + TypeScript 前端
+│   ├── k8s/                           # Kubernetes 部署配置
+│   └── docker/                        # Docker 配置
+│
+├── time_sequence_detection/           # 时间序列检测算法库
+│   ├── Log_Analysis_LSTM/             # DeepLog 日志异常检测
+│   ├── GNN_RCA/                       # GNN 图神经网络根因分析
+│   ├── microservice_rca/              # 微服务根因分析
+│   ├── alert_aggregation_Drain_DBSCAN/# 智能告警聚合
+│   ├── system_load_prediction/        # 双层漏斗系统负载检测
+│   ├── cpu_IsolationForest_Prophet/   # CPU 异常检测
+│   ├── cost_analysis_Prophet/         # 成本异常分析
+│   └── security_audit/                # 安全审计系统
+│
+└── knowledge_graph/                   # 运维知识图谱 (Neo4j)
 ```
 
 ---
 
-## 🚀 一、核心平台：aiops-platform（Multi-Agent 智能诊断系统）
+## 一、核心平台：aiops-platform
 
-> ⭐ **这是整个项目的核心**，采用业界领先的 Multi-Agent + LLM 动态决策架构
-
-### 📖 平台概述
-
-基于 **多智能体协作架构** 的智能运维诊断平台，支持：
-
-- ✅ **自然语言交互**: "order-service 连接池耗尽，帮我排查"
-- ✅ **自动意图识别**: NER 实体提取 + 意图分类
-- ✅ **动态诊断规划**: LLM 根据 Skill 文件动态生成诊断计划
-- ✅ **安全命令执行**: 多层安全检查 + 人工审批机制
-- ✅ **知识图谱增强**: Neo4j 拓扑查询 + RAG 检索
-
-### 🏗️ 技术架构
+### 🏗️ Multi-Agent 协同架构
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Multi-Agent 协同架构                          │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
 │  用户请求                                                        │
 │      │                                                          │
 │      ▼                                                          │
@@ -87,136 +92,113 @@ AIops/
 │  │  │ Intent   │ │Knowledge │ │Observabil│ │ Action   │    │   │
 │  │  │ Parse    │ │ Expert   │ │ ity      │ │ Execute  │    │   │
 │  │  │ Agent    │ │ Agent    │ │ Analyst  │ │ Agent    │    │   │
-│  │  │ (入口)   │ │ (知识)   │ │ (感知)   │ │ (执行)   │    │   │
 │  │  └──────────┘ └──────────┘ └──────────┘ └──────────┘    │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │      │                                                           │
 │      ▼                                                           │
 │  ┌─────────────────────────────────────────────────────────┐   │
 │  │         ToolRegistry + SkillManager                      │   │
-│  │  • 20+ 工具注册 (SSH、Prometheus、Neo4j...)              │   │
-│  │  • 30+ Skill 文件 (MySQL、Redis、K8s...)                 │   │
+│  │  • 25+ 工具注册 (SSH、Prometheus、Neo4j...)              │   │
+│  │  • 40+ Skill 文件 (MySQL、Redis、K8s...)                 │   │
 │  │  • 安全检查 & 审批工作流                                  │   │
 │  └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ### 👥 Agent 角色分工
 
-| Agent | 角色 | 核心职责 | 输入 | 输出 |
-|-------|------|----------|------|------|
-| **IntentParseAgent** | 入口网关 | NER实体识别、意图分类、关键词提取 | 用户自然语言 | `IntentResult` + `EntitiesResult` |
-| **KnowledgeExpertAgent** | 知识专家 | Neo4j拓扑查询、RAG检索、历史案例匹配 | 服务名+症状 | `KnowledgeResult` |
-| **ObservabilityAnalystAgent** | 感知分析师 | 收集指标/日志/链路、异常检测 | 服务+实体 | `ObservabilityReport` |
-| **MasterAgent** | 大脑中枢 | 动态规划、ReAct循环、最终决策 | 所有上下文 | `DiagnosisDecision` |
-| **ActionExecuteAgent** | 执行者 | 生成安全的执行指令、风险评估 | 修复方案 | `ActionResult` |
+| Agent | 角色 | 核心职责 |
+|-------|------|----------|
+| **IntentParseAgent** | 入口网关 | NER实体识别、意图分类、关键词提取 |
+| **KnowledgeExpertAgent** | 知识专家 | Neo4j拓扑查询、RAG检索、历史案例匹配 |
+| **ObservabilityAnalystAgent** | 感知分析师 | 收集指标/日志/链路、异常检测 |
+| **MasterAgent** | 大脑中枢 | 动态规划、ReAct循环、最终决策 |
+| **ActionExecuteAgent** | 执行者 | 生成安全的执行指令、风险评估 |
 
-### 🔐 安全体系（7层防护）
-
-#### 多层安全防护架构
+### 🔐 安全防护体系
 
 ```
-Layer 1: 命令注入防护 (12种正则模式) → Layer 2: 危险命令黑名单 (18种) → Layer 3: 安全命令白名单 (30+种)
-         ↓                              ↓                               ↓
-Layer 4: 风险等级分级 (LOW/MEDIUM/HIGH/BLOCKED) → Layer 5: 红线操作拦截 (5类)
-         ↓                                                        ↓
-Layer 6: 审批工作流 (邮件+API双通道) ← Layer 7: RBAC权限控制 (admin/user)
+Layer 1: 命令注入防护 (12种正则模式)
+    ↓
+Layer 2: 危险命令黑名单 (18种)
+    ↓
+Layer 3: 安全命令白名单 (30+种)
+    ↓
+Layer 4: 风险等级分级 (LOW/MEDIUM/HIGH/BLOCKED)
+    ↓
+Layer 5: 红线操作拦截 (5类)
+    ↓
+Layer 6: 审批工作流 (邮件+API双通道)
+    ↓
+Layer 7: RBAC权限控制 (admin/user)
 ```
 
-| 层级 | 防护能力 | 核心规则 | 触发动作 |
-|------|---------|---------|----------|
-| **L1** | 注入攻击检测 | `\$\(`, `/dev/tcp`, `bash -i`, `\|sh` 等12种 | ❌ 直接拒绝 |
-| **L2** | 危险命令拦截 | `rm -rf`, `dd if=`, `mkfs`, `shutdown`, `drop database` 等18种 | ❌ 直接拒绝 |
-| **L3** | 安全命令放行 | `ls/cat/grep/ps/docker ps/kubectl get` 等30+只读操作 | ✅ 直接执行 |
-| **L4** | 风险分级评估 | LOW(只读), MEDIUM(需确认), HIGH(需审批), BLOCKED(禁止) | 分级处理 |
-| **L5** | 红线操作拦截 | `delete/release/drop/truncate/restart_core_service` 等9种 | 🛑 强制审批 |
-| **L6** | 人工审批流程 | 邮件APPROVE/REJECT + API接口双通道 | 待批准后执行 |
-| **L7** | RBAC权限控制 | admin(全部权限) / user(只读+低风险) | 权限不足拒绝 |
+### 📚 Skill 技能库
 
-**关键文件**: [tool_registry.py](aiops-platform/backend/app/agents/tool_registry.py) · [config.py](aiops-platform/backend/app/core/config.py) · [action_execute.py](aiops-platform/backend/app/agents/action_execute.py) · [approval.py](aiops-platform/backend/app/api/approval.py) · [auth.py](aiops-platform/backend/app/api/auth.py)
+**文件位置**: [backend/skills/](file:///Users/jaci-j/AIops/aiops-platform/backend/skills/)
 
-### 🛠️ 技术栈
+#### 诊断类 (Diagnosis)
+| Skill | 适用场景 |
+|-------|----------|
+| `debug_skill` | 服务器/数据库/中间件/K8S 全栈故障排查 |
+| `gnn_rca_skill` | 微服务根因分析 (GNN) |
+| `microservice_rca_skill` | 微服务根因定位 (GNN) |
+| `time_series_rca_skill` | 时间序列根因分析 |
+| `mysql_deadlock_skill` | MySQL 死锁排查 |
+| `mysql_slow_query_skill` | MySQL 慢查询分析 |
+| `redis_skill` | Redis 诊断与优化 |
 
-| 层级 | 技术 | 用途 |
-|------|------|------|
-| **后端框架** | FastAPI 0.104 + Uvicorn | 高性能异步 Web 服务 |
-| **前端框架** | React 18 + TypeScript + Vite | 现代化 SPA 应用 |
-| **AI 引擎** | OpenAI API / 通义千问 | LLM 推理 & Function Calling |
-| **图数据库** | Neo4j 5.x | 知识图谱存储与查询 |
-| **关系数据库** | SQLite / PostgreSQL | 业务数据持久化 |
-| **认证授权** | JWT + bcrypt + RBAC | 安全认证与权限控制 |
-| **部署方案** | Docker + Kubernetes | 容器化编排部署 |
+#### 监控类 (Monitoring)
+| Skill | 适用场景 |
+|-------|----------|
+| `deeplog_anomaly_detection_skill` | DeepLog 日志异常检测 |
+| `alert_cluster_skill` | 智能告警聚合 (Drain + Word2Vec + TF-IFD + DBSCAN) |
+| `system_load_skill` | 系统负载异常检测 (双层漏斗: IF + LSTM-AE) |
+| `cost_analysis_skill` | 云成本异常分析 (Prophet) |
+| `cpu_anomaly_skill` | CPU 异常检测 (IF + Prophet) |
+| `prometheus_skill` | Prometheus 监控诊断 |
 
-### 📦 核心功能模块
+#### 数据库类 (Database)
+| Skill | 适用场景 |
+|-------|----------|
+| `database_ha_skill` | 数据库高可用与复制故障排查 |
+| `mysql_failover_skill` | MySQL 主从故障人工切换 |
+| `backup_drill_skill` | 数据库备份恢复演练 |
+| `postgresql_skill` | PostgreSQL 性能诊断 |
+| `mongodb_skill` | MongoDB 副本集与分片诊断 |
 
-#### 1️⃣ Multi-Agent 诊断系统
+#### 中间件类 (Middleware)
+| Skill | 适用场景 |
+|-------|----------|
+| `kafka_skill` | Kafka 集群诊断与消息堆积处理 |
+| `nginx_skill` | Nginx Web 服务器诊断 |
+| `rabbitmq_skill` | RabbitMQ 队列诊断 |
+| `elasticsearch_skill` | Elasticsearch 集群诊断 |
 
-**文件位置**: [backend/app/agents/](file:///Users/jaci-j/AIops/aiops-platform/backend/app/agents/)
+#### 容器类 (Container)
+| Skill | 适用场景 |
+|-------|----------|
+| `k8s_pod_skill` | Kubernetes Pod 诊断 |
 
-```bash
-# 核心文件
-├── orchestrator.py       # 编排器（协调所有Agent）
-├── master.py             # 大脑中枢（ReAct循环控制）
-├── intent_parse.py       # 意图识别（NER实体提取）
-├── knowledge.py          # 知识查询（Neo4j + RAG）
-├── observability.py      # 可观测性分析
-├── action_execute.py     # 动作执行（安全沙箱）
-├── tool_registry.py      # 工具注册中心（20+工具）
-├── skill_manager.py      # Skill管理器（30+技能文件）
-└── schemas.py            # 数据模型定义
-```
+#### 网络类 (Network)
+| Skill | 适用场景 |
+|-------|----------|
+| `connectivity_skill` | 网络连通性诊断 |
+| `lb_port_connectivity_skill` | 阿里云负载均衡端口连接诊断 |
+| `ssl_certificate_skill` | SSL 证书管理 |
 
-**支持的诊断场景**:
-- ✅ MySQL 死锁/慢查询/主从切换
-- ✅ Redis 连接池/内存/持久化问题
-- ✅ Kubernetes Pod 故障/OOM/重启
-- ✅ SLB 负载均衡异常
-- ✅ Nginx 配置错误/高延迟
-- ✅ Elasticsearch 集群状态
-- ✅ Kafka 消息积压
-- ✅ SSH 连接故障排查
-- ✅ 通用服务器故障诊断
+#### 安全类 (Security)
+| Skill | 适用场景 |
+|-------|----------|
+| `security_audit_skill` | 安全事件检测与应急响应 |
+| `permission_troubleshoot_skill` | 文件/服务权限问题排查 |
 
-#### 2️⃣ 统一数据源管理
-
-**文件位置**: [backend/app/utils/data_source_manager.py](file:///Users/jaci-j/AIops/aiops-platform/backend/app/utils/data_source_manager.py)
-
-```python
-class DataSourceManager:
-    """支持6种数据源的统一接口"""
-    
-    DATA_SOURCES = {
-        "local": {"type": "filesystem"},           # 本地文件
-        "prometheus": {"type": "monitoring"},       # Prometheus 监控
-        "elasticsearch": {"type": "logging"},       # ES 日志
-        "loki": {"type": "logging"},                # Grafana Loki
-        "aliyun_monitor": {"type": "cloud_monitoring"},  # 云监控
-        "jaeger": {"type": "tracing"}               # 链路追踪
-    }
-```
-
-#### 3️⃣ 认证与权限系统
-
-**文件位置**: [backend/app/api/auth.py](file:///Users/jaci-j/AIops/aiops-platform/backend/app/api/auth.py)
-
-特性：
-- JWT Token 认证（24小时有效期）
-- bcrypt 密码哈希
-- RBAC 权限模型（角色+权限+范围）
-- 管理员/普通用户角色分离
-
-#### 4️⃣ Web 前端界面
-
-**文件位置**: [frontend/src/](file:///Users/jaci-j/AIops/aiops-platform/frontend/src/)
-
-页面列表：
-- 📊 **仪表盘**: 系统概览、关键指标
-- 🐛 **故障诊断**: 自然语言输入、实时诊断进度
-- 📋 **日志列表**: 日志查看、异常标注
-- 🧠 **知识库**: 知识图谱可视化、RAG问答
-- 💬 **智能问答**: 运维知识咨询
-- 💻 **Web终端**: 在线SSH终端（管理员专属）
+#### 云资源类 (Cloud)
+| Skill | 适用场景 |
+|-------|----------|
+| `ecs_skill` | 阿里云 ECS 实例诊断 |
+| `vpc_skill` | 阿里云 VPC 网络诊断 |
+| `oss_skill` | 阿里云 OSS 存储诊断 |
 
 ### 🚀 快速开始
 
@@ -249,77 +231,267 @@ npm run dev
 
 ---
 
-## 🔬 二、Observability 可观测性平台
+## 二、算法引擎：time_sequence_detection
 
-> ⭐ **集成 Prometheus、Grafana、OpenTelemetry、Tempo 的企业级可观测平台，联合 time_sequence_detection 算法库实现智能根因分析**
+### 📊 算法模块概览
 
-### 📖 平台概述
+```
+time_sequence_detection/
+│
+├── Log_Analysis_LSTM/              # 日志异常检测
+│   └── DeepLog + LSTM 序列预测
+│
+├── GNN_RCA/                        # 图神经网络根因分析
+│   └── GAT/GCN/GraphSAGE
+│
+├── microservice_rca/               # 微服务根因分析
+│   └── GNN + 服务拓扑
+│
+├── alert_aggregation_Drain_DBSCAN/ # 智能告警聚合
+│   └── Drain + Word2Vec + DBSCAN
+│
+├── system_load_prediction/         # 系统负载检测
+│   └── 双层漏斗: IF + LSTM-AE
+│
+├── cpu_IsolationForest_Prophet/    # CPU 异常检测
+│   └── Isolation Forest + Prophet
+│
+├── cost_analysis_Prophet/          # 成本异常分析
+│   └── Prophet 时序预测
+│
+└── security_audit/                 # 安全审计系统
+    └── 多源日志关联分析
+```
 
-基于 **多数据源融合 + 多算法推理** 的新一代智能运维可观测平台：
+### 📦 各模块详解
 
-- 📊 **统一数据采集**: Prometheus 指标、Tempo 链路、OTel 追踪、Grafana 可视化
-- 🧠 **增强型根因分析**: GNN 图神经网络 + IsolationForest + Prophet 多算法融合
-- 🔄 **自动仪表盘生成**: Grafana Dashboard JSON 自动创建与部署
-- ⚡ **分布式追踪**: OpenTelemetry 全链路埋点与上下文传播
-- 🎯 **多维证据融合**: 加权置信度评估 + 自动修复建议
+#### 1. Log_Analysis_LSTM - 日志异常检测
+
+**技术栈**: DeepLog + LSTM
+
+**核心原理**:
+- 学习正常日志序列模式
+- 预测下一个最可能出现的日志事件
+- 实际事件不在 Top-k 预测中则判定为异常
+
+**使用方式**:
+```python
+from skill import LogAnalysisSkill
+
+skill = LogAnalysisSkill()
+result = await skill.detect_logs([
+    "[2024-01-01 10:00:00] [ERROR] Connection timeout",
+])
+```
+
+**文件结构**:
+```
+Log_Analysis_LSTM/
+├── skill.py              # 技能封装（Multi-Agent 接口）
+├── 1_generate_data.py    # 日志数据生成
+├── 2_parse_logs.py       # 日志解析 (Drain)
+├── 3_train_model.py      # 模型训练
+└── 4_predict.py          # 异常检测
+```
+
+---
+
+#### 2. GNN_RCA - 图神经网络根因分析
+
+**技术栈**: GAT / GCN / GraphSAGE
+
+**核心原理**:
+- 构建服务调用拓扑图
+- 学习故障传播模式
+- 定位最可能的根因服务
+
+**使用方式**:
+```python
+from gnn_rca import GNNRootCauseAnalyzer
+
+analyzer = GNNRootCauseAnalyzer(data_path="data/")
+result = analyzer.analyze(top_k=3)
+```
+
+**文件结构**:
+```
+GNN_RCA/
+├── step1_generate_data.py        # 生成拓扑数据
+├── step2_clean_and_build_graph.py # 构建图数据
+├── step3_gnn_models.py           # GNN 模型定义
+├── step4_train_model.py          # 模型训练
+└── step5_llm_analysis.py         # LLM 分析报告
+```
+
+---
+
+#### 3. microservice_rca - 微服务根因分析
+
+**技术栈**: GNN + 服务拓扑
+
+**核心能力**:
+- 构建微服务调用拓扑图
+- 分析故障传播路径
+- 定位根因服务
+
+**文件结构**:
+```
+microservice_rca/
+├── model.py              # GNN 模型定义
+├── step1_generate_data.py # 生成模拟数据
+├── step2_clean_data.py   # 数据清洗
+├── step3_train_model.py  # 模型训练
+└── step4_predict.py      # 根因预测
+```
+
+---
+
+#### 4. alert_aggregation_Drain_DBSCAN - 智能告警聚合
+
+**技术栈**: Drain + TF-IDF + Word2Vec + DBSCAN
+
+**核心能力**:
+- 离线训练 Word2Vec 学习运维语义
+- 在线实时告警聚类压缩
+- 多维距离融合（时间 + 语义 + 拓扑）
+
+**使用方式**:
+```python
+from skill import AlertClusterSkill
+
+skill = AlertClusterSkill()
+result = await skill.cluster([
+    {"time": "2024-01-01 10:00:00", "node_id": "node-1", "raw_msg": "Connection timeout"},
+])
+```
+
+**性能指标**:
+| 指标 | 数值 |
+|------|------|
+| 压缩率 | 2:1 ~ 64:1 |
+| 处理延迟 | < 100ms / 100条告警 |
+
+---
+
+#### 5. system_load_prediction - 系统负载异常检测
+
+**技术栈**: 双层漏斗架构 (Isolation Forest + LSTM Autoencoder)
+
+**核心原理**:
+```
+Layer 1: Isolation Forest 快速初筛
+  ├─ score ≥ 0.05  → 正常放行
+  ├─ score < -0.20 → 严重异常报警
+  └─ 中间区间      → 推入 Layer 2
+
+Layer 2: LSTM Autoencoder 深度确诊
+  ├─ error > threshold → 确诊异常报警
+  └─ error ≤ threshold → 误报释放
+```
+
+**核心能力**:
+- 实时数据流检测
+- 邮件告警（防轰炸冷却机制）
+- 动态阈值自适应
+
+---
+
+#### 6. cpu_IsolationForest_Prophet - CPU 异常检测
+
+**技术栈**: Isolation Forest + Prophet
+
+**核心能力**:
+- 异常点检测 (Isolation Forest)
+- 趋势预测 (Prophet)
+- 多服务器并行检测
+
+**文件结构**:
+```
+cpu_IsolationForest_Prophet/
+├── step1_generate_data.py  # 生成 CPU 数据
+├── step2_clean_data.py     # 数据清洗
+├── step3_train_model.py    # 模型训练
+├── step4_visualize.py      # 可视化
+├── step5_predict.py        # 预测脚本
+└── run_all.py              # 一键运行
+```
+
+---
+
+#### 7. cost_analysis_Prophet - 成本异常分析
+
+**技术栈**: Prophet
+
+**核心能力**:
+- 成本预测与置信区间
+- 异常检测（超出置信区间）
+- 根因下钻（定位异常服务和项目）
+
+**使用场景**:
+- 云成本激增检测
+- 成本趋势分析
+- 预算预警
+
+---
+
+#### 8. security_audit - 安全审计系统
+
+**技术栈**: 多源日志关联分析
+
+**核心能力**:
+- SSH 暴力破解检测
+- 异常登录检测
+- 权限提升检测
+- 多源日志关联分析
+
+**日志源支持**:
+- SSH 日志
+- 认证日志
+- 应用服务器日志
+- 云平台日志
+
+---
+
+## 三、可观测性平台
 
 ### 🏗️ 架构设计
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│                    AIOps 增强型根因分析平台                            │
+│                    AIOps 可观测性平台                                  │
 ├──────────────────────────────────────────────────────────────────────┤
 │  ┌─────────────────────┐     ┌────────────────────────────────────┐ │
-│  │   Observability      │     │    time_sequence_detection         │ │
-│  │   (数据采集层)        │ ──▶ │    (算法引擎层)                    │ │
+│  │   数据采集层         │     │    算法引擎层                       │ │
 │  ├─────────────────────┤     ├────────────────────────────────────┤ │
 │  │ • Prometheus 指标   │     │ • GNN_RCA (图神经网络)             │ │
 │  │ • Tempo 链路追踪    │     │ • IsolationForest + Prophet       │ │
-│  │ • OTEL 分布式追踪   │     │ • Drain + DBSCAN 告警聚合          │ │
+│  │ • OTel 分布式追踪   │     │ • Drain + DBSCAN 告警聚合          │ │
 │  │ • Grafana 可视化    │     │ • LSTM 日志异常检测               │ │
 │  └─────────┬───────────┘     └────────────────┬───────────────────┘ │
-│            │                                  │                      │
-│            ▼                                  ▼                      │
-│  ┌─────────────────────────────────────────────────────────────────┐│
-│  │              Data Bridge Layer (数据桥接层)                       ││
-│  │  Prometheus → Pandas DataFrame | Tempo → Graph Structure        ││
-│  └─────────────────────────┬───────────────────────────────────────┘│
-│                            ▼                                        │
+│            └──────────────────┬────────────────┘                    │
+│                               ▼                                     │
 │  ┌─────────────────────────────────────────────────────────────────┐│
 │  │           EnhancedRootCauseAnalyzer (增强型根因分析器)            ││
 │  │  ┌──────────────┐ ┌──────────────┐ ┌────────────────────────┐  ││
 │  │  │ IsolationForest│ │   Prophet    │ │   GNN Root Cause      │  ││
 │  │  │ 异常检测       │ │ 时序预测     │ │ 图神经网络推理         │  ││
-│  │  └──────┬─────────┘ └──────┬───────┘ └────────┬───────────────┘  ││
-│  │         └──────────────────┼───────────────────┘                 ││
-│  │                            ▼                                    ││
-│  │              Multi-Algorithm Fusion Engine                      ││
+│  │  └───────────────┘ └──────────────┘ └────────────────────────┘  ││
 │  └─────────────────────────────────────────────────────────────────┘│
-│                            ↓                                        │
-│              📊 Enhanced RCA Report (增强型报告)                     │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 📦 核心模块
 
-| 模块 | 文件位置 | 功能描述 |
-|------|----------|----------|
-| **config.py** | `backend/app/observability/config.py` | 统一配置管理（Pydantic模型） |
-| **prometheus_client.py** | `backend/app/observability/prometheus_client.py` | PromQL查询、指标采集、异常检测 |
-| **opentelemetry_tracer.py** | `backend/app/observability/opentelemetry_tracer.py` | OTel SDK初始化、自动埋点、Span管理 |
-| **tempo_query.py** | `backend/app/observability/tempo_query.py` | Trace查询、性能分析、服务依赖图 |
-| **root_cause_analyzer.py** | `backend/app/observability/root_cause_analyzer.py` | 基础RCA引擎（规则+统计） |
-| **grafana_dashboard.py** | `backend/app/observability/grafana_dashboard.py` | 4种模板仪表盘自动生成+部署 |
-| **enhanced_rca.py** | `backend/app/observability/enhanced_rca.py` | ⭐ 增强型RCA（联合算法） |
+| 模块 | 功能描述 |
+|------|----------|
+| `prometheus_client.py` | PromQL查询、指标采集、异常检测 |
+| `opentelemetry_tracer.py` | OTel SDK初始化、自动埋点、Span管理 |
+| `tempo_query.py` | Trace查询、性能分析、服务依赖图 |
+| `root_cause_analyzer.py` | 基础RCA引擎（规则+统计） |
+| `grafana_dashboard.py` | 4种模板仪表盘自动生成+部署 |
+| `enhanced_rca.py` | 增强型RCA（联合算法） |
 
-### 🚀 快速开始
-
-```bash
-cd aiops-platform/backend
-pip install httpx opentelemetry-api opentelemetry-sdk \
-            opentelemetry-exporter-otlp numpy pydantic pandas \
-            scikit-learn prophet torch torch_geometric
-```
+### 使用示例
 
 ```python
 import asyncio
@@ -338,793 +510,74 @@ async def enhanced_analysis():
 asyncio.run(enhanced_analysis())
 ```
 
-### 📊 支持的算法集成
+---
 
-| 算法 | 来源模块 | 适用场景 |
-|------|---------|---------|
-| **GNN (GCN/GAT)** | `microservice_rca`, `GNN_RCA` | 微服务级联故障 |
-| **IsolationForest** | `cpu_IsolationForest_Prophet` | CPU/内存突增 |
-| **Prophet** | `cpu_IsolationForest_Prophet`, `cost_analysis_Prophet` | 周期性模式破坏 |
-| **Drain + DBSCAN** | `alert_aggregation_Drain_DBSCAN` | 告警风暴处理 |
+## 四、部署指南
 
-### 📁 目录结构
-
-```
-aiops-platform/backend/app/observability/
-├── config.py                # Pydantic 配置模型
-├── prometheus_client.py     # Prometheus 查询客户端
-├── opentelemetry_tracer.py  # OTel 分布式追踪
-├── tempo_query.py           # Tempo 链路查询与分析
-├── root_cause_analyzer.py   # 基础根因分析引擎
-├── grafana_dashboard.py     # Grafana 仪表盘生成器
-├── enhanced_rca.py          # ⭐ 增强型RCA（联合算法）
-├── examples.py              # 基础使用示例
-└── enhanced_examples.py     # ⭐ 增强使用示例
-```
-
-### 🔧 配置说明
+### Docker 部署
 
 ```bash
-export PROMETHEUS_URL=http://localhost:9090
-export GRAFANA_URL=http://localhost:3000
-export TEMPO_URL=http://localhost:3200
-export OTEL_ENDPOINT=http://localhost:4317
+# 构建镜像
+cd aiops-platform
+docker build -t aiops-platform:latest .
+
+# 运行容器
+docker run -d \
+  --name aiops \
+  -p 8000:8000 \
+  -p 3000:3000 \
+  -v $(pwd)/data:/app/data \
+  aiops-platform:latest
 ```
 
-**详细文档**: [examples.py](aiops-platform/backend/app/observability/examples.py) · [enhanced_examples.py](aiops-platform/backend/app/observability/enhanced_examples.py)
+### Kubernetes 部署
+
+```bash
+# 应用配置
+kubectl apply -f k8s/local-storage.yaml
+kubectl apply -f k8s/kg-api-deployment.yaml
+kubectl apply -f k8s/kg-api-service.yaml
+```
 
 ---
 
-## ⏱️ 三、算法引擎：time_sequence_detection（时间序列检测与分析）
+## 🛠️ 技术栈
 
-> 包含多种运维场景下的时序数据分析、异常检测和根因定位算法
-
-### 📂 模块清单（按推荐程度排序）
-
-| 序号 | 模块名称 | 算法技术 | 适用场景 | 推荐度 |
-|------|---------|---------|---------|--------|
-| **1** | **alert_aggregation_Drain_DBSCAN** | Drain + DBSCAN | 运维日志告警聚合 | ⭐⭐⭐⭐⭐ 强烈推荐 |
-| **2** | **GNN_RCA** | 图神经网络 (GCN/GAT/GraphSAGE) | 微服务根因分析 | ⭐⭐⭐⭐⭐ 推荐 |
-| **3** | **microservice_rca** | GCN + GAT | 微服务故障定位 | ⭐⭐⭐⭐ 推荐 |
-| **4** | **system_load_prediction** | IsolationForest + LSTM Autoencoder | 系统负载实时异常检测 | ⭐⭐⭐⭐⭐ 推荐 |
-| **5** | **security_audit** | 规则引擎 + 统计模型 | 安全事件检测 | ⭐⭐⭐⭐ 推荐 |
-| **6** | **cpu_IsolationForest_Prophet** | IsolationForest + Prophet | CPU使用率异常检测 | ⭐⭐⭐ 良好 |
-| **7** | **cost_analysis_Prophet** | Prophet 时序预测 | 云成本异常检测 | ⭐⭐⭐ 良好 |
-
----
-
-### 🆕 1. alert_aggregation_Drain_DBSCAN - Drain+DBSCAN 告警聚合系统（强烈推荐）
-
-> 基于 **Drain 日志解析 + DBSCAN 密度聚类** 的智能告警收敛方案
-
-#### 系统架构（5层完整流水线）
-
-```
-原始日志流(海量) → Drain解析(模板提取) → 特征构建(向量化) → DBSCAN聚类(相似告警聚合) → 告警收敛(报告生成)
-```
-
-| 层级 | 模块 | 核心功能 | 技术实现 |
-|------|------|----------|----------|
-| **Step 1** | 原始日志流生成器 | 模拟真实运维日志 | 多源日志模板库、异常注入 |
-| **Step 2** | Drain 解析层 | 提取日志模板，剥离变量 | 固定深度前缀树算法 |
-| **Step 3** | 特征构建层 | 模板+上下文+语义→向量 | TF-IDF + PCA降维 |
-| **Step 4** | DBSCAN 聚类层 | 相似告警自动聚合 | 基于密度的空间聚类 |
-| **Step 5** | 告警收敛层 | 优先级排序+报告生成 | 加权评分算法 |
-
-#### 核心特性
-
-✅ **超高收敛率**: 64:1 (5000条日志 → 78个聚类)  
-✅ **多维特征融合**: 模板特征 + 上下文特征 + 语义特征 + 统计特征  
-✅ **智能优先级排序**: CRITICAL/HIGH/MEDIUM/LOW 四级分类  
-✅ **专业报告生成**: Markdown格式，含处理建议  
-
-#### 性能指标
-
-| 指标 | 数值 |
-|------|------|
-| 处理能力 | 5000条日志 / 6.41秒 |
-| 收敛率 | **64:1** |
-| 聚类质量 | 轮廓系数 0.5151 (良好) |
-| 降维效果 | 1016维 → 31维 (PCA) |
-
-#### 快速开始
-
-```bash
-cd time_sequence_detection/alert_aggregation_Drain_DBSCAN
-
-# 快速测试（1000条日志）
-python3 run_pipeline.py --quick
-
-# 自定义参数
-python3 run_pipeline.py --logs 10000 --eps 0.3 --min-samples 10
-```
-
-#### 命令行参数
-
-```bash
---logs, -l          # 日志数量（默认: 5000）
---eps, -e           # DBSCAN eps参数（默认: 0.5）
---min-samples, -m   # DBSCAN 最小样本数（默认: 5）
---quick, -q         # 快速测试模式
-```
-
-#### 输出文件
-
-```
-data/
-├── raw/raw_logs.csv                    # 原始日志
-├── parsed/parsed_logs.csv              # Drain解析结果
-├── parsed/log_templates.json           # 日志模板库
-├── features/log_features.npz           # 特征矩阵
-├── clusters/clustered_logs.csv         # 聚类结果
-├── clusters/cluster_statistics.json    # 聚类统计
-└── reports/alert_convergence_report.md # 📋 完整收敛报告
-```
-
-#### 技术栈
-
-| 技术 | 用途 |
-|------|------|
-| **Drain** | 在线日志解析（固定深度前缀树） |
-| **DBSCAN** | 基于密度的空间聚类 |
-| **TF-IDF** | 文本特征向量化 |
-| **PCA** | 降维（1016维 → 31维） |
-| **scikit-learn** | 机器学习工具包 |
-
----
-
-### 🧠 2. GNN_RCA - GNN 图神经网络根因分析系统
-
-> 使用 **图神经网络** 进行微服务故障的根因定位
-
-#### 系统架构
-
-```
-原始数据 → 数据清洗 → 图构建(GCN/GAT/GraphSAGE) → GNN训练 → LLM分析 → RCA报告
-```
-
-#### 支持的模型架构
-
-| 模型 | 特点 | 适用场景 |
-|------|------|---------|
-| **GCN** | 图卷积网络 | 规则拓扑结构 |
-| **GAT** | 图注意力机制 | 不规则拓扑、重要节点识别 |
-| **GraphSAGE** | 采样聚合 | 大规模图、归纳学习 |
-| **TemporalGNN** | 时序图网络 | 时序依赖的故障传播 |
-
-#### 核心特性
-
-✅ **多种GNN架构**: GCN/GAT/GraphSAGE/TemporalGNN  
-✅ **注意力机制**: 自动学习节点重要性  
-✅ **残差连接**: 深层网络梯度优化  
-✅ **LLM增强分析**: 生成可解释的诊断报告  
-
-#### 快速开始
-
-```bash
-cd time_sequence_detection/GNN_RCA/gnn_root_cause_analysis
-
-# 运行完整流水线
-python3 run_pipeline.py --epochs 50 --model gat
-```
-
-#### 技术栈
-
-| 技术 | 版本 | 用途 |
+| 层级 | 技术 | 用途 |
 |------|------|------|
-| PyTorch | 2.0+ | 深度学习框架 |
-| PyTorch Geometric | 2.3+ | 图神经网络 |
-| NetworkX | 3.x | 图数据处理 |
-| OpenAI API | 1.6+ | LLM 分析 |
+| **后端框架** | FastAPI 0.104 + Uvicorn | 高性能异步 Web 服务 |
+| **前端框架** | React 18 + TypeScript + Vite | 现代化 SPA 应用 |
+| **AI 引擎** | OpenAI API / 通义千问 | LLM 推理 & Function Calling |
+| **图数据库** | Neo4j 5.x | 知识图谱存储与查询 |
+| **关系数据库** | SQLite / PostgreSQL | 业务数据持久化 |
+| **认证授权** | JWT + bcrypt + RBAC | 安全认证与权限控制 |
+| **深度学习** | PyTorch + PyTorch Geometric | GNN、LSTM 等模型 |
+| **时序预测** | Prophet | 时间序列预测 |
+| **异常检测** | Isolation Forest | 异常点检测 |
+| **部署方案** | Docker + Kubernetes | 容器化编排部署 |
 
 ---
 
-### 🔍 3. microservice_rca - 微服务根因分析
-
-> 针对 **微服务架构** 的专用根因分析工具
-
-#### 核心功能
-
-- 服务调用链分析
-- 异常传播路径追踪
-- 根因概率计算
-- 影响范围评估
-
-#### 技术特点
-
-- 使用 **GCN + GAT** 混合架构
-- 支持 **动态拓扑** 构建
-- 提供 **置信度评分**
-
----
-
-### 🎯 4. system_load_prediction - 双层漏斗架构系统负载异常检测
-
-> 基于 **Isolation Forest + LSTM Autoencoder** 的实时异常检测与邮件报警系统
-
-#### 系统架构
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    双层漏斗检测架构                              │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  数据流模拟器                                                    │
-│      │                                                          │
-│      ▼                                                          │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │         Layer 1: Isolation Forest (快速初筛)             │   │
-│  │  ┌─────────────────────────────────────────────────┐    │   │
-│  │  │  score ≥ 0.05   → 🟢 正常 (放行)                 │    │   │
-│  │  │  score < -0.20  → 🔴 严重异常 (直接报警)          │    │   │
-│  │  │  中间区间        → 🟡 疑似 (推送 LSTM-AE)         │    │   │
-│  │  └─────────────────────────────────────────────────┘    │   │
-│  │  特征工程: 原始3维 + rolling统计 + 跨特征联动 = 14维     │   │
-│  └────────────────────────┬────────────────────────────────┘   │
-│                           │ (仅疑似点)                          │
-│                           ▼                                     │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │       Layer 2: LSTM Autoencoder (深度确诊)               │   │
-│  │  ┌─────────────────────────────────────────────────┐    │   │
-│  │  │  Encoder: BiLSTM(48) × 2层 → Latent(24d)        │    │   │
-│  │  │  Decoder: LSTM(48) × 2层 → Reconstructed        │    │   │
-│  │  │  判定: 重构误差 vs EWMA动态阈值                   │    │   │
-│  │  └─────────────────────────────────────────────────┘    │   │
-│  │  • error > 阈值 → 🟣 确诊异常 (报警)                     │   │
-│  │  • error ≤ 阈值 → 🟡 误报释放 (日志记录)                 │   │
-│  └────────────────────────┬────────────────────────────────┘   │
-│                           │                                     │
-│                           ▼                                     │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │            EmailAlerter (邮件报警)                        │   │
-│  │  • 防轰炸冷却机制 (60s 冷却期)                            │   │
-│  │  • 邮件内容: 异常时间 + 指标数值 + 判定来源               │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-#### 核心特性
-
-✅ **双层协同检测**: IF 快速过滤显性异常 + LSTM-AE 深度捕获隐性异常  
-✅ **实时数据流**: 模拟 24h 系统负载（CPU/Memory/DiskIO）+ 异常注入  
-✅ **智能误报抑制**: LSTM-AE 二次确认，大幅降低误报率  
-✅ **邮件报警**: SMTP 邮件通知 + 防轰炸冷却机制（60s）  
-✅ **动态阈值**: EWMA 自适应阈值，适应非平稳时序  
-
-#### 异常类型
-
-| 类型 | 描述 | 检测层 |
-|------|------|--------|
-| **显性异常** | CPU 飙至 99%、内存 OOM、磁盘风暴 | IF 直接拦截 |
-| **隐性异常** | CPU 锯齿波、内存缓慢泄漏、相关性断裂 | LSTM-AE 确诊 |
-
-#### 性能指标
-
-| 指标 | 仅 IF 单层 | 双层漏斗 | 改进 |
-|------|-----------|---------|------|
-| **Precision** | 64.8% | **87.5%** | +22.7% |
-| **误报率 (FAR)** | 16.9% | **0.1%** | -16.8% |
-
-#### 快速开始
-
-```bash
-cd time_sequence_detection/system_load_prediction
-
-# 运行实时监控系统
-python3 realtime_monitor.py
-
-# 运行离线批量检测（含可视化）
-python3 dual_funnel_detector.py
-```
-
-#### 输出文件
-
-```
-system_load_prediction/
-├── realtime_monitor.py          # 实时监控主脚本
-├── dual_funnel_detector.py      # 离线批量检测版
-├── usage.md                     # 详细使用文档
-├── data/                        # 数据目录
-│   ├── dual_funnel_system_load.csv    # 模拟数据
-│   └── dual_funnel_detected.csv       # 检测结果
-├── models/                      # 模型目录
-│   ├── rt_if_model.pkl          # Isolation Forest
-│   ├── rt_lstm_ae.pth           # LSTM Autoencoder
-│   └── rt_ae_scaler.pkl         # 归一化 Scaler
-└── output/                      # 输出目录
-    └── dual_funnel_detection_results.png  # 可视化大图
-```
-
-#### 技术栈
-
-| 技术 | 用途 |
-|------|------|
-| **PyTorch** | LSTM Autoencoder 模型 |
-| **scikit-learn** | Isolation Forest |
-| **smtplib** | 邮件报警 |
-| **numpy/pandas** | 数据处理 |
-
-**详细文档**: [usage.md](time_sequence_detection/system_load_prediction/usage.md)
-
----
-
-### 🛡️ 5. security_audit - 安全审计系统
-
-> 运维安全事件的 **自动化检测与关联分析**
-
-#### 检测类型
-
-| 检测器 | 检测目标 | 方法 |
-|--------|---------|------|
-| **SSH暴力破解** | 登录失败频率 | 统计规则 |
-| **认证异常** | 异常登录行为 | 孤立森林 |
-| **云API滥用** | 异常API调用 | 规则+ML |
-| **权限提升** | 异常提权操作 | 规则引擎 |
-
-#### 关联分析引擎
-
-- 时间窗口聚类
-- 攻击链重构
-- 威胁等级评估
-
----
-
-### 📈 6. cpu_IsolationForest_Prophet - CPU 异常检测
-
-> 使用 **IsolationForest + Prophet** 双模型进行 CPU 使用率异常检测
-
-#### 算法组合
-
-| 模型 | 作用 |
-|------|------|
-| **Prophet** | 时序建模、趋势预测、周期性分解 |
-| **IsolationForest** | 无监督异常检测、离群点识别 |
-
-#### 适用场景
-
-- 单机/多机 CPU 监控
-- 周期性负载模式识别
-- 突发异常检测
-
----
-
-### 💰 7. cost_analysis_Prophet - 成本分析与预测
-
-> 基于 **Prophet 时序模型** 的云资源成本预测与异常检测
-
-#### 功能特性
-
-- 成本趋势预测
-- 异常支出检测
-- 优化建议生成
-
----
-
-## 🧠 四、知识图谱：knowledge_graph（基础设施拓扑与查询）
-
-> 基于 **Neo4j** 的运维知识图谱，支持自然语言查询
-
-### 核心功能
-
-#### 1️⃣ Text2Cypher - 自然语言转 Cypher 查询
-
-将用户的自然语言问题转换为 Neo4j 的 Cypher 查询语句：
-
-```python
-示例转换：
-"prod-server-01 连接了哪些网络设备？"
-    ↓
-"MATCH (s:Server {name: 'prod-server-01'})-[:CONNECTED_TO]->(n:NetworkDevice)
- RETURN n.name AS 设备名称, n.type AS 类型"
-```
-
-#### 2️⃣ 知识图谱 schema
-
-**节点类型**:
-- `Server`: 服务器（name, ip, location, cpu_usage, owner）
-- `Middleware`: 中间件（Kafka, Redis, type, status）
-- `NetworkDevice`: 网络设备（Switch, Firewall, bandwidth）
-- `Storage`: 存储（OSS, bucket_name, region）
-- `Database`: 数据库（MySQL, Redis, port, memory）
-
-**关系类型**:
-- `CONNECTED_TO`: 网络连接
-- `PUBLISH_EVENT` / `CONSUME_EVENT`: 消息队列
-- `READS_FROM` / `WRITES_TO`: 数据读写
-- `DEPENDS_ON`: 服务依赖
-
-### 技术栈
-
-| 技术 | 用途 |
-|------|------|
-| **Neo4j 5.x** | 图数据库存储 |
-| **OpenAI API** | 自然语言理解 |
-| **Python neo4j driver** | 数据库驱动 |
-
-### 快速开始
-
-```bash
-cd knowledge_graph
-
-# 安装依赖
-pip install -r requirements.txt
-
-# 配置环境变量
-cp .env.example .env
-# 编辑 .env，填入 NEO4J_URI, NEO4J_PASSWORD, QWEN_API_KEY
-
-# 运行 CLI 查询工具
-python infra_text2cypher.py
-```
-
----
-
-## 🛠️ 五、快速开始指南
-
-### 环境要求
-
-| 组件 | 最低版本 | 推荐版本 |
-|------|---------|---------|
-| Python | 3.9+ | 3.10+ |
-| Node.js | 18+ | 20+ |
-| Neo4j | 4.4+ | 5.x (可选) |
-| Docker | 20+ | 最新版 (可选) |
-| Kubernetes | 1.25+ | 最新版 (可选) |
-
-### 一键安装（推荐）
-
-```bash
-# 克隆项目
-git clone <repository-url>
-cd AIops
-
-# 安装核心平台依赖
-cd aiops-platform/backend
-pip install -r requirements.txt
-
-cd ../frontend
-npm install
-
-# 配置环境变量
-cp ../.env.example ../.env
-# 编辑 .env 文件（必填项见下方）
-```
-
-### 必填环境变量
-
-```bash
-# .env 文件配置
-
-# ===== AI 引擎 =====
-OPENAI_API_KEY=sk-xxx                    # OpenAI/通义千问 API Key
-OPENAI_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-OPENAI_MODEL=qwen-plus
-
-# ===== 安全配置 =====
-SECRET_KEY=your-super-secret-key-min-32-chars  # ⚠️ 必须 >= 32 字符
-
-# ===== 数据库 =====
-DATABASE_URL=sqlite:///./data/aiops.db       # 或 PostgreSQL
-
-# ===== Neo4j（知识图谱）=====
-NEO4J_URI=bolt://localhost:7687
-NEO4J_USER=neo4j
-NEO4J_PASSWORD=your-neo4j-password
-
-# ===== SSH 远程命令执行 =====
-SSH_USER=root
-SSH_KEY_PATH=~/.ssh/id_rsa
-
-# ===== 邮件通知（可选）=====
-SMTP_HOST=smtp.163.com
-SMTP_PORT=465
-SMTP_USER=your-email@163.com
-SMTP_PASSWORD=your-smtp-password
-```
-
-### 启动服务
-
-```bash
-# 终端 1: 启动后端
-cd aiops-platform/backend
-python app/main.py
-# → http://localhost:8000 (API)
-# → http://localhost:8000/docs (Swagger文档)
-
-# 终端 2: 启动前端
-cd aiops-platform/frontend
-npm run dev
-# → http://localhost:3000 (Web界面)
-```
-
-### 验证安装
-
-```bash
-# 1. 健康检查
-curl http://localhost:8000/health
-# 预期输出: {"status":"healthy"}
-
-# 2. 查看 API 文档
-浏览器打开: http://localhost:8000/docs
-
-# 3. 测试登录
-curl -X POST http://localhost:8000/api/auth/login \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=admin&password=admin123"
-```
-
----
-
-## 📚 六、详细文档
-
-| 文档 | 路径 | 内容 |
-|------|------|------|
-| **核心平台文档** | [aiops-platform/README.md](./aiops-platform/README.md) | Multi-Agent 架构详解 |
-| **告警聚合文档** | [time_sequence_detection/alert_aggregation_Drain_DBSCAN/](./time_sequence_detection/alert_aggregation_Drain_DBSCAN/) | Drain+DBSCAN 使用指南 |
-| **GNN-RCA 文档** | [time_sequence_detection/GNN_RCA/](./time_sequence_detection/GNN_RCA/) | GNN 根因分析教程 |
-| **知识图谱文档** | [knowledge_graph/](./knowledge_graph/) | Neo4j 图谱构建指南 |
-
----
-
-## 🔧 七、核心技术详解
-
-### Multi-Agent ReAct 工作流程
-
-#### 完整执行示例
-
-**用户输入**: `"order-service 连接池耗尽，帮我排查"`
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ Step 1: IntentParseAgent (意图识别)                         │
-├─────────────────────────────────────────────────────────────┤
-│ Input:  "order-service 连接池耗尽，帮我排查"                 │
-│ Output:                                                     │
-│   intent = "DIAGNOSE"                                       │
-│   entities = {                                              │
-│     services: ["order-service"],                            │
-│     symptoms: ["连接池耗尽"]                                 │
-│   }                                                         │
-│   confidence = "HIGH"                                       │
-└─────────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Step 2: Skill 匹配                                          │
-├─────────────────────────────────────────────────────────────┤
-│ Matched: ["debug_skill", "mysql_deadlock_skill"]            │
-│ Content Length: ~15,000 chars                               │
-└─────────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Step 3: MasterAgent ReAct Loop                              │
-├─────────────────────────────────────────────────────────────┤
-│ Iteration 1:                                                │
-│   Thought: 需要检查 order-service 的数据库连接状态           │
-│   Action: execute_command("SHOW STATUS LIKE 'Threads_connected'") │
-│   Observation: Threads_connected = 150/200 (75%)            │
-│                                                             │
-│ Iteration 2:                                                │
-│   Thought: 连接数偏高，需要检查慢查询                         │
-│   Action: execute_command("SHOW PROCESSLIST")               │
-│   Observation: 发现 12 个慢查询正在执行                     │
-│                                                             │
-│ Iteration 3:                                                │
-│   Thought: 定位到根本原因，需要提交诊断结果                  │
-│   Action: submit_diagnosis_result(                           │
-│     problem_type="database_connection_pool_exhaustion",     │
-│     root_cause="慢查询导致连接池耗尽",                       │
-│     recommendation="优化SQL或增加连接池大小",                 │
-│     risk_level="MEDIUM"                                     │
-│   )                                                         │
-└─────────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Final Result                                                 │
-├─────────────────────────────────────────────────────────────┤
-│ Status: COMPLETED                                           │
-│ Root Cause: 慢查询导致 MySQL 连接池耗尽                      │
-│ Impact: order-service 响应时间增加 300%                      │
-│ Recommendation:                                            │
-│   1. 优化 TOP 10 慢查询 SQL                                 │
-│   2. 增加 connection_pool_size 至 300                       │
-│   3. 启用 query_cache                                      │
-│ Confidence: HIGH                                           │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### 数据源统一访问示例
-
-```python
-from app.utils.data_source_manager import DataSourceManager
-
-dsm = DataSourceManager()
-
-# 列出可用数据源
-sources = dsm.list_available_sources()
-# → [{"name": "local", "available": True}, ...]
-
-# 从 Prometheus 加载指标
-metrics = await dsm.load_data(
-    source_name="prometheus",
-    data_type="metrics",
-    query="up"
-)
-
-# 从 Elasticsearch 加载日志
-logs = await dsm.load_data(
-    source_name="elasticsearch",
-    data_type="logs",
-    index="logstash-*"
-)
-
-# 从本地文件加载数据（用于 GNN 训练）
-data = await dsm.load_data(
-    source_name="local",
-    data_type="logs",
-    data_path="/path/to/training_data"
-)
-```
-
----
-
-## 🎯 八、项目评级与改进路线图
-
-### 📊 Code Review 总评: A- (82/100)
-
-| 维度 | 评分 | 说明 |
-|------|------|------|
-| 🏗️ **架构设计** | 8.5/10 | Multi-Agent 设计先进，模块化清晰 |
-| 💻 **代码质量** | 8.0/10 | 注释详尽，可读性好 |
-| 🔒 **安全性** | 7.5/10 | 有安全机制但需加固 |
-| ⚡ **性能** | 7.0/10 | 可优化空间大 |
-| 🧪 **测试覆盖** | 4.5/10 | 严重不足 (~10%) |
-| 📚 **文档完整度** | 9.0/10 | 非常完善 |
-| 🔧 **可维护性** | 8.0/10 | 配置驱动，易于扩展 |
-| 🚀 **创新性** | 9.0/10 | Multi-Agent + GNN + 知识图谱 |
-
-### 🚀 近期待办（P0/P1）
-
-#### 🔴 本周必须完成
-
-- [ ] **修复默认密码硬编码** - [auth.py](file:///Users/jaci-j/AIops/aiops-platform/backend/app/api/auth.py#L234)
-- [ ] **收紧 CORS 配置** - [main.py](file:///Users/jaci-j/AIops/aiops-platform/backend/app/main.py#L32)
-- [ ] **实现 JWT Token 黑名单** - 登出后失效
-- [ ] **强制 SECRET_KEY 验证** - >= 32字符
-
-#### 🟡 本月完成
-
-- [ ] **搭建 pytest 测试框架**
-- [ ] **核心模块测试覆盖率达到 60%**
-  - [ ] tool_registry.py (85%)
-  - [ ] auth.py (90%)
-  - [ ] config.py (80%)
-  - [ ] orchestrator.py (70%)
-- [ ] **添加 LLM 调用重试机制** (tenacity)
-- [ ] **统一错误处理** (logging 替代 print)
-
-#### 🟢 下季度规划
-
-- [ ] **PostgreSQL 迁移** (替代 SQLite)
-- [ ] **Redis 缓存层** (热点数据缓存)
-- [ ] **异步数据库改造** (asyncpg)
-- [ ] **CI/CD 流水线** (GitHub Actions)
-- [ ] **可观测性平台** (Prometheus + Grafana + Jaeger)
-
----
-
-## 📈 九、性能基准与最佳实践
-
-### 当前性能指标
-
-| 指标 | 当前值 | 目标值 | 优化方向 |
-|------|--------|--------|---------|
-| API 平均响应时间 | < 500ms | < 200ms | Redis 缓存 |
-| P99 延迟 | < 2s | < 1s | 异步改造 |
-| 并发用户数 | 50 | 500 | 连接池优化 |
-| LLM 调用成功率 | 95% | 99.9% | 重试机制 |
-| 内存占用 | < 512MB | < 1GB | 对象复用 |
-
-### 最佳实践建议
-
-#### 1️⃣ 生产环境部署
-
-```yaml
-# k8s/deployment.yaml 示例
-resources:
-  requests:
-    memory: "256Mi"
-    cpu: "250m"
-  limits:
-    memory: "1Gi"
-    cpu: "1000m"
-
-replicas: 3  # 高可用
-
-livenessProbe:
-  httpGet:
-    path: /health
-    port: 8000
-  initialDelaySeconds: 30
-  periodSeconds: 10
-```
-
-#### 2️⃣ 安全加固清单
-
-- [x] ✅ bcrypt 密码哈希
-- [x] ✅ JWT Token 认证
-- [x] ✅ RBAC 权限控制
-- [x] ✅ 命令注入防护
-- [ ] ⚠️ Rate Limiting (API 限流)
-- [ ] ⚠️ HTTPS 强制跳转
-- [ ] ⚠️ Security Headers (HSTS, X-Frame-Options)
-- [ ] ⚠️ 审计日志 (用户操作记录)
-
-#### 3️⃣ 监控告警
-
-```python
-# 推荐监控指标
-METRICS = {
-    "api_request_duration_seconds": "API 响应时间",
-    "llm_call_success_total": "LLM 调用成功率",
-    "agent_execution_time_seconds": "Agent 执行耗时",
-    "active_connections gauge": "活跃连接数",
-    "diagnosis_tasks_total": "诊断任务总数",
-}
-```
-
----
-
-## 🤝 十、贡献指南
-
-### 开发规范
-
-1. **代码风格**: Black + isort + flake8
-2. **类型注解**: 所有函数必须有类型提示
-3. **文档字符串**: Google Style Docstrings
-4. **提交信息**: Conventional Commits
-
-### 提交 PR 流程
-
-```bash
-# 1. 创建分支
-git checkout -b feature/your-feature-name
-
-# 2. 编写代码 & 测试
-# 确保测试通过
-pytest tests/ -v --cov=app
-
-# 3. 提交代码
-git commit -m "feat: add new feature"
-
-# 4. 推送并创建 PR
-git push origin feature/your-feature-name
-# GitHub 上创建 Pull Request
-```
-
----
-
-## 📄 十、许可证
-
-MIT License
-
-Copyright (c) 2024-2026 AIOps Team
-
----
-
-## 🙏 致谢
-
-- **OpenAI / 通义千问**: LLM 推理能力
-- **FastAPI**: 高性能 Web 框架
-- **PyTorch Geometric**: 图神经网络库
-- **Neo4j**: 图数据库
-- **React**: 前端框架
-
----
-
-## 📞 联系方式
-
-如有问题或建议，请提交 Issue 或联系维护团队。
-
-**最后更新**: 2026-04-19  
-**文档版本**: v3.1 (优化章节结构 + 7层安全防护体系)
+## 📄 版本信息
+
+- **版本**: v4.0
+- **更新时间**: 2025-04-21
+- **维护者**: AIOps Team
+
+### 更新日志
+
+#### v4.0 (2025-04-21)
+- 新增 5 个算法模型 Skill 集成
+- 更新 Skill 技能库至 40+ 技能
+- 优化 README 结构，增加目录导航
+- 完善算法模块文档
+
+#### v3.1 (2025-04-07)
+- 优化章节结构
+- 新增 7 层安全防护体系
+- 完善可观测性平台文档
+
+#### v3.0 (2025-03-28)
+- 新增 Multi-Agent 协同架构
+- 集成知识图谱与 RAG
+- 完善安全审批工作流

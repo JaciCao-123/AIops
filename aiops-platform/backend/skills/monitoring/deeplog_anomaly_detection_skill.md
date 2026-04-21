@@ -427,13 +427,98 @@ print(df_anomalies.head())
 
 ## 9. 版本信息
 
-- 版本: 1.0.0
-- 更新时间: 2025-04-07
+- 版本: 1.1.0
+- 更新时间: 2025-04-21
 - 维护者: AIOps Team
 
 ### 更新日志
+
+#### v1.1.0 (2025-04-21)
+- 集成到 Multi-Agent 系统
+- 添加 `detect_log_anomalies` 工具
+- 支持仅推理模式（不训练）
+- 优化实时日志检测接口
 
 #### v1.0.0 (2025-04-07)
 - 初始版本
 - 集成 DeepLog 日志异常检测功能
 - 支持日志生成、解析、训练、检测完整流程
+
+---
+
+## 10. Multi-Agent 集成
+
+### 10.1 工具调用
+
+在 Multi-Agent 系统中，通过 `detect_log_anomalies` 工具调用日志异常检测功能：
+
+```python
+# 方式1: 检测原始日志列表
+result = await detect_log_anomalies(
+    logs=[
+        "[2024-01-01 10:00:00.000] [INFO] [order-service] Receive Request",
+        "[2024-01-01 10:00:00.100] [INFO] [database-service] Query Database",
+        "[2024-01-01 10:00:00.200] [ERROR] [auth-service] Validate User Failed",
+    ],
+    top_k=3
+)
+
+# 方式2: 检测已解析的结构化日志文件
+result = await detect_log_anomalies(
+    data_path="/path/to/logs_structured.csv",
+    top_k=3
+)
+```
+
+### 10.2 返回结果
+
+```python
+{
+    "success": True,
+    "total_logs": 600,
+    "total_predictions": 590,
+    "anomalies_detected": 45,
+    "anomaly_rate": 7.63,
+    "anomaly_event_stats": {
+        "E99": 25,
+        "E88": 20
+    },
+    "anomalies_sample": [
+        {
+            "timestamp": "2024-01-01 10:05:23.456",
+            "expected_events": ["E1", "E5", "E2"],
+            "actual_event": "E99",
+            "actual_template": "Connection Timeout"
+        }
+    ]
+}
+```
+
+### 10.3 使用场景
+
+**场景1: 用户请求检测日志异常**
+```
+用户: "帮我检测 order-service 的日志异常"
+
+Agent 执行流程:
+1. 调用 load_data_from_source 获取日志
+2. 调用 detect_log_anomalies 检测异常
+3. 返回检测结果和建议
+```
+
+**场景2: 实时日志流异常检测**
+```
+用户: "分析这些日志是否有异常模式"
+
+Agent 执行流程:
+1. 接收用户提供的日志列表
+2. 调用 detect_log_anomalies(logs=...)
+3. 分析异常模式并生成报告
+```
+
+### 10.4 注意事项
+
+1. **仅推理模式**: Multi-Agent 集成只做推理，不进行模型训练
+2. **模型依赖**: 需要预先训练好模型文件 `deeplog_model.pth`
+3. **日志格式**: 支持标准格式 `[timestamp] [level] [service] message`
+4. **检测灵敏度**: `top_k` 参数越小，检测越敏感

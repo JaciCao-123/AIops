@@ -1,419 +1,309 @@
-# 日志分析 - Log Analysis
+# Log_Analysis_LSTM - 基于 DeepLog 的日志异常检测技能
 
-基于时间序列分析和机器学习的日志异常检测系统。
+## 概述
 
-## 📋 项目概述
+本模块实现了基于 **DeepLog** 的日志序列异常检测功能，可集成到 Multi-Agent AIOps 系统中作为核心技能使用。
 
-本项目用于分析系统日志，检测异常模式，并预测潜在问题。主要功能包括：
+DeepLog 是一种基于 LSTM 的日志异常检测方法，通过学习正常日志序列的模式，预测下一个可能出现的日志事件，从而检测偏离正常模式的异常行为。
 
-- **日志数据生成**：生成模拟的微服务日志数据，包含正常流程和异常模式
-- **日志解析**：使用 Drain 算法解析日志结构，提取日志模板
-- **模型训练**：使用 DeepLog（LSTM）模型学习日志序列的正常模式
-- **异常检测**：实时检测日志序列中的异常，预测潜在故障
-- **可视化分析**：生成日志趋势和异常报告
-- **预测预警**：预测未来的日志异常
+**📖 [Multi-Agent 集成说明](./INTEGRATION.md)**
 
-## 🗂️ 项目结构
+## 核心原理
+
+### DeepLog 模型架构
 
 ```
-log_analysis/
+输入序列 (EventId) 
+    ↓
+Embedding Layer (将 EventId 转换为稠密向量)
+    ↓
+LSTM Layer (学习日志序列的时序模式)
+    ↓
+Linear Layer (映射到事件空间)
+    ↓
+Softmax (输出每个事件的概率分布)
+```
+
+### 异常检测机制
+
+1. **滑动窗口**: 使用固定大小的窗口遍历日志序列
+2. **预测**: 基于前 N 个事件预测下一个最可能出现的 Top-k 个事件
+3. **判定**: 如果实际事件不在预测的 Top-k 列表中，则判定为异常
+
+## 目录结构
+
+```
+Log_Analysis_LSTM/
+├── skill.py              # 技能封装（Multi-Agent 接口，仅推理）
+├── 1_generate_data.py    # 日志数据生成脚本（离线）
+├── 2_parse_logs.py       # 日志解析脚本（离线）
+├── 3_train_model.py      # 模型训练脚本（离线）
+├── 4_predict.py          # 异常检测脚本（独立运行）
 ├── data/
-│   ├── raw/              # 原始日志数据
+│   ├── raw/              # 原始日志
 │   │   └── logs_raw.log
-│   └── cleaned/          # 清洗后的数据
+│   └── cleaned/          # 结构化日志
 │       └── logs_structured.csv
-├── models/               # 训练好的模型
-│   ├── deeplog_model.pth      # 最终模型
-│   └── deeplog_model_best.pth # 最佳模型
-├── reports/              # 可视化报告
-│   └── anomaly_detection_results.csv  # 异常检测结果
-├── 1_generate_data.py    # 生成模拟日志数据
-├── 2_parse_logs.py       # 使用 Drain 解析日志
-├── 3_train_model.py      # 训练 DeepLog 模型
-├── 4_predict.py          # 异常检测
-├── requirements.txt      # 依赖包
-└── README.md             # 项目说明
+├── models/
+│   ├── deeplog_model.pth       # 最终模型
+│   └── deeplog_model_best.pth  # 最佳模型
+├── reports/
+│   └── anomaly_detection_results.csv
+└── README.md
 ```
 
-## 🚀 快速开始
+## 工作流程
 
-### 安装依赖
-
-```bash
-pip install -r requirements.txt
-```
-
-### 运行步骤
+### 离线阶段（训练）
 
 ```bash
-# Step 1: 生成模拟日志数据（约 5000 行）
+# Step 1: 生成模拟日志数据
 python 1_generate_data.py
 
-# Step 2: 使用 Drain 算法解析日志
+# Step 2: 解析日志，提取事件模板
 python 2_parse_logs.py
 
 # Step 3: 训练 DeepLog 模型
 python 3_train_model.py
+```
 
-# Step 4: 异常检测
+### 在线阶段（推理）
+
+```bash
+# 方式1: 使用独立脚本
 python 4_predict.py
+
+# 方式2: 使用 skill.py 集成到 Multi-Agent
+from skill import LogAnalysisSkill
+skill = LogAnalysisSkill()
+result = await skill.detect_from_file()
 ```
 
-## 📊 功能说明
+## 快速开始
 
-### 1. 日志数据生成 (1_generate_data.py)
+### 1. 安装依赖
 
-生成模拟的微服务日志数据，包括：
-
-**日志格式**：
-```
-[时间戳] [日志级别] [服务名] 消息内容
+```bash
+pip install torch pandas numpy
 ```
 
-**正常模式**：
-- 模拟订单流程：Receive Request → Query Database → Validate User → Create Order → Return Response
-- 大部分为 INFO 级别日志
+### 2. 离线训练
 
-**异常模式**：
-- **模式A（突发错误）**：高并发时段插入 "Connection Timeout" 错误
-- **模式B（序列异常）**：Validate User 失败后直接 System Rollback
+```bash
+cd /path/to/Log_Analysis_LSTM
 
-**输出**：
-- 文件：`data/raw/logs_raw.log`
-- 行数：约 5000 行
-
-### 2. 日志解析 (2_parse_logs.py)
-
-使用 Drain 算法解析日志结构：
-
-**预处理**：
-- 使用正则表达式提取时间戳、级别、服务名和消息内容
-- 过滤动态参数（由 Drain 自动处理）
-
-**Drain 配置**：
-- 相似度阈值：sim_th=0.5
-- 深度：depth=4
-
-**输出**：
-- 文件：`data/cleaned/logs_structured.csv`
-- 列：LineId, EventId, EventTemplate, Timestamp, Level, Service
-
-## 📈 示例输出
-
-### 日志数据生成
-
-```
-开始生成日志数据...
-目标日志行数: 5000
-
-日志生成完成！
-输出文件: data/raw/logs_raw.log
-
-统计信息:
-  总日志数: 5000
-  正常日志: 4250
-  异常A日志: 450
-  异常B日志: 300
-  INFO 日志: 4700
-  ERROR 日志: 250
-  WARN 日志: 50
+# 生成数据、解析、训练
+python 1_generate_data.py
+python 2_parse_logs.py
+python 3_train_model.py
 ```
 
-### 日志解析
+### 3. 在线检测
 
-```
-================================================================================
-日志解析 - Drain 算法
-================================================================================
-📂 读取日志文件: data/raw/logs_raw.log
-   - 总日志数: 5000
-   - INFO 日志: 4700
-   - ERROR 日志: 250
-   - WARN 日志: 50
+```python
+import asyncio
+from skill import LogAnalysisSkill
 
-🔧 使用 Drain 算法解析日志...
-   - 提取的事件模板数: 8
+async def main():
+    # 加载已训练的模型进行检测
+    skill = LogAnalysisSkill()
+    result = await skill.detect_from_file()
+    
+    print(f"检测到 {result.anomalies_detected} 个异常")
+    print(f"异常率: {result.anomaly_rate:.2f}%")
 
-💾 保存解析结果到: data/cleaned/logs_structured.csv
-   - 保存成功！
-   - 文件大小: 350.25 KB
-
-📊 前 5 个日志模板:
-================================================================================
-
-模板 1:
-  EventId: E1
-  模板: Receive Request
-  出现次数: 1000
-
-模板 2:
-  EventId: E2
-  模板: Query Database
-  出现次数: 950
-
-模板 3:
-  EventId: E3
-  模板: Validate User
-  出现次数: 900
-
-模板 4:
-  EventId: E4
-  模板: Create Order
-  出现次数: 850
-
-模板 5:
-  EventId: E5
-  模板: Return Response
-  出现次数: 850
+asyncio.run(main())
 ```
 
-### 3. DeepLog 模型训练 (3_train_model.py)
+## API 参考
 
-使用 DeepLog 模型学习日志序列模式：
+### LogAnalysisSkill
 
-**DeepLog 原理**：
-1. 将日志事件序列视为时间序列
-2. 使用 LSTM 学习日志事件的正常模式
-3. 通过预测下一个事件来检测异常
-4. 如果预测的概率分布与实际事件差异较大，则认为是异常
+日志分析技能类，仅提供推理功能（不包含训练）。
 
-**模型结构**：
-- **Embedding Layer**: 将 EventId 转换为稠密向量
-- **LSTM Layer**: 学习日志序列的时序模式
-- **Linear Layer**: 将 LSTM 输出映射到事件空间
-- **Softmax**: 输出每个事件的概率分布
+```python
+from skill import LogAnalysisSkill, create_skill
 
-**训练配置**：
-- 窗口大小：window_size=10
-- Embedding 维度：128
-- LSTM 隐藏层维度：128
-- LSTM 层数：2
-- 训练轮数：10
-- 学习率：0.001
+# 创建实例（自动加载已有模型）
+skill = LogAnalysisSkill()
 
-**输出**：
-- 文件：`models/deeplog_model.pth`
-- 包含：模型参数、词汇表、配置信息
-
-**示例输出**：
-```
-================================================================================
-DeepLog 模型训练
-================================================================================
-
-📂 加载结构化日志: data/cleaned/logs_structured.csv
-   - 总日志数: 5000
-   - 列: ['LineId', 'EventId', 'EventTemplate', 'Timestamp', 'Level', 'Service']
-
-🔧 构建事件词汇表...
-   - 事件类型数: 8
-   - 前 5 个事件: ['E1', 'E2', 'E3', 'E4', 'E5']
-
-🔧 构建滑动窗口序列...
-   - 窗口大小: 10
-   - 总序列数: 4990
-   - 序列长度: 10
-
-🔧 创建数据加载器...
-   - 批次大小: 64
-   - 验证集比例: 0.2
-   - 训练序列数: 3992
-   - 验证序列数: 998
-
-================================================================================
-开始训练 DeepLog 模型
-================================================================================
-设备: cpu
-训练轮数: 10
-学习率: 0.001
-================================================================================
-
-Epoch [1/10]
-  训练 - Loss: 1.8234, Acc: 0.3245
-  验证 - Loss: 1.6543, Acc: 0.3892
-  ✓ 保存最佳模型 (验证损失: 1.6543)
-
-Epoch [2/10]
-  训练 - Loss: 1.4521, Acc: 0.4567
-  验证 - Loss: 1.3210, Acc: 0.5123
-  ✓ 保存最佳模型 (验证损失: 1.3210)
-
-...
-
-💾 模型已保存到: models/deeplog_model.pth
-
-================================================================================
-训练完成！
-================================================================================
-
-统计信息:
-  总序列数: 4990
-  训练序列数: 3992
-  验证序列数: 998
-  事件类型数: 8
-  最佳验证损失: 0.8234
-
-✅ 训练完成！模型已保存到 models/deeplog_model.pth
+# 或使用工厂函数
+skill = await create_skill()
 ```
 
-### 4. 异常检测 (4_predict.py)
+#### 初始化参数
 
-使用训练好的 DeepLog 模型检测日志异常：
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `model_path` | str | `models/deeplog_model.pth` | 模型文件路径 |
+| `top_k` | int | 3 | 预测的 Top-k 事件数 |
+| `auto_load` | bool | True | 是否自动加载模型 |
 
-**检测原理**：
-1. 加载训练好的 DeepLog 模型
-2. 模拟实时日志流（从测试数据中读取）
-3. 使用滑动窗口预测下一个最可能出现的 Top-k 个事件
-4. 如果实际发生的事件不在 Top-k 预测列表中，则判定为异常
+#### 方法
 
-**检测流程**：
-- 窗口大小：10（与训练时一致）
-- Top-k：3（预测最可能的 3 个事件）
-- 异常判定：实际事件不在 Top-3 预测列表中
+| 方法 | 说明 | 返回类型 |
+|------|------|----------|
+| `load_model()` | 手动加载模型 | `bool` |
+| `detect_from_file(data_path, test_ratio)` | 从结构化日志文件检测 | `DetectionResult` |
+| `detect_logs(logs)` | 实时检测原始日志 | `DetectionResult` |
+| `execute(logs, data_path)` | 执行入口（兼容 Multi-Agent） | `DetectionResult` |
 
-**输出**：
-- 控制台输出：实时显示检测到的异常
-- 文件输出：`reports/anomaly_detection_results.csv`
-- 统计信息：异常总数、异常率、异常事件统计
+### 数据模型
 
-**示例输出**：
+#### DetectionResult
+
+```python
+@dataclass
+class DetectionResult:
+    total_logs: int              # 总日志数
+    total_predictions: int       # 总预测次数
+    anomalies_detected: int      # 检测到的异常数
+    anomaly_rate: float          # 异常率 (%)
+    anomalies: List[AnomalyResult]  # 异常列表
+    anomaly_event_stats: Dict[str, int]  # 异常事件统计
 ```
-================================================================================
-DeepLog 异常检测
-================================================================================
 
-================================================================================
-加载 DeepLog 模型
-================================================================================
+#### AnomalyResult
 
-📂 加载模型: models/deeplog_model.pth
-   - 事件类型数: 8
-   - 窗口大小: 10
-   - 设备: cpu
-   - 模型加载成功！
+```python
+@dataclass
+class AnomalyResult:
+    timestamp: str              # 异常发生时间
+    expected_events: List[str]  # 预测的 Top-k 事件
+    expected_probs: List[float] # 预测概率
+    actual_event: str           # 实际事件
+    actual_template: str        # 实际事件模板
+    window: List[str]           # 滑动窗口内容
+```
 
-================================================================================
-加载测试数据
-================================================================================
+## Multi-Agent 集成示例
 
-📂 加载数据: data/cleaned/logs_structured.csv
-   - 总日志数: 5000
-   - 测试日志数: 1500
-   - 测试数据比例: 30%
-   - 时间范围: 2023-10-01 12:00:00 ~ 2023-10-01 18:30:00
+### 作为技能使用
 
-================================================================================
-开始异常检测
-================================================================================
+```python
+import asyncio
+from skill import LogAnalysisSkill
 
-配置:
-  - 窗口大小: 10
-  - Top-k: 3
-  - 异常判定: 实际事件不在 Top-3 预测列表中
+class MyAgent:
+    def __init__(self):
+        self.log_skill = LogAnalysisSkill()
+    
+    async def analyze_logs(self, logs: list):
+        # 实时检测原始日志
+        result = await self.log_skill.execute(logs=logs)
+        
+        if result.anomalies_detected > 0:
+            print(f"发现 {result.anomalies_detected} 个异常!")
+            for anomaly in result.anomalies[:5]:
+                print(f"  - {anomaly.timestamp}: {anomaly.actual_template}")
+        
+        return result
 
-开始处理日志流...
+async def main():
+    agent = MyAgent()
+    
+    # 模拟实时日志流
+    logs = [
+        "[2024-01-01 10:00:00.000] [INFO] [order-service] Receive Request",
+        "[2024-01-01 10:00:00.100] [INFO] [database-service] Query Database",
+        "[2024-01-01 10:00:00.200] [ERROR] [auth-service] Validate User Failed",
+    ]
+    
+    result = await agent.analyze_logs(logs)
 
-[ANOMALY DETECTED] Time: 2023-10-01 12:05:23
-  Expected Top-3: ['E1', 'E5', 'E2']
-  Probabilities: ['0.4521', '0.2341', '0.1823']
-  Actual: E99 (Connection Timeout)
-  Window: ['E1', 'E2', 'E3', 'E4', 'E5', 'E1', 'E2', 'E3', 'E4', 'E5']
+asyncio.run(main())
+```
 
-[ANOMALY DETECTED] Time: 2023-10-01 12:10:45
-  Expected Top-3: ['E5', 'E1', 'E2']
-  Probabilities: ['0.5123', '0.2891', '0.1234']
-  Actual: E88 (System Rollback)
-  Window: ['E2', 'E3', 'E99', 'E4', 'E5', 'E1', 'E2', 'E3', 'E4', 'E5']
+### 与其他技能协作
 
-...
+```python
+import asyncio
+from skill import LogAnalysisSkill
 
-================================================================================
-检测完成！
-================================================================================
+async def multi_skill_pipeline():
+    log_skill = LogAnalysisSkill()
+    
+    # 检测日志异常
+    result = await log_skill.detect_from_file()
+    
+    if result.anomaly_rate > 5.0:
+        print("异常率过高，触发告警聚合...")
+        # 调用其他技能，如 AlertClusterSkill
+    
+    return result
 
-统计信息:
-  总日志数: 1500
-  总预测次数: 1490
-  检测到的异常数: 45
-  正常日志数: 1445
-  异常率: 3.02%
+asyncio.run(multi_skill_pipeline())
+```
+
+## 异常类型说明
+
+### 正常流程 (Normal Flow)
+
+```
+[INFO] [order-service] Receive Request
+[INFO] [database-service] Query Database
+[INFO] [auth-service] Validate User
+[INFO] [order-service] Create Order
+[INFO] [order-service] Return Response
+```
+
+### 异常A - 连接超时 (Connection Timeout)
+
+```
+[INFO] [order-service] Receive Request
+[INFO] [database-service] Query Database
+[INFO] [auth-service] Validate User
+[INFO] [order-service] Create Order
+[INFO] [order-service] Return Response
+[ERROR] [database-service] Connection Timeout  ← 异常事件
+```
+
+### 异常B - 认证失败 (Authentication Failure)
+
+```
+[INFO] [order-service] Receive Request
+[INFO] [database-service] Query Database
+[ERROR] [auth-service] Validate User Failed  ← 异常事件
+[WARN] [order-service] System Rollback
+```
+
+## 输出示例
+
+### 控制台输出
+
+```
+检测完成: 45 个异常, 异常率 3.02%
 
 异常事件统计:
   E99: 25 次
   E88: 20 次
-
-💾 保存检测结果到: reports/anomaly_detection_results.csv
-   - 保存成功！
-   - 文件大小: 5.23 KB
-
-✅ 检测完成！发现 45 个异常
 ```
 
-## 🔧 技术栈
+### 异常详情
 
-- **Python 3.9+**
-- **PyTorch**: 深度学习框架
-- **logparser**: Drain 日志解析算法
-- **Pandas**: 数据处理
-- **NumPy**: 数值计算
-- **Matplotlib/Seaborn**: 数据可视化
-- **Prophet**: 时间序列预测
+```python
+for anomaly in result.anomalies:
+    print(f"时间: {anomaly.timestamp}")
+    print(f"预测: {anomaly.expected_events}")
+    print(f"实际: {anomaly.actual_event} - {anomaly.actual_template}")
+```
 
-## 🎯 应用场景
+## 注意事项
 
-1. **系统监控**：实时监控系统日志，及时发现异常
-2. **故障预警**：预测潜在故障，提前预警
-3. **容量规划**：分析日志增长趋势，规划存储容量
-4. **安全审计**：检测异常登录、异常访问等安全事件
+1. **训练与推理分离**: 训练是离线阶段，推理是在线阶段
+2. **模型文件**: 首次使用前必须运行训练脚本生成模型
+3. **日志格式**: 支持标准格式 `[timestamp] [level] [service] message`
+4. **检测灵敏度**: `top_k` 参数越小，检测越敏感
 
-## 📝 配置说明
+## 依赖版本
 
-可以在脚本中调整以下参数：
+```
+torch>=1.9.0
+pandas>=1.3.0
+numpy>=1.20.0
+```
 
-### 日志生成参数
-- `target_lines`: 目标日志行数（默认：5000）
-- `anomaly_a_prob`: 异常A概率（高并发时段：0.15，正常时段：0.03）
-- `anomaly_b_prob`: 异常B概率（高并发时段：0.05，正常时段：0.02）
+## 参考资料
 
-### Drain 解析参数
-- `depth`: 解析树深度（默认：4）
-- `sim_th`: 相似度阈值（默认：0.5）
-- `keep_para`: 是否保留参数（默认：True）
-
-### DeepLog 模型参数
-- `window_size`: 滑动窗口大小（默认：10）
-- `embedding_dim`: Embedding 维度（默认：128）
-- `hidden_dim`: LSTM 隐藏层维度（默认：128）
-- `num_layers`: LSTM 层数（默认：2）
-- `dropout`: Dropout 概率（默认：0.3）
-- `num_epochs`: 训练轮数（默认：10）
-- `learning_rate`: 学习率（默认：0.001）
-- `batch_size`: 批次大小（默认：64）
-
-### 异常检测参数
-- `top_k`: 预测的 Top-k 个事件（默认：3）
-- `test_ratio`: 测试数据比例（默认：0.3）
-- `model_path`: 模型文件路径（默认：models/deeplog_model.pth）
-
-## 🚨 注意事项
-
-1. **依赖安装**：确保安装了所有依赖包
-   ```bash
-   pip install torch logparser pandas numpy matplotlib seaborn prophet
-   ```
-
-2. **文件路径**：确保在 `log_analysis` 目录下运行脚本
-
-3. **数据生成**：必须先运行 `1_generate_data.py` 生成日志数据，才能运行 `2_parse_logs.py`
-
-4. **模型训练**：必须先运行 `2_parse_logs.py` 解析日志，才能运行 `3_train_model.py`
-
-5. **异常检测**：必须先运行 `3_train_model.py` 训练模型，才能运行 `4_predict.py`
-
-## 🤝 贡献
-
-欢迎提交 Issue 和 Pull Request！
-
-## 📄 许可证
-
-MIT License
+- [DeepLog: Anomaly Detection and Diagnosis from System Logs through Deep Learning](https://dl.acm.org/doi/10.1145/3133956.3134015)
+- [LogHub: A Large Collection of System Log Datasets](https://github.com/logpai/loghub)

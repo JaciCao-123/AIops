@@ -1,192 +1,59 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Drain + DBSCAN 运维日志告警聚合系统 - 全局配置
-
-基于 Drain 日志解析 + DBSCAN 密度聚类的智能告警收敛方案
+AlertClusterSkill 配置模块
+包含所有超参数、权重、停用词表和模型路径配置
 """
-
-import os
 from pathlib import Path
+from typing import List
 
-BASE_DIR = Path(__file__).parent.absolute()
+BASE_DIR = Path(__file__).parent.resolve()
+DATA_DIR = BASE_DIR / "data"
+MODELS_DIR = BASE_DIR / "models"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
-DATA_DIRS = {
-    "raw": BASE_DIR / "data" / "raw",
-    "parsed": BASE_DIR / "data" / "parsed",
-    "features": BASE_DIR / "data" / "features",
-    "clusters": BASE_DIR / "data" / "clusters",
-    "reports": BASE_DIR / "data" / "reports"
-}
+IT_STOPWORDS: List[str] = [
+    "the", "a", "an", "is", "are", "was", "were", "be", "been", "being",
+    "have", "has", "had", "do", "does", "did", "will", "would", "could",
+    "should", "may", "might", "must", "shall", "can", "need", "dare",
+    "at", "by", "for", "with", "about", "against", "between", "into",
+    "through", "during", "before", "after", "above", "below", "to", "from",
+    "up", "down", "in", "out", "on", "off", "over", "under", "again",
+    "further", "then", "once", "here", "there", "when", "where", "why",
+    "how", "all", "each", "few", "more", "most", "other", "some", "such",
+    "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very",
+    "log", "logs", "info", "warn", "error", "debug", "trace", "level",
+    "thread", "threads", "class", "method", "line", "file", "null",
+    "true", "false", "none", "nullpointerexception", "exception", "throwable",
+]
 
-for dir_path in DATA_DIRS.values():
-    dir_path.mkdir(parents=True, exist_ok=True)
+MIN_WORD_LENGTH: int = 2
 
-LOG_GENERATOR_CONFIG = {
-    "num_logs": 5000,
-    "time_range_hours": 2,
-    
-    "log_sources": {
-        "application": {"weight": 0.40},
-        "system": {"weight": 0.25},
-        "middleware": {"weight": 0.20},
-        "database": {"weight": 0.15}
-    },
-    
-    "log_levels": {
-        "ERROR": {"weight": 0.10, "color": "\033[91m"},
-        "WARN": {"weight": 0.20, "color": "\033[93m"},
-        "INFO": {"weight": 0.50, "color": "\033[92m"},
-        "DEBUG": {"weight": 0.20, "color": "\033[94m"}
-    },
-    
-    "services": [
-        "order-service", "payment-service", "user-service",
-        "inventory-service", "notification-service", "api-gateway",
-        "mysql-master", "mysql-slave", "redis-cluster",
-        "kafka-cluster", "elasticsearch-cluster"
-    ],
-    
-    "anomaly_patterns": [
-        "connection_timeout",
-        "high_cpu_usage",
-        "memory_leak",
-        "disk_space_full",
-        "database_connection_exhausted",
-        "service_unavailable",
-        "authentication_failure",
-        "ssl_certificate_error"
-    ],
-    
-    "anomaly_injection_rate": 0.15,
-    
-    "output_file": DATA_DIRS["raw"] / "raw_logs.csv"
-}
+class Word2VecConfig:
+    vector_size: int = 100
+    window: int = 5
+    min_count: int = 5
+    workers: int = 4
+    epochs: int = 20
+    sg: int = 0
 
-DRAIN_CONFIG = {
-    "depth": 4,
-    "st": 0.5,
-    "max_children": 100,
-    "max_clusters": 50,
-    
-    "sim_threshold": 0.4,
-    
-    "regex": [
-        r'(?P<ip>\d+\.\d+\.\d+\.\d+)',
-        r'(?P<port>\d+)',
-        r'(?P<id>[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})',
-        r'(?P<user>\w+(?:@\w+)?)',
-        r"(?P<path>\/[\w\/\.-]+)",
-        r'(?P<number>\d+\.?\d*)',
-        r'(?P<duration>\d+ms|\d+s|\d+m)',
-        r'(?P<size>\d+[KBMG]?)',
-        r"(?P<date>\d{4}[-/]\d{2}[-/]\d{2})",
-        r'(?P<time>\d{2}:\d{2}:\d{2})',
-        r'(?P<timestamp>\d{13})',
-        r"(?P<url>https?://[\w\./:\?=&\-]+)"
-    ]
-}
+class DistanceWeights:
+    W_TIME: float = 0.05
+    W_SEM: float = 1.0
+    W_TOPO: float = 0.2
 
-FEATURE_BUILDER_CONFIG = {
-    "feature_types": {
-        "template_id_embedding": True,
-        "log_level_encoding": True,
-        "time_features": True,
-        "statistical_features": True,
-        "tfidf_vectorization": True
-    },
-    
-    "tfidf_params": {
-        "max_features": 1000,
-        "min_df": 2,
-        "max_df": 0.95,
-        "ngram_range": (1, 2)
-    },
-    
-    "time_window_seconds": 300,
-    
-    "normalization": "standard",
-    
-    "output_file": DATA_DIRS["features"] / "log_features.npz"
-}
+class DBSCANConfig:
+    eps: float = 0.5
+    min_samples: int = 2
+    metric: str = "precomputed"
 
-DBSCAN_CONFIG = {
-    "eps": 0.5,
-    "min_samples": 5,
-    
-    "metric": "euclidean",
-    
-    "algorithm": "auto",
-    
-    "n_jobs": -1,
-    
-    "noise_handling": "separate_cluster",
-    
-    "cluster_label_prefix": "CLUSTER_",
-    
-    "output_files": {
-        "cluster_labels": DATA_DIRS["clusters"] / "cluster_labels.json",
-        "cluster_centers": DATA_DIRS["clusters"] / "cluster_centers.json",
-        "cluster_stats": DATA_DIRS["clusters"] / "cluster_statistics.json"
-    }
-}
+class DrainConfig:
+    depth: int = 4
+    sim_th: float = 0.4
 
-ALERT_CONVERGENCE_CONFIG = {
-    "severity_weights": {
-        "ERROR": 1.0,
-        "WARN": 0.6,
-        "INFO": 0.2,
-        "DEBUG": 0.1
-    },
-    
-    "impact_factors": {
-        "cluster_size_weight": 0.3,
-        "error_rate_weight": 0.4,
-        "frequency_weight": 0.3
-    },
-    
-    "report_format": "markdown",
-    
-    "top_n_clusters": 10,
-    
-    "include_noise_analysis": True,
-    
-    "output_file": DATA_DIRS["reports"] / "alert_convergence_report.md"
-}
+DEFAULT_W2V_MODEL_PATH = MODELS_DIR / "it_word2vec.model"
+DEFAULT_DRAIN_MODEL_PATH = MODELS_DIR / "drain_model.bin"
+DEFAULT_TFIDF_MODEL_PATH = MODELS_DIR / "tfidf_vectorizer.pkl"
 
-PIPELINE_CONFIG = {
-    "steps": ["generate_logs", "drain_parse", "build_features", "dbscan_cluster", "alert_convergence"],
-    
-    "save_intermediate_results": True,
-    
-    "random_seed": 42,
-    
-    "verbose": True,
-    
-    "parallel_processing": False
-}
-
-
-def get_config_summary():
-    """获取配置摘要"""
-    return {
-        "base_dir": str(BASE_DIR),
-        "log_count": LOG_GENERATOR_CONFIG["num_logs"],
-        "drain_depth": DRAIN_CONFIG["depth"],
-        "dbscan_eps": DBSCAN_CONFIG["eps"],
-        "dbscan_min_samples": DBSCAN_CONFIG["min_samples"]
-    }
-
-
-if __name__ == "__main__":
-    print("=" * 60)
-    print("📋 Drain + DBSCAN 告警聚合系统配置")
-    print("=" * 60)
-    
-    summary = get_config_summary()
-    for key, value in summary.items():
-        print(f"   {key}: {value}")
-    
-    print("\n📁 数据目录:")
-    for name, path in DATA_DIRS.items():
-        print(f"   {name}: {path}")
+RAW_LOGS_PATH = DATA_DIR / "raw_logs.txt"
+TRAINING_CORPUS_PATH = DATA_DIR / "training_corpus.txt"
