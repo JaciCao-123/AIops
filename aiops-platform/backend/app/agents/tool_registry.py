@@ -50,6 +50,9 @@ class ToolRegistry:
         self.register("list_data_sources", self._list_data_sources)
         self.register("load_data_from_source", self._load_data_from_source)
         self.register("detect_log_anomalies", self._detect_log_anomalies)
+        self.register("cluster_alerts", self._cluster_alerts)
+        self.register("analyze_trace", self._analyze_trace)
+        self.register("analyze_service_dependency", self._analyze_service_dependency)
     
     def register(self, name: str, func: Callable):
         """
@@ -852,6 +855,299 @@ class ToolRegistry:
                 "error": str(e)
             }
     
+    async def _cluster_alerts(
+        self,
+        alerts: List[Dict[str, str]],
+        eps: float = 0.5,
+        min_samples: int = 2,
+        w_time: float = 0.05,
+        w_sem: float = 1.0,
+        w_topo: float = 0.2
+    ) -> Dict[str, Any]:
+        """
+        智能告警聚合（Drain + TF-IDF + Word2Vec + DBSCAN）
+        
+        Args:
+            alerts: 告警列表，每条包含 time, node_id, raw_msg
+            eps: DBSCAN 邻域半径，默认 0.5
+            min_samples: DBSCAN 最小样本数，默认 2
+            w_time: 时间距离权重
+            w_sem: 语义距离权重
+            w_topo: 拓扑距离权重
+            
+        Returns:
+            聚合结果
+        """
+        try:
+            import sys
+            alert_cluster_dir = Path(__file__).parent.parent.parent.parent.parent / "time_sequence_detection" / "alert_aggregation_Drain_DBSCAN"
+            
+            if not alert_cluster_dir.exists():
+                return {
+                    "success": False,
+                    "error": f"Alert cluster module not found at {alert_cluster_dir}",
+                    "hint": "Please ensure the alert_aggregation_Drain_DBSCAN directory exists"
+                }
+            
+            sys.path.insert(0, str(alert_cluster_dir))
+            
+            from config import DEFAULT_W2V_MODEL_PATH
+            from skill import AlertClusterSkill
+            
+            model_path = alert_cluster_dir / "models" / "it_word2vec.model"
+            
+            if not model_path.exists():
+                return {
+                    "success": False,
+                    "error": f"Word2Vec model not found at {model_path}",
+                    "hint": "Please run training first: cd alert_aggregation_Drain_DBSCAN && python main.py"
+                }
+            
+            skill = AlertClusterSkill(
+                w2v_model_path=str(model_path),
+                auto_load=True,
+                eps=eps,
+                min_samples=min_samples,
+                w_time=w_time,
+                w_sem=w_sem,
+                w_topo=w_topo,
+            )
+            
+            result = await skill.execute(alerts)
+            
+            clusters_summary = []
+            for cluster in result.clusters:
+                clusters_summary.append({
+                    "cluster_id": cluster.cluster_id,
+                    "alert_count": cluster.alert_count,
+                    "representative_alert": cluster.representative_alert,
+                    "affected_nodes": cluster.affected_nodes,
+                })
+            
+            compression_ratio = result.total_input / max(len(result.clusters), 1)
+            
+            return {
+                "success": True,
+                "total_input": result.total_input,
+                "noise_count": result.noise_count,
+                "cluster_count": len(result.clusters),
+                "clusters": clusters_summary,
+                "compression_ratio": f"{compression_ratio:.1f}:1",
+                "parameters": {
+                    "eps": eps,
+                    "min_samples": min_samples,
+                    "w_time": w_time,
+                    "w_sem": w_sem,
+                    "w_topo": w_topo,
+                }
+            }
+            
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }
+    
+    async def _analyze_trace(
+        self,
+        trace_id: str = None,
+        service_name: str = None,
+        error_only: bool = False,
+        slow_only: bool = False,
+        min_duration_ms: int = None,
+        lookback: str = "1h",
+        limit: int = 20
+    ) -> Dict[str, Any]:
+        """
+        分布式链路追踪分析工具
+        
+        基于 OpenTelemetry + Tempo 的分布式追踪分析能力：
+        1. 通过 Trace ID 查询完整调用链
+        2. 搜索错误链路或慢请求链路
+        3. 分析服务调用关系和性能瓶颈
+        4. 识别错误传播路径
+        
+        Args:
+            trace_id: Trace ID，如果提供则查询特定调用链
+            service_name: 服务名称，用于过滤搜索结果
+            error_only: 是否只搜索包含错误的链路
+            slow_only: 是否只搜索慢请求链路
+            min_duration_ms: 最小持续时间阈值（毫秒）
+            lookback: 回溯时间范围，如 "1h", "30m", "24h"
+            limit: 返回结果数量限制
+            
+        Returns:
+            链路分析结果
+        """
+        try:
+            from ..observability.tempo_query import TempoQueryClient
+            from ..observability.config import get_observability_config
+            
+            config = get_observability_config()
+            
+            async with TempoQueryClient(config=config) as client:
+                if trace_id:
+                    trace = await client.query_trace_by_id(trace_id)
+                    if not trace:
+                        return {
+                            "success": False,
+                            "error": f"Trace {trace_id} not found"
+                        }
+                    
+                    performance = await client.analyze_trace_performance(trace_id)
+                    
+                    return {
+                        "success": True,
+                        "trace_id": trace_id,
+                        "trace": trace.to_dict(),
+                        "span_tree": trace.get_span_tree(),
+                        "performance_analysis": performance,
+                        "services_involved": trace.services_involved,
+                        "error_count": len(trace.error_spans),
+                        "total_duration_ms": trace.total_duration_ms
+                    }
+                
+                else:
+                    if error_only:
+                        result = await client.search_error_traces(
+                            service_name=service_name,
+                            lookback=lookback,
+                            limit=limit
+                        )
+                    elif slow_only or min_duration_ms:
+                        min_duration = f"{min_duration_ms}ms" if min_duration_ms else "500ms"
+                        result = await client.search_slow_traces(
+                            min_duration=min_duration,
+                            service_name=service_name,
+                            lookback=lookback,
+                            limit=limit
+                        )
+                    else:
+                        result = await client.search_traces(
+                            service_name=service_name,
+                            lookback=lookback,
+                            limit=limit
+                        )
+                    
+                    return {
+                        "success": True,
+                        "total_traces": result.total,
+                        "traces": result.traces[:limit],
+                        "metrics": result.metrics,
+                        "search_params": {
+                            "service_name": service_name,
+                            "error_only": error_only,
+                            "slow_only": slow_only,
+                            "min_duration_ms": min_duration_ms,
+                            "lookback": lookback
+                        }
+                    }
+                    
+        except ImportError as e:
+            return {
+                "success": False,
+                "error": f"Observability module not available: {e}",
+                "hint": "Please ensure app/observability module is properly configured"
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }
+    
+    async def _analyze_service_dependency(
+        self,
+        lookback: str = "24h",
+        service_filter: List[str] = None
+    ) -> Dict[str, Any]:
+        """
+        服务依赖关系分析工具
+        
+        从 Trace 数据中提取服务调用关系，构建服务依赖图
+        
+        Args:
+            lookback: 回溯时间范围
+            service_filter: 服务过滤列表，只分析指定的服务
+            
+        Returns:
+            服务依赖图数据
+        """
+        try:
+            from ..observability.tempo_query import TempoQueryClient
+            from ..observability.config import get_observability_config
+            import numpy as np
+            from collections import defaultdict
+            
+            config = get_observability_config()
+            
+            async with TempoQueryClient(config=config) as client:
+                result = await client.search_traces(lookback=lookback, limit=500)
+                
+                edges = defaultdict(lambda: {"count": 0, "errors": 0, "latencies": []})
+                services = set()
+                
+                for trace_data in result.traces:
+                    trace_id = trace_data.get("traceID")
+                    if not trace_id:
+                        continue
+                    
+                    trace = await client.query_trace_by_id(trace_id)
+                    if not trace:
+                        continue
+                    
+                    for span in trace.spans:
+                        services.add(span.service_name)
+                        
+                        if span.parent_span_id:
+                            parent = next(
+                                (s for s in trace.spans if s.span_id == span.parent_span_id),
+                                None
+                            )
+                            if parent:
+                                src = parent.service_name
+                                dst = span.service_name
+                                
+                                if service_filter:
+                                    if src not in service_filter and dst not in service_filter:
+                                        continue
+                                
+                                key = (src, dst)
+                                edges[key]["count"] += 1
+                                if span.is_error:
+                                    edges[key]["errors"] += 1
+                                if span.duration_ms:
+                                    edges[key]["latencies"].append(span.duration_ms)
+                
+                edge_list = []
+                for (src, dst), data in edges.items():
+                    latencies = data["latencies"]
+                    edge_list.append({
+                        "source": src,
+                        "target": dst,
+                        "call_count": data["count"],
+                        "error_count": data["errors"],
+                        "error_rate": round(data["errors"] / data["count"] * 100, 2) if data["count"] > 0 else 0,
+                        "avg_latency_ms": round(np.mean(latencies), 2) if latencies else 0,
+                        "p99_latency_ms": round(np.percentile(latencies, 99), 2) if len(latencies) > 10 else 0
+                    })
+                
+                edge_list.sort(key=lambda x: x["call_count"], reverse=True)
+                
+                return {
+                    "success": True,
+                    "nodes": [{"id": s, "name": s} for s in sorted(services)],
+                    "edges": edge_list,
+                    "total_services": len(services),
+                    "total_edges": len(edge_list),
+                    "lookback": lookback
+                }
+                
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }
+    
     def get_tools_for_llm(self) -> List[Dict[str, Any]]:
         """
         获取 LLM function calling 格式的工具定义
@@ -1379,6 +1675,114 @@ class ToolRegistry:
                             "top_k": {
                                 "type": "integer",
                                 "description": "预测的 Top-k 事件数，默认为 3。值越小检测越敏感"
+                            }
+                        },
+                        "required": []
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "cluster_alerts",
+                    "description": "智能告警聚合工具。使用 Drain + TF-IDF + Word2Vec + DBSCAN 对告警进行聚类压缩，适用于告警风暴场景。将大量相似告警聚合为少数几个聚类，便于快速定位问题。",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "alerts": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "time": {"type": "string", "description": "告警时间，格式: YYYY-MM-DD HH:MM:SS"},
+                                        "node_id": {"type": "string", "description": "告警来源节点ID"},
+                                        "raw_msg": {"type": "string", "description": "原始告警消息"}
+                                    }
+                                },
+                                "description": "告警列表，每条告警包含 time, node_id, raw_msg 三个字段"
+                            },
+                            "eps": {
+                                "type": "number",
+                                "description": "DBSCAN 邻域半径，默认 0.5。值越小聚类越严格，值越大聚类越宽松"
+                            },
+                            "min_samples": {
+                                "type": "integer",
+                                "description": "DBSCAN 最小样本数，默认 2。小于此数量的告警会被视为噪声"
+                            },
+                            "w_time": {
+                                "type": "number",
+                                "description": "时间距离权重，默认 0.05"
+                            },
+                            "w_sem": {
+                                "type": "number",
+                                "description": "语义距离权重，默认 1.0"
+                            },
+                            "w_topo": {
+                                "type": "number",
+                                "description": "拓扑距离权重，默认 0.2"
+                            }
+                        },
+                        "required": ["alerts"]
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "analyze_trace",
+                    "description": "分布式链路追踪分析工具。基于 OpenTelemetry + Tempo 查询和分析分布式调用链，用于故障定位和性能瓶颈识别。支持：1) 通过 Trace ID 查询完整调用链；2) 搜索错误链路或慢请求；3) 分析服务调用关系。",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "trace_id": {
+                                "type": "string",
+                                "description": "Trace ID，如果提供则查询特定调用链的详细信息"
+                            },
+                            "service_name": {
+                                "type": "string",
+                                "description": "服务名称，用于过滤搜索结果"
+                            },
+                            "error_only": {
+                                "type": "boolean",
+                                "description": "是否只搜索包含错误的链路，默认 false"
+                            },
+                            "slow_only": {
+                                "type": "boolean",
+                                "description": "是否只搜索慢请求链路，默认 false"
+                            },
+                            "min_duration_ms": {
+                                "type": "integer",
+                                "description": "最小持续时间阈值（毫秒），用于过滤慢请求"
+                            },
+                            "lookback": {
+                                "type": "string",
+                                "description": "回溯时间范围，如 '1h', '30m', '24h'，默认 '1h'"
+                            },
+                            "limit": {
+                                "type": "integer",
+                                "description": "返回结果数量限制，默认 20"
+                            }
+                        },
+                        "required": []
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "analyze_service_dependency",
+                    "description": "服务依赖关系分析工具。从分布式追踪数据中提取服务调用关系，构建服务依赖图，用于理解微服务架构和识别故障传播路径。",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "lookback": {
+                                "type": "string",
+                                "description": "回溯时间范围，如 '1h', '24h'，默认 '24h'"
+                            },
+                            "service_filter": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "服务过滤列表，只分析指定的服务"
                             }
                         },
                         "required": []

@@ -939,8 +939,27 @@ class EnhancedRootCauseAnalyzer:
             )
             self.algorithm_results.append(gnn_result)
         
-        # Step 5: 结果融合
-        logger.info("\n📍 Step 5: Multi-Algorithm Fusion...")
+        # Step 5: Trace 错误链路分析
+        if self.tempo:
+            logger.info("\n📍 Step 5: Trace Error Propagation Analysis...")
+            trace_error_result = await self._run_trace_error_analysis(
+                service_name=service_name,
+                time_window_minutes=time_window_minutes,
+            )
+            self.algorithm_results.append(trace_error_result)
+        
+        # Step 6: 慢请求链路分析
+        if self.tempo:
+            logger.info("\n📍 Step 6: Slow Trace Performance Analysis...")
+            slow_trace_result = await self._run_slow_trace_analysis(
+                service_name=service_name,
+                time_window_minutes=time_window_minutes,
+                threshold_ms=1000,
+            )
+            self.algorithm_results.append(slow_trace_result)
+        
+        # Step 7: 结果融合
+        logger.info("\n📍 Step 7: Multi-Algorithm Fusion...")
         fused_report = self._fuse_results(base_report)
         
         overall_duration = (datetime.now() - overall_start).total_seconds()
@@ -1160,6 +1179,321 @@ class EnhancedRootCauseAnalyzer:
                 execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
                 error_message=str(e),
             )
+    
+    async def _run_trace_error_analysis(
+        self,
+        service_name: Optional[str],
+        time_window_minutes: int,
+    ) -> AlgorithmResult:
+        """
+        运行 Trace 错误链路分析
+        
+        从 Tempo 查询错误链路，分析错误传播路径
+        """
+        start_time = datetime.now()
+        
+        try:
+            if not self.tempo:
+                return AlgorithmResult(
+                    algorithm_type=AlgorithmType.STATISTICAL,
+                    algorithm_name="Trace Error Analysis",
+                    success=False,
+                    confidence_score=0.0,
+                    execution_time_ms=0,
+                    error_message="Tempo client not initialized",
+                )
+            
+            lookback = f"{time_window_minutes}m"
+            
+            error_traces = await self.tempo.search_error_traces(
+                service_name=service_name,
+                lookback=lookback,
+                limit=50,
+            )
+            
+            if not error_traces.traces:
+                return AlgorithmResult(
+                    algorithm_type=AlgorithmType.STATISTICAL,
+                    algorithm_name="Trace Error Analysis",
+                    success=True,
+                    confidence_score=0.1,
+                    root_cause_candidates=[],
+                    execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
+                    metadata={"message": "No error traces found"},
+                )
+            
+            error_services = {}
+            error_propagation_paths = []
+            
+            for trace_data in error_traces.traces[:20]:
+                trace_id = trace_data.get("traceID")
+                if not trace_id:
+                    continue
+                
+                trace = await self.tempo.query_trace_by_id(trace_id)
+                if not trace:
+                    continue
+                
+                for span in trace.error_spans:
+                    svc = span.service_name
+                    if svc not in error_services:
+                        error_services[svc] = {
+                            "error_count": 0,
+                            "error_types": [],
+                            "affected_operations": [],
+                        }
+                    
+                    error_services[svc]["error_count"] += 1
+                    
+                    if span.operation_name not in error_services[svc]["affected_operations"]:
+                        error_services[svc]["affected_operations"].append(span.operation_name)
+                    
+                    for event in span.events:
+                        if "exception" in event.name.lower():
+                            exc_type = event.attributes.get("exception.type", "Unknown")
+                            if exc_type not in error_services[svc]["error_types"]:
+                                error_services[svc]["error_types"].append(exc_type)
+                
+                propagation_path = self._extract_error_propagation_path(trace)
+                if propagation_path:
+                    error_propagation_paths.append(propagation_path)
+            
+            candidates = []
+            for svc, data in sorted(error_services.items(), key=lambda x: x[1]["error_count"], reverse=True):
+                confidence = min(0.95, data["error_count"] / 10 + 0.3)
+                candidates.append({
+                    "component": svc,
+                    "type": "trace_error",
+                    "description": f"服务 {svc} 检测到 {data['error_count']} 次错误，涉及操作: {', '.join(data['affected_operations'][:3])}",
+                    "score": confidence,
+                    "error_types": data["error_types"],
+                    "affected_operations": data["affected_operations"],
+                })
+            
+            if error_propagation_paths:
+                most_common_path = max(set(tuple(p) for p in error_propagation_paths), 
+                                       key=lambda x: error_propagation_paths.count(list(x)))
+                candidates.append({
+                    "component": most_common_path[0] if most_common_path else "unknown",
+                    "type": "error_propagation",
+                    "description": f"检测到常见错误传播路径: {' → '.join(most_common_path)}",
+                    "score": 0.7,
+                    "propagation_path": list(most_common_path),
+                })
+            
+            execution_time = (datetime.now() - start_time).total_seconds() * 1000
+            
+            return AlgorithmResult(
+                algorithm_type=AlgorithmType.STATISTICAL,
+                algorithm_name="Trace Error Propagation Analysis",
+                success=True,
+                confidence_score=candidates[0]["score"] if candidates else 0.1,
+                root_cause_candidates=candidates,
+                execution_time_ms=execution_time,
+                metadata={
+                    "total_error_traces": len(error_traces.traces),
+                    "services_with_errors": len(error_services),
+                    "error_services": error_services,
+                },
+            )
+            
+        except Exception as e:
+            return AlgorithmResult(
+                algorithm_type=AlgorithmType.STATISTICAL,
+                algorithm_name="Trace Error Analysis",
+                success=False,
+                confidence_score=0.0,
+                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
+                error_message=str(e),
+            )
+    
+    async def _run_slow_trace_analysis(
+        self,
+        service_name: Optional[str],
+        time_window_minutes: int,
+        threshold_ms: int = 1000,
+    ) -> AlgorithmResult:
+        """
+        运行慢请求链路分析
+        
+        从 Tempo 查询慢请求链路，识别性能瓶颈
+        """
+        start_time = datetime.now()
+        
+        try:
+            if not self.tempo:
+                return AlgorithmResult(
+                    algorithm_type=AlgorithmType.STATISTICAL,
+                    algorithm_name="Slow Trace Analysis",
+                    success=False,
+                    confidence_score=0.0,
+                    execution_time_ms=0,
+                    error_message="Tempo client not initialized",
+                )
+            
+            lookback = f"{time_window_minutes}m"
+            
+            slow_traces = await self.tempo.search_slow_traces(
+                min_duration=f"{threshold_ms}ms",
+                service_name=service_name,
+                lookback=lookback,
+                limit=30,
+            )
+            
+            if not slow_traces.traces:
+                return AlgorithmResult(
+                    algorithm_type=AlgorithmType.STATISTICAL,
+                    algorithm_name="Slow Trace Analysis",
+                    success=True,
+                    confidence_score=0.1,
+                    root_cause_candidates=[],
+                    execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
+                    metadata={"message": f"No slow traces found (threshold: {threshold_ms}ms)"},
+                )
+            
+            slow_spans_by_service = {}
+            slowest_operations = []
+            
+            for trace_data in slow_traces.traces[:15]:
+                trace_id = trace_data.get("traceID")
+                if not trace_id:
+                    continue
+                
+                trace = await self.tempo.query_trace_by_id(trace_id)
+                if not trace:
+                    continue
+                
+                for span in trace.spans:
+                    if span.duration_ms and span.duration_ms > threshold_ms:
+                        svc = span.service_name
+                        if svc not in slow_spans_by_service:
+                            slow_spans_by_service[svc] = {
+                                "total_slow_spans": 0,
+                                "total_duration_ms": 0,
+                                "operations": {},
+                            }
+                        
+                        slow_spans_by_service[svc]["total_slow_spans"] += 1
+                        slow_spans_by_service[svc]["total_duration_ms"] += span.duration_ms
+                        
+                        op = span.operation_name
+                        if op not in slow_spans_by_service[svc]["operations"]:
+                            slow_spans_by_service[svc]["operations"][op] = {
+                                "count": 0,
+                                "avg_duration_ms": 0,
+                                "max_duration_ms": 0,
+                            }
+                        
+                        slow_spans_by_service[svc]["operations"][op]["count"] += 1
+                        slow_spans_by_service[svc]["operations"][op]["avg_duration_ms"] = (
+                            slow_spans_by_service[svc]["operations"][op]["avg_duration_ms"] * 
+                            (slow_spans_by_service[svc]["operations"][op]["count"] - 1) + 
+                            span.duration_ms
+                        ) / slow_spans_by_service[svc]["operations"][op]["count"]
+                        slow_spans_by_service[svc]["operations"][op]["max_duration_ms"] = max(
+                            slow_spans_by_service[svc]["operations"][op]["max_duration_ms"],
+                            span.duration_ms
+                        )
+                        
+                        slowest_operations.append({
+                            "service": svc,
+                            "operation": op,
+                            "duration_ms": span.duration_ms,
+                        })
+            
+            candidates = []
+            for svc, data in sorted(slow_spans_by_service.items(), 
+                                    key=lambda x: x[1]["total_duration_ms"], reverse=True):
+                avg_duration = data["total_duration_ms"] / data["total_slow_spans"]
+                confidence = min(0.95, avg_duration / 1000 + 0.2)
+                
+                top_operations = sorted(
+                    data["operations"].items(),
+                    key=lambda x: x[1]["avg_duration_ms"],
+                    reverse=True
+                )[:3]
+                
+                candidates.append({
+                    "component": svc,
+                    "type": "performance_bottleneck",
+                    "description": f"服务 {svc} 存在性能瓶颈，平均延迟 {avg_duration:.1f}ms，慢操作: {', '.join([op for op, _ in top_operations])}",
+                    "score": confidence,
+                    "avg_duration_ms": avg_duration,
+                    "slow_span_count": data["total_slow_spans"],
+                    "top_operations": [{"operation": op, **stats} for op, stats in top_operations],
+                })
+            
+            slowest_operations.sort(key=lambda x: x["duration_ms"], reverse=True)
+            
+            execution_time = (datetime.now() - start_time).total_seconds() * 1000
+            
+            return AlgorithmResult(
+                algorithm_type=AlgorithmType.STATISTICAL,
+                algorithm_name="Slow Trace Performance Analysis",
+                success=True,
+                confidence_score=candidates[0]["score"] if candidates else 0.1,
+                root_cause_candidates=candidates,
+                execution_time_ms=execution_time,
+                metadata={
+                    "total_slow_traces": len(slow_traces.traces),
+                    "threshold_ms": threshold_ms,
+                    "slowest_operations": slowest_operations[:10],
+                },
+            )
+            
+        except Exception as e:
+            return AlgorithmResult(
+                algorithm_type=AlgorithmType.STATISTICAL,
+                algorithm_name="Slow Trace Analysis",
+                success=False,
+                confidence_score=0.0,
+                execution_time_ms=(datetime.now() - start_time).total_seconds() * 1000,
+                error_message=str(e),
+            )
+    
+    def _extract_error_propagation_path(self, trace) -> List[str]:
+        """
+        从 Trace 中提取错误传播路径
+        
+        Args:
+            trace: Trace 对象
+            
+        Returns:
+            错误传播路径（服务列表）
+        """
+        if not trace.error_spans:
+            return []
+        
+        error_span_ids = {s.span_id for s in trace.error_spans}
+        
+        def find_root_error_span(span):
+            if span.span_id in error_span_ids:
+                if not span.parent_span_id:
+                    return span
+                parent = next((s for s in trace.spans if s.span_id == span.parent_span_id), None)
+                if parent and parent.span_id in error_span_ids:
+                    return find_root_error_span(parent)
+            return span
+        
+        root_error_spans = [find_root_error_span(s) for s in trace.error_spans]
+        
+        if root_error_spans:
+            root = root_error_spans[0]
+            path = [root.service_name]
+            
+            def add_children(span, current_path):
+                children = [s for s in trace.spans if s.parent_span_id == span.span_id]
+                for child in children:
+                    if child.span_id in error_span_ids:
+                        new_path = current_path + [child.service_name]
+                        add_children(child, new_path)
+                if len(current_path) > len(path):
+                    path.extend(current_path[len(path):])
+            
+            add_children(root, path)
+            return path
+        
+        return []
     
     def _fuse_results(self, base_report: RootCauseAnalysisReport) -> FusedAnalysisReport:
         """

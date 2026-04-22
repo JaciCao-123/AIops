@@ -1,0 +1,60 @@
+global:
+  resolve_timeout: 5m
+  smtp_smarthost: '${SMTP_HOST}:${SMTP_PORT}'
+  smtp_from: '${SMTP_FROM}'
+  smtp_auth_username: '${SMTP_USER}'
+  smtp_auth_password: '${SMTP_PASSWORD}'
+
+route:
+  group_by: ['alertname', 'severity']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: 'aiops-receiver'
+  routes:
+    - match:
+        severity: critical
+      receiver: 'aiops-critical'
+    - match:
+        severity: warning
+      receiver: 'aiops-warning'
+    - match:
+        severity: info
+      receiver: 'aiops-info'
+
+receivers:
+  - name: 'aiops-receiver'
+    webhook_configs:
+      - url: '${AIOPS_WEBHOOK_URL:-http://host.docker.internal:8000/api/alerts/webhook}'
+        send_resolved: true
+        max_alerts: 0
+
+  - name: 'aiops-critical'
+    webhook_configs:
+      - url: '${AIOPS_WEBHOOK_URL:-http://host.docker.internal:8000/api/alerts/webhook}'
+        send_resolved: true
+        max_alerts: 0
+
+  - name: 'aiops-warning'
+    webhook_configs:
+      - url: '${AIOPS_WEBHOOK_URL:-http://host.docker.internal:8000/api/alerts/webhook}'
+        send_resolved: true
+        max_alerts: 0
+
+  - name: 'aiops-info'
+    webhook_configs:
+      - url: '${AIOPS_WEBHOOK_URL:-http://host.docker.internal:8000/api/alerts/webhook}'
+        send_resolved: true
+        max_alerts: 0
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']
+  - source_match:
+      severity: 'warning'
+    target_match:
+      severity: 'info'
+    equal: ['alertname', 'instance']

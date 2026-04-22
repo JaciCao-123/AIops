@@ -188,3 +188,204 @@ export interface DiagnoseResponse {
   status: string;
   message: string;
 }
+
+export interface Alert {
+  id: string;
+  fingerprint: string;
+  status: 'firing' | 'resolved';
+  labels: Record<string, string>;
+  annotations: Record<string, string>;
+  startsAt: string;
+  endsAt?: string;
+  severity: 'critical' | 'warning' | 'info';
+  service?: string;
+  cluster_id?: number;
+}
+
+export interface ClusteredAlerts {
+  total_alerts: number;
+  cluster_count: number;
+  clusters: AlertCluster[];
+  lookback: string;
+}
+
+export interface AlertCluster {
+  cluster_id: number;
+  pattern: string;
+  count: number;
+  severity: string;
+  services: string[];
+  first_occurrence: string;
+  last_occurrence: string;
+  sample_alerts: Alert[];
+}
+
+export interface AlertStats {
+  total: number;
+  firing: number;
+  resolved: number;
+  by_severity: Record<string, number>;
+  by_service: Record<string, number>;
+  trend: Array<{ time: string; count: number }>;
+}
+
+export interface AlertIngestResponse {
+  success: boolean;
+  message: string;
+  total_alerts: number;
+  firing_count: number;
+  resolved_count: number;
+  cluster_result?: ClusteredAlerts;
+}
+
+export interface TraceSearchResult {
+  total: number;
+  traces: TraceInfo[];
+  lookback: string;
+}
+
+export interface TraceInfo {
+  traceID: string;
+  rootServiceName: string;
+  rootTraceName: string;
+  startTime: string;
+  durationMs: number;
+  spanCount: number;
+  hasError: boolean;
+  services: string[];
+}
+
+export interface TraceDetail {
+  traceID: string;
+  spans: Span[];
+  services: string[];
+  totalDurationMs: number;
+  hasError: boolean;
+  errorSpans: Span[];
+  spanTree: SpanTreeNode[];
+}
+
+export interface Span {
+  spanID: string;
+  parentSpanID?: string;
+  operationName: string;
+  serviceName: string;
+  startTime: string;
+  durationMs: number;
+  tags: Record<string, string | number | boolean>;
+  hasError: boolean;
+  statusCode: string;
+}
+
+export interface SpanTreeNode {
+  span: Span;
+  children: SpanTreeNode[];
+}
+
+export interface ServiceDependency {
+  nodes: Array<{ id: string; name: string }>;
+  edges: ServiceEdge[];
+  total_services: number;
+  total_edges: number;
+  lookback: string;
+}
+
+export interface ServiceEdge {
+  source: string;
+  target: string;
+  call_count: number;
+  error_count: number;
+  error_rate: number;
+  avg_latency_ms: number;
+  p99_latency_ms: number;
+}
+
+export interface TraceAnalysis {
+  success: boolean;
+  trace_id?: string;
+  trace?: TraceDetail;
+  performance_analysis?: TracePerformance;
+  error_analysis?: TraceErrorAnalysis;
+  services_involved?: string[];
+  error_count?: number;
+  total_duration_ms?: number;
+  error?: string;
+}
+
+export interface TracePerformance {
+  bottleneck_spans: Span[];
+  slow_operations: Array<{ operation: string; avg_duration_ms: number }>;
+  latency_breakdown: Record<string, number>;
+}
+
+export interface TraceErrorAnalysis {
+  error_spans: Span[];
+  error_types: string[];
+  error_propagation_path: string[];
+}
+
+export interface RCAReport {
+  report_id: string;
+  service_name: string;
+  time_window_minutes: number;
+  hypotheses: RCAHypothesis[];
+  root_confidence: number;
+  recommendations: string[];
+  algorithms_used: string[];
+  created_at: string;
+}
+
+export interface RCAHypothesis {
+  hypothesis_id: string;
+  title: string;
+  description: string;
+  affected_component: string;
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  confidence_score: number;
+  evidences: Evidence[];
+  remediation_steps: string[];
+}
+
+export interface Evidence {
+  evidence_id: string;
+  evidence_type: string;
+  source: string;
+  description: string;
+  confidence: number;
+  timestamp: string;
+}
+
+export interface MetricsData {
+  query: string;
+  result_type: string;
+  data: Array<{
+    metric: Record<string, string>;
+    values: Array<[number, number]>;
+  }>;
+}
+
+export interface SystemHealth {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  components: Array<{
+    name: string;
+    status: string;
+    message?: string;
+  }>;
+  services: ServiceHealth[];
+}
+
+export interface ServiceHealth {
+  name: string;
+  status: 'up' | 'down' | 'degraded';
+  error_rate: number;
+  latency_p99: number;
+  throughput: number;
+}
+
+export interface ServiceInfo {
+  name: string;
+  namespace?: string;
+  instance_count: number;
+  error_rate: number;
+  latency_p99: number;
+}

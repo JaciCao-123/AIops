@@ -1,0 +1,16 @@
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+COPY app.py .
+
+EXPOSE 8000
+
+ENV OTEL_SERVICE_NAME=order-service
+ENV OTEL_EXPORTER_OTLP_ENDPOINT=http://10.0.1.224:4317
+ENV DOWNSTREAM_URL=http://10.0.1.233:8000
+
+CMD ["opentelemetry-instrument", "python", "app.py"]

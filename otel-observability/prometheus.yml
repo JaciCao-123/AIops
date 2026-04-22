@@ -1,0 +1,35 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "otel-collector"
+    static_configs:
+      - targets: ["otel-collector:8889"]
+
+  - job_name: "tempo"
+    static_configs:
+      - targets: ["tempo:3200"]
+
+  - job_name: "node_exporter"
+    static_configs:
+      - targets:
+          - "10.0.1.235:9100"
+          - "10.0.1.236:9100"
+          - "10.0.1.234:9100"
+          - "10.0.1.232:9100"
+          - "10.0.1.233:9100"
+        labels:
+          group: "all_servers"
+
+  - job_name: "mysqld_exporter"
+    static_configs:
+      - targets:
+          - "10.0.1.235:9104"
+          - "10.0.1.236:9104"
+        labels:
+          group: "mysql_servers"

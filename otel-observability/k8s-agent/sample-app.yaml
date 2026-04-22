@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-app
+  namespace: observability
+  labels:
+    app: sample-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sample-app
+  template:
+    metadata:
+      labels:
+        app: sample-app
+    spec:
+      containers:
+        - name: sample-app
+          image: python:3.9-slim
+          command:
+            - /bin/sh
+            - -c
+            - |
+              pip install flask opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp -q
+              python /app/app.py
+          env:
+            - name: SERVICE_NAME
+              value: "sample-app"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-agent.observability.svc.cluster.local:4317"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=sample-app,deployment.environment=k8s"
+          volumeMounts:
+            - name: app-code
+              mountPath: /app
+          ports:
+            - containerPort: 5000
+          resources:
+            limits:
+              cpu: 200m
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+      volumes:
+        - name: app-code
+          configMap:
+            name: sample-app-code
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-app
+  namespace: observability
+spec:
+  selector:
+    app: sample-app
+  ports:
+    - port: 5000
+      targetPort: 5000
+  type: ClusterIP

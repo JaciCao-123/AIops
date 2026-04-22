@@ -10,6 +10,8 @@ import {
   CodeOutlined,
   UserOutlined,
   LogoutOutlined,
+  AlertOutlined,
+  ClusterOutlined,
 } from '@ant-design/icons';
 
 import Dashboard from './pages/Dashboard';
@@ -20,6 +22,8 @@ import KnowledgeGraph from './pages/KnowledgeGraph';
 import Terminal from './pages/Terminal';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Alerts from './pages/Alerts';
+import Tracing from './pages/Tracing';
 import { TerminalProvider } from './contexts/TerminalContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
@@ -28,7 +32,9 @@ const { Header, Content, Sider } = Layout;
 
 const menuItems = [
   { key: '/', icon: <DashboardOutlined />, label: '仪表盘', path: '/', permission: null },
+  { key: '/alerts', icon: <AlertOutlined />, label: '告警中心', path: '/alerts', permission: 'alerts:view' },
   { key: '/logs', icon: <FileTextOutlined />, label: '日志列表', path: '/logs', permission: 'logs:view' },
+  { key: '/tracing', icon: <ClusterOutlined />, label: '链路追踪', path: '/tracing', permission: 'tracing:view' },
   { key: '/diagnose', icon: <BugOutlined />, label: '故障诊断', path: '/diagnose', permission: 'diagnose:view' },
   { key: '/knowledge', icon: <ApiOutlined />, label: '知识库', path: '/knowledge', permission: 'knowledge:view' },
   { key: '/qa', icon: <QuestionCircleOutlined />, label: '智能问答', path: '/qa', permission: 'qa:view' },
@@ -155,9 +161,19 @@ const AppContent = () => {
             <div style={{ padding: 24, background: '#fff', borderRadius: 8, minHeight: 'calc(100vh - 112px)' }}>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
+                <Route path="/alerts" element={
+                  <PrivateRoute requiredPermission="alerts:view">
+                    <Alerts />
+                  </PrivateRoute>
+                } />
                 <Route path="/logs" element={
                   <PrivateRoute requiredPermission="logs:view">
                     <LogList />
+                  </PrivateRoute>
+                } />
+                <Route path="/tracing" element={
+                  <PrivateRoute requiredPermission="tracing:view">
+                    <Tracing />
                   </PrivateRoute>
                 } />
                 <Route path="/diagnose" element={

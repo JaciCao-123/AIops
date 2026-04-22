@@ -17,6 +17,8 @@
   - [算法模块概览](#-算法模块概览)
   - [各模块详解](#-各模块详解)
 - [三、可观测性平台](#三可观测性平台)
+  - [核心模块](#-核心模块)
+  - [OpenTelemetry 可观测性组件](#-opentelemetry-可观测性组件-otel-observability)
 - [四、部署指南](#四部署指南)
 - [技术栈](#-技术栈)
 
@@ -512,6 +514,205 @@ asyncio.run(enhanced_analysis())
 
 ---
 
+### 🔭 OpenTelemetry 可观测性组件 (otel-observability)
+
+**文件位置**: [otel-observability/](file:///Users/jaci-j/AIops/otel-observability/)
+
+独立的 OpenTelemetry 可观测性基础设施，提供完整的 Metrics、Traces、Logs 采集与分析能力。
+
+#### 📁 项目结构
+
+```
+otel-observability/
+├── docker-compose.yml              # 主编排文件
+├── otel-collector-config.yaml      # OTel Collector 配置
+├── prometheus.yml                  # Prometheus 配置
+├── tempo.yaml                      # Tempo 配置
+├── grafana-datasources.yaml        # Grafana 数据源配置
+├── alertmanager.yml                # Alertmanager 配置 (AIops 集成)
+│
+├── bt-server-observability/        # 生产环境部署
+│   ├── docker-compose.yml          # 含 Prometheus 完整组件
+│   ├── otel-collector-config.yaml
+│   ├── prometheus.yml
+│   ├── tempo.yaml
+│   └── grafana-datasources.yaml
+│
+├── k8s-agent/                      # Kubernetes 部署
+│   ├── namespace.yaml              # 命名空间
+│   ├── rbac.yaml                   # 权限配置
+│   ├── configmap.yaml              # 配置映射
+│   ├── daemonset.yaml              # DaemonSet 部署
+│   └── sample-app.yaml             # 示例应用
+│
+├── microservices/                  # 微服务示例
+│   ├── app.py                      # Flask 应用 (OTel 埋点)
+│   ├── Dockerfile
+│   └── docker-compose.yml
+│
+└── ecommerce-demo/                 # 电商演示应用
+    ├── app.py                      # 订单/商品服务
+    ├── Dockerfile.order
+    ├── Dockerfile.product
+    └── deploy-all.sh
+```
+
+#### 🧩 核心组件
+
+| 组件 | 端口 | 功能描述 |
+|------|------|----------|
+| **Prometheus** | 9090 | 指标采集、存储、告警规则 |
+| **Tempo** | 3200 | 分布式链路追踪存储 |
+| **OTel Collector** | 4317/4318 | 统一数据采集网关 (gRPC/HTTP) |
+| **Grafana** | 3000 | 统一可视化面板 |
+| **Alertmanager** | 9093 | 告警路由与通知 |
+
+#### 🔧 OTel Collector 配置亮点
+
+```yaml
+# otel-collector-config.yaml
+receivers:
+  otlp:
+    protocols:
+      grpc: { endpoint: 0.0.0.0:4317 }
+      http: { endpoint: 0.0.0.0:4318 }
+
+processors:
+  tail_sampling:                    # 智能采样策略
+    policies:
+      - name: error-traces          # 100% 采集错误链路
+        type: status_code
+        status_code: { status_codes: [ERROR] }
+      - name: slow-traces           # 采集慢请求 (>500ms)
+        type: latency
+        latency: { threshold_ms: 500 }
+      - name: sample-10-percent     # 10% 概率采样正常链路
+        type: probabilistic
+        probabilistic: { sampling_percentage: 10 }
+
+exporters:
+  otlphttp: { endpoint: http://tempo:4318 }
+  prometheus: { endpoint: 0.0.0.0:8889 }
+```
+
+#### 🔗 AIops 平台集成
+
+**Alertmanager Webhook 配置** (`alertmanager.yml`):
+
+```yaml
+receivers:
+  - name: 'aiops-receiver'
+    webhook_configs:
+      - url: 'http://host.docker.internal:8000/api/alerts/webhook'
+        send_resolved: true
+```
+
+**集成架构**:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    告警流转架构                                       │
+├─────────────────────────────────────────────────────────────────────┤
+│  Prometheus                                                         │
+│      │ 触发告警规则                                                  │
+│      ▼                                                              │
+│  Alertmanager ──webhook──▶ AIops Platform                           │
+│      │                          │                                   │
+│      │                          ▼                                   │
+│      │                    /api/alerts/webhook                       │
+│      │                          │                                   │
+│      │                          ▼                                   │
+│      │                    告警聚合 (Drain + DBSCAN)                  │
+│      │                          │                                   │
+│      │                          ▼                                   │
+│      │                    Multi-Agent 诊断                           │
+│      │                          │                                   │
+│      │                          ▼                                   │
+│      └──────────────────── 根因分析报告 ◀───────────────────────────│
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+#### 🚀 快速部署
+
+**Docker Compose 部署**:
+
+```bash
+# 进入目录
+cd otel-observability
+
+# 启动所有组件
+docker-compose up -d
+
+# 查看服务状态
+docker-compose ps
+
+# 访问服务
+# Grafana:      http://localhost:3000 (admin/admin123)
+# Prometheus:   http://localhost:9090
+# Tempo:        http://localhost:3200
+# Alertmanager: http://localhost:9093
+```
+
+**Kubernetes 部署**:
+
+```bash
+cd otel-observability/k8s-agent
+
+# 创建命名空间和权限
+kubectl apply -f namespace.yaml
+kubectl apply -f rbac.yaml
+
+# 部署 OTel Agent (DaemonSet)
+kubectl apply -f configmap.yaml
+kubectl apply -f daemonset.yaml
+
+# 部署示例应用
+kubectl apply -f sample-app.yaml
+```
+
+#### 📊 应用埋点示例
+
+**Python Flask 应用**:
+
+```python
+from flask import Flask
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
+app = Flask(__name__)
+
+# 初始化 OTel
+trace.set_tracer_provider(TracerProvider())
+tracer = trace.get_tracer(__name__)
+otlp_exporter = OTLPSpanExporter(endpoint="otel-collector:4317")
+trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter))
+
+@app.route("/api/orders")
+def orders():
+    with tracer.start_as_current_span("process_order"):
+        # 业务逻辑
+        return {"status": "ok"}
+```
+
+#### 📈 Grafana 仪表盘
+
+启动后，Grafana 自动配置以下数据源：
+
+| 数据源 | 类型 | 用途 |
+|--------|------|------|
+| Prometheus | Prometheus | 指标查询 |
+| Tempo | Tempo | 链路追踪查询 |
+| Loki | Loki | 日志查询 (可选) |
+
+**推荐仪表盘**:
+- **Node Exporter Full**: 主机监控
+- **Tempo Service Graph**: 服务依赖拓扑
+- **OTel Collector**: Collector 性能监控
+
+---
+
 ## 四、部署指南
 
 ### Docker 部署
@@ -560,11 +761,17 @@ kubectl apply -f k8s/kg-api-service.yaml
 
 ## 📄 版本信息
 
-- **版本**: v4.0
-- **更新时间**: 2025-04-21
+- **版本**: v4.1
+- **更新时间**: 2025-04-22
 - **维护者**: AIOps Team
 
 ### 更新日志
+
+#### v4.1 (2025-04-22)
+- 新增 otel-observability 可观测性组件文档
+- 新增告警中心、链路追踪前端页面
+- 完善 Alertmanager 与 AIops 平台集成说明
+- 添加 OTel Collector 智能采样配置说明
 
 #### v4.0 (2025-04-21)
 - 新增 5 个算法模型 Skill 集成

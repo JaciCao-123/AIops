@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  frontend:
+    build: .
+    container_name: frontend
+    environment:
+      - SERVICE_NAME=frontend
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://10.0.1.232:4317
+      - BACKEND_URL=http://backend:5001
+      - PORT=5000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - backend
+    networks:
+      - microservices
+    restart: unless-stopped
+
+  backend:
+    build: .
+    container_name: backend
+    environment:
+      - SERVICE_NAME=backend
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://10.0.1.232:4317
+      - DATABASE_URL=http://database:5002
+      - PORT=5001
+    ports:
+      - "5001:5001"
+    depends_on:
+      - database
+    networks:
+      - microservices
+    restart: unless-stopped
+
+  database:
+    build: .
+    container_name: database
+    environment:
+      - SERVICE_NAME=database
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://10.0.1.232:4317
+      - PORT=5002
+    ports:
+      - "5002:5002"
+    networks:
+      - microservices
+    restart: unless-stopped
+
+networks:
+  microservices:
+    driver: bridge

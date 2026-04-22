@@ -9,6 +9,9 @@ from app.api import api_router
 from app.api.terminal import websocket_terminal
 from app.api.auth import router as auth_router, create_default_users
 from app.api.approval import router as approval_router
+from app.api.alerts import router as alerts_router
+from app.api.tracing import router as tracing_router
+from app.api.rca import router as rca_router
 from app.agents.knowledge import KnowledgeExpertAgent
 from app.utils.logger import setup_logger
 
@@ -44,6 +47,9 @@ app.add_middleware(
 app.include_router(api_router)
 app.include_router(auth_router)
 app.include_router(approval_router)
+app.include_router(alerts_router)
+app.include_router(tracing_router)
+app.include_router(rca_router)
 
 app.add_api_websocket_route("/ws/terminal", websocket_terminal)
 

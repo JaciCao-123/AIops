@@ -80,6 +80,7 @@ data/diagnosis/*.json
 data/logs/*.json
 data/outputs/*.txt
 data/approvals/*.json
+time_sequence_detection/*/data/
 
 # Keep empty directories
 !.gitkeep

@@ -186,6 +186,27 @@ class SkillManager:
                 "cluster_alerts", "告警分类"
             ]
         },
+        "otel_trace_skill": {
+            "path": "monitoring/otel_trace_skill.md",
+            "category": "monitoring",
+            "description": "分布式链路追踪分析 (OpenTelemetry + Tempo)",
+            "keywords": [
+                "链路追踪", "分布式追踪", "trace分析", "调用链",
+                "trace", "tracing", "tempo", "opentelemetry", "otel",
+                "analyze_trace", "链路分析", "追踪分析",
+                "调用链异常", "慢请求", "请求超时"
+            ]
+        },
+        "service_dependency_skill": {
+            "path": "monitoring/service_dependency_skill.md",
+            "category": "monitoring",
+            "description": "服务依赖关系分析 (从 Trace 数据构建服务拓扑)",
+            "keywords": [
+                "服务依赖", "服务拓扑", "依赖关系", "服务调用关系",
+                "analyze_service_dependency", "微服务架构",
+                "级联故障", "服务雪崩", "上下游服务"
+            ]
+        },
         "cost_analysis_skill": {
             "path": "monitoring/cost_analysis_skill.md",
             "category": "monitoring",
@@ -1106,6 +1127,61 @@ class SkillManager:
                 "daemon-reload": 5, "journalctl": 5
             },
             "alias": {}
+        },
+        "alert_cluster_skill": {
+            "core": {
+                "告警聚合": 15, "告警压缩": 15, "告警风暴": 15,
+                "alert aggregation": 12, "cluster_alerts": 15,
+                "告警收敛": 12, "告警降噪": 12, "告警分类": 10
+            },
+            "symptom": {
+                "大量告警": 12, "告警太多": 10, "告警轰炸": 12,
+                "相似告警": 10, "重复告警": 10, "告警泛滥": 12,
+                "告警堆积": 10, "告警合并": 10
+            },
+            "component": {
+                "drain": 8, "word2vec": 8, "dbscan": 8,
+                "聚类": 8, "clustering": 8
+            },
+            "alias": {
+                "alert": 8, "告警": 8
+            }
+        },
+        "otel_trace_skill": {
+            "core": {
+                "链路追踪": 15, "分布式追踪": 15, "trace分析": 15,
+                "调用链": 12, "trace": 15, "tracing": 12,
+                "analyze_trace": 15, "链路分析": 12, "追踪分析": 12
+            },
+            "symptom": {
+                "调用链异常": 12, "请求超时": 10, "慢请求": 10,
+                "服务调用失败": 12, "链路错误": 12, "trace错误": 12,
+                "请求耗时": 10, "响应慢": 10, "调用超时": 12
+            },
+            "component": {
+                "tempo": 10, "opentelemetry": 10, "otel": 10,
+                "span": 8, "jaeger": 8, "zipkin": 6
+            },
+            "alias": {
+                "链路": 8, "追踪": 8, "调用": 6
+            }
+        },
+        "service_dependency_skill": {
+            "core": {
+                "服务依赖": 15, "服务拓扑": 15, "依赖关系": 12,
+                "服务调用关系": 12, "analyze_service_dependency": 15,
+                "微服务架构": 10, "服务关系": 10
+            },
+            "symptom": {
+                "服务依赖异常": 12, "级联故障": 12, "服务雪崩": 12,
+                "调用链路": 10, "上下游服务": 10
+            },
+            "component": {
+                "dependency": 8, "topology": 8, "graph": 6
+            },
+            "alias": {
+                "依赖": 8, "拓扑": 8
+            }
         }
     }
     
