@@ -334,7 +334,25 @@
 
 ---
 
-### 2.14 系统服务类 (Systemd)
+### 2.14 ITSM 类 (ITSM)
+
+用于 IT 服务管理与变更分析。
+
+#### P0 - 核心 ITSM 技能
+
+| Skill | 文件路径 | 触发关键词 | 适用场景 |
+|-------|---------|-----------|---------|
+| **servicenow_skill** | `itsm/servicenow_skill.md` | ServiceNow, CMDB, 变更记录, 工单, 变更分析, 根因, ITSM | ServiceNow 工单与变更查询、变更根因分析 |
+
+**选择指南**：
+- 查询 CMDB 配置项 → `@reference: itsm/servicenow_skill.md`
+- 查询变更记录/工单 → `@reference: itsm/servicenow_skill.md`
+- 分析变更是否为根因 → `@reference: itsm/servicenow_skill.md`
+- 节点健康状态检查 → `@reference: itsm/servicenow_skill.md`
+
+---
+
+### 2.15 系统服务类 (Systemd)
 
 用于 Systemd 服务自启动与配置管理。
 

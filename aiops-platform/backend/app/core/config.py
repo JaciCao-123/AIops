@@ -29,6 +29,12 @@ class Settings(BaseSettings):
     ALIYUN_ACCESS_KEY_ID: str = ""
     ALIYUN_ACCESS_KEY_SECRET: str = ""
     ALIYUN_REGION_ID: str = "cn-hangzhou"
+    
+    # ServiceNow Configuration
+    SERVICENOW_INSTANCE: str = ""
+    SERVICENOW_USERNAME: str = ""
+    SERVICENOW_PASSWORD: str = ""
+    SERVICENOW_API_KEY: str = ""
 
     RDS_HOST: str = ""
     RDS_PORT: int = 3306

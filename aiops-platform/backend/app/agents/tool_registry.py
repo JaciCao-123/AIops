@@ -14,6 +14,40 @@ from ..core.config import settings
 
 logger = get_logger("tool_registry")
 
+SERVICENOW_AVAILABLE = False
+try:
+    from ..utils.servicenow_client import ServiceNowClient, get_servicenow_client
+    SERVICENOW_AVAILABLE = True
+except ImportError:
+    logger.warning("ServiceNow client not available")
+
+
+# 风险等级常量
+RISK_SAFE = "L0"      # 安全：只读操作，无风险
+RISK_LOW = "L1"       # 低风险：白名单内的写操作
+RISK_MEDIUM = "L2"    # 中风险：需要确认的操作
+RISK_HIGH = "L3"      # 高风险：禁止执行的操作
+
+# 路径白名单（用于 rm 操作降级）
+PATH_WHITELIST = [
+    "/tmp/",
+    "/var/log/app/",
+    "/var/log/nginx/",
+    "/var/cache/",
+    "/home/app/logs/",
+    "/app/logs/",
+    "/data/tmp/",
+]
+
+# 核心生产节点列表（模拟）
+CORE_PRODUCTION_NODES = [
+    "prod-db-master",
+    "prod-db-slave",
+    "prod-redis-master",
+    "prod-api-gateway",
+    "prod-order-service",
+]
+
 
 class ToolRegistry:
     """
@@ -25,6 +59,7 @@ class ToolRegistry:
         self.tools: Dict[str, Callable] = {}
         self.file_manager = file_manager or IntermediateFileManager()
         self._pending_approvals: Dict[str, Dict] = {}
+        self._servicenow_client: Optional[Any] = None
         self._register_default_tools()
     
     def _register_default_tools(self):
@@ -53,6 +88,14 @@ class ToolRegistry:
         self.register("cluster_alerts", self._cluster_alerts)
         self.register("analyze_trace", self._analyze_trace)
         self.register("analyze_service_dependency", self._analyze_service_dependency)
+        
+        # ServiceNow 工具
+        if SERVICENOW_AVAILABLE:
+            self.register("query_servicenow_ci", self._query_servicenow_ci)
+            self.register("query_servicenow_changes", self._query_servicenow_changes)
+            self.register("query_servicenow_incidents", self._query_servicenow_incidents)
+            self.register("analyze_change_as_root_cause", self._analyze_change_as_root_cause)
+            self.register("get_servicenow_node_health", self._get_servicenow_node_health)
     
     def register(self, name: str, func: Callable):
         """
@@ -104,27 +147,50 @@ class ToolRegistry:
         ssh_user: str = None
     ) -> Dict[str, Any]:
         """
-        执行命令（本地或远程）
+        执行命令（本地或远程）- 分级安全控制版本
         
         Args:
             command: 要执行的命令
             target_host: 目标主机地址，为 None 时在本地执行
-            risk_level: 风险等级
+            risk_level: 风险等级（已废弃，由安全检查自动判定）
             timeout: 超时时间
             ssh_user: SSH 用户名，优先级高于环境变量
             
         Returns:
             执行结果
         """
-        security_check = self._check_command_security(command)
-        if not security_check["safe"]:
+        security_check = self._check_command_security(command, target_host)
+        
+        # L3 高风险：直接拒绝执行
+        if security_check["risk_level"] == RISK_HIGH:
+            logger.warning(f"Command blocked (L3): {command[:100]}... Reason: {security_check['reason']}")
             return {
                 "success": False,
                 "target_host": target_host,
                 "command": command,
-                "error": f"安全拒绝: {security_check['reason']}",
-                "risk_level": "blocked"
+                "error": f"安全拒绝 (L3): {security_check['reason']}",
+                "risk_level": RISK_HIGH,
+                "reason": security_check["reason"],
+                "suggestion": security_check["suggestion"]
             }
+        
+        # L2 中风险：返回模拟的"需用户确认"结果
+        if security_check["risk_level"] == RISK_MEDIUM and security_check.get("requires_confirmation"):
+            logger.info(f"Command requires confirmation (L2): {command[:100]}...")
+            return {
+                "success": False,
+                "target_host": target_host,
+                "command": command,
+                "error": "需要用户确认",
+                "risk_level": RISK_MEDIUM,
+                "reason": security_check["reason"],
+                "requires_confirmation": True,
+                "suggestion": security_check["suggestion"],
+                "confirmation_hint": "请使用 ask_user_confirmation 工具获取用户确认后再执行此命令"
+            }
+        
+        # L0/L1：正常执行
+        logger.info(f"Executing command ({security_check['risk_level']}): {command[:100]}...")
         
         try:
             if target_host:
@@ -152,9 +218,13 @@ class ToolRegistry:
                 "success": result.returncode == 0,
                 "target_host": target_host,
                 "command": command,
-                "risk_level": risk_level,
+                "risk_level": security_check["risk_level"],
                 "output": output,
-                "return_code": result.returncode
+                "return_code": result.returncode,
+                "security_check": {
+                    "risk_level": security_check["risk_level"],
+                    "reason": security_check["reason"]
+                }
             }
             
         except subprocess.TimeoutExpired:
@@ -162,25 +232,86 @@ class ToolRegistry:
                 "success": False,
                 "target_host": target_host,
                 "command": command,
-                "error": "Command execution timeout"
+                "error": "Command execution timeout",
+                "risk_level": security_check["risk_level"]
             }
         except Exception as e:
             return {
                 "success": False,
                 "target_host": target_host,
                 "command": command,
-                "error": str(e)
+                "error": str(e),
+                "risk_level": security_check["risk_level"]
             }
     
-    def _check_command_security(self, command: str) -> Dict[str, Any]:
+    def _is_core_production_node(self, target_host: str) -> bool:
+        """
+        判断是否为核心生产节点（模拟实现）
+        
+        实际生产环境中应从 CMDB 或配置中心获取
+        """
+        if not target_host:
+            return False
+        
+        target_lower = target_host.lower()
+        for node in CORE_PRODUCTION_NODES:
+            if node in target_lower or target_lower in node:
+                return True
+        
+        return False
+    
+    def _check_path_in_whitelist(self, command: str) -> tuple:
+        """
+        检查 rm 命令的路径是否在白名单中
+        
+        Returns:
+            (in_whitelist, path)
+        """
+        rm_match = re.search(r'\brm\s+(-[rf]+\s+)*([^\s;|&]+)', command)
+        if rm_match:
+            path = rm_match.group(2)
+            for whitelist_path in PATH_WHITELIST:
+                if path.startswith(whitelist_path):
+                    return True, path
+        return False, None
+    
+    def _check_command_security(
+        self, 
+        command: str, 
+        target_host: str = None
+    ) -> Dict[str, Any]:
+        """
+        分级安全检查（上下文感知）
+        
+        Args:
+            command: 要检查的命令
+            target_host: 目标主机（用于上下文感知）
+            
+        Returns:
+            {
+                "safe": bool,           # 是否允许执行
+                "risk_level": str,      # 风险等级 L0/L1/L2/L3
+                "reason": str,          # 原因说明
+                "requires_confirmation": bool,  # 是否需要用户确认
+                "suggestion": str       # 建议操作
+            }
+        """
         command_lower = command.lower().strip()
+        is_core_node = self._is_core_production_node(target_host)
         
         if len(command) > 2000:
             return {
                 "safe": False,
-                "reason": "命令长度超过 2000 字符限制"
+                "risk_level": RISK_HIGH,
+                "reason": "命令长度超过 2000 字符限制",
+                "requires_confirmation": False,
+                "suggestion": "请缩短命令长度"
             }
         
+        # ==================== L3 高风险检查 ====================
+        # 这些操作直接拦截，不允许执行
+        
+        # 注入攻击检测
         injection_patterns = [
             (r';\s*rm\s', "检测到命令链注入（分号+删除）"),
             (r'\$\(', "检测到命令替换注入 $(...)"),
@@ -188,8 +319,6 @@ class ToolRegistry:
             (r'\|\s*rm\s', "检测到管道注入（管道+删除）"),
             (r'&&\s*rm\s', "检测到命令链注入（AND+删除）"),
             (r'\bexport\s+.*=\$\(.*\)', "检测到环境变量注入"),
-            (r'/etc/passwd', "禁止访问 /etc/passwd"),
-            (r'/etc/shadow', "禁止访问 /etc/shadow"),
             (r'nc\s+-[elp]', "检测到反向 Shell 模式"),
             (r'/dev/tcp/', "检测到 /dev/tcp 反向 Shell"),
             (r'bash\s+-i', "检测到交互式 Shell 注入"),
@@ -198,66 +327,149 @@ class ToolRegistry:
         
         for pattern, reason in injection_patterns:
             if re.search(pattern, command_lower):
-                return {"safe": False, "reason": reason}
-        
-        for dangerous_pattern in settings.DANGEROUS_COMMANDS:
-            if re.search(dangerous_pattern, command_lower):
                 return {
                     "safe": False,
-                    "reason": f"命令包含危险操作模式: {dangerous_pattern}"
+                    "risk_level": RISK_HIGH,
+                    "reason": reason,
+                    "requires_confirmation": False,
+                    "suggestion": "此操作存在安全风险，已被拦截"
                 }
         
-        if "> /dev/sd" in command_lower or "> /dev/hd" in command_lower:
-            return {
-                "safe": False,
-                "reason": "禁止直接写入磁盘设备"
-            }
+        # 危险命令检测（L3）
+        high_risk_patterns = [
+            (r'\brm\s+-rf\s+/', "禁止递归删除根目录"),
+            (r'\brm\s+-rf\s+~', "禁止递归删除用户目录"),
+            (r'\brm\s+-rf\s+/etc', "禁止删除系统配置目录"),
+            (r'\brm\s+-rf\s+/usr', "禁止删除系统程序目录"),
+            (r'\brm\s+-rf\s+/var', "禁止删除系统数据目录"),
+            (r'\bdd\s+if=', "禁止使用 dd 命令"),
+            (r'\bshutdown\b', "禁止执行关机命令"),
+            (r'\breboot\b', "禁止执行重启命令"),
+            (r'\binit\s+[06]', "禁止执行 init 0/6"),
+            (r'\bmkfs\b', "禁止格式化磁盘"),
+            (r'\bfdisk\b', "禁止磁盘分区操作"),
+            (r'\bdrop\s+(database|table)', "禁止删除数据库/表"),
+            (r'\btruncate\s+table', "禁止清空表"),
+            (r'>\s*/dev/sd', "禁止直接写入磁盘设备"),
+            (r'>\s*/dev/hd', "禁止直接写入磁盘设备"),
+            (r':\(\)\{', "检测到 fork bomb 攻击模式"),
+            (r'(wget|curl)\s+.*\|\s*(bash|sh)', "禁止从远程下载并执行脚本"),
+            (r'/etc/passwd', "禁止访问 /etc/passwd"),
+            (r'/etc/shadow', "禁止访问 /etc/shadow"),
+        ]
         
-        if ":(){" in command:
-            return {
-                "safe": False,
-                "reason": "检测到 fork bomb 攻击模式"
-            }
+        for pattern, reason in high_risk_patterns:
+            if re.search(pattern, command_lower):
+                return {
+                    "safe": False,
+                    "risk_level": RISK_HIGH,
+                    "reason": reason,
+                    "requires_confirmation": False,
+                    "suggestion": "此操作风险极高，已被系统拦截"
+                }
         
-        if re.search(r'(wget|curl)\s+.*\|.*sh', command_lower):
-            return {
-                "safe": False,
-                "reason": "禁止从远程下载并执行脚本"
-            }
-        
-        is_safe_command = False
-        for safe_pattern in settings.SAFE_COMMANDS:
-            if re.match(f"^{safe_pattern}", command_lower) or command_lower.startswith(safe_pattern):
-                is_safe_command = True
-                break
-        
-        if not is_safe_command:
-            modify_keywords = ["rm", "mv", "cp", "chmod", "chown", "kill", "pkill",
-                            "service", "docker rm", "docker stop",
-                            "kubectl delete", "kubectl scale"]
-            for kw in modify_keywords:
+        # 核心节点检查：如果是核心生产节点，所有写操作提升为 L3
+        if is_core_node:
+            write_keywords = ["rm", "mv", "chmod", "chown", "kill", "pkill", 
+                           "systemctl", "service", "docker", "kubectl", "iptables"]
+            for kw in write_keywords:
                 if command_lower.startswith(kw):
                     return {
                         "safe": False,
-                        "reason": f"命令 '{kw}' 需要人工确认，请使用 ask_user_confirmation 工具"
+                        "risk_level": RISK_HIGH,
+                        "reason": f"核心生产节点 [{target_host}] 禁止执行写操作: {kw}",
+                        "requires_confirmation": False,
+                        "suggestion": "核心生产节点操作需要通过变更流程审批"
                     }
-            
-            if command_lower.startswith("systemctl"):
-                dangerous_systemctl_actions = [
-                    "systemctl stop", "systemctl start", "systemctl restart",
-                    "systemctl reload", "systemctl kill", "systemctl isolate",
-                    "systemctl enable", "systemctl disable", "systemctl mask",
-                    "systemctl unmask", "systemctl edit", "systemctl daemon-reload",
-                    "systemctl reset-failed", "systemctl set-property"
-                ]
-                for dangerous_action in dangerous_systemctl_actions:
-                    if command_lower.startswith(dangerous_action):
-                        return {
-                            "safe": False,
-                            "reason": f"命令 '{dangerous_action}' 需要人工确认，请使用 ask_user_confirmation 工具"
-                        }
         
-        return {"safe": True, "reason": "命令通过安全检查"}
+        # ==================== L2 中风险检查 ====================
+        # 这些操作需要用户确认才能执行
+        
+        medium_risk_patterns = [
+            (r'\bsystemctl\s+(stop|start|restart|reload|kill)', "systemctl 服务操作"),
+            (r'\bservice\s+\w+\s+(stop|start|restart)', "service 服务操作"),
+            (r'\bdocker\s+(stop|start|restart|rm|rmi)', "Docker 容器/镜像操作"),
+            (r'\bkubectl\s+(delete|scale|rollout)', "Kubernetes 资源操作"),
+            (r'\biptables\b', "防火墙规则修改"),
+            (r'\bfirewall-cmd\b', "防火墙规则修改"),
+            (r'\bkill\s+-9\b', "强制终止进程"),
+            (r'\bpkill\s+-9\b', "强制终止进程组"),
+            (r'\bmv\s+', "文件移动操作"),
+            (r'\bcp\s+', "文件复制操作"),
+            (r'\bchmod\s+', "权限修改操作"),
+            (r'\bchown\s+', "所有者修改操作"),
+        ]
+        
+        for pattern, operation in medium_risk_patterns:
+            if re.search(pattern, command_lower):
+                return {
+                    "safe": True,
+                    "risk_level": RISK_MEDIUM,
+                    "reason": f"检测到中风险操作: {operation}",
+                    "requires_confirmation": True,
+                    "suggestion": "此操作可能影响服务，建议使用 ask_user_confirmation 工具获取用户确认"
+                }
+        
+        # ==================== rm 命令特殊处理 ====================
+        # 检查路径白名单
+        
+        if command_lower.startswith("rm"):
+            in_whitelist, path = self._check_path_in_whitelist(command)
+            if in_whitelist:
+                return {
+                    "safe": True,
+                    "risk_level": RISK_LOW,
+                    "reason": f"删除操作路径 [{path}] 在白名单中，已降级为低风险",
+                    "requires_confirmation": False,
+                    "suggestion": "白名单路径删除操作可安全执行"
+                }
+            else:
+                return {
+                    "safe": True,
+                    "risk_level": RISK_MEDIUM,
+                    "reason": "删除操作需要确认目标路径",
+                    "requires_confirmation": True,
+                    "suggestion": "建议使用 ask_user_confirmation 工具确认删除操作"
+                }
+        
+        # ==================== L0 安全命令检查 ====================
+        # 只读操作，无风险
+        
+        safe_commands = [
+            "ls", "cat", "head", "tail", "grep", "awk", "sed", "cut", "less", "more",
+            "df", "du", "free", "top", "htop", "ps", "uptime", "w", "who", "last",
+            "netstat", "ss", "lsof", "iostat", "vmstat", "sar", "mpstat",
+            "ping", "traceroute", "nslookup", "dig", "host", "curl", "wget --spider",
+            "journalctl", "dmesg", "uname", "hostname", "date", "cal",
+            "systemctl status", "systemctl list-", "systemctl show",
+            "service.*status", "docker ps", "docker logs", "docker inspect", "docker stats",
+            "kubectl get", "kubectl describe", "kubectl logs", "kubectl top",
+            "git status", "git log", "git diff", "git branch",
+            "find", "locate", "which", "whereis", "type",
+            "env", "printenv", "set", "export -p",
+            "id", "groups", "whoami",
+        ]
+        
+        for safe_cmd in safe_commands:
+            if re.match(f"^{safe_cmd}", command_lower) or command_lower.startswith(safe_cmd):
+                return {
+                    "safe": True,
+                    "risk_level": RISK_SAFE,
+                    "reason": "只读操作，无风险",
+                    "requires_confirmation": False,
+                    "suggestion": "安全命令，可直接执行"
+                }
+        
+        # ==================== 默认处理 ====================
+        # 未知命令，标记为中风险
+        
+        return {
+            "safe": True,
+            "risk_level": RISK_MEDIUM,
+            "reason": "未识别的命令类型，需要人工确认",
+            "requires_confirmation": True,
+            "suggestion": "建议使用 ask_user_confirmation 工具确认此操作"
+        }
     
     async def _save_diagnosis_plan(
         self,
@@ -1148,6 +1360,241 @@ class ToolRegistry:
                 "error": str(e)
             }
     
+    # ==================== ServiceNow 工具 ====================
+    
+    async def _get_servicenow_client(self):
+        """获取或初始化 ServiceNow 客户端"""
+        if not SERVICENOW_AVAILABLE:
+            return None
+        
+        if self._servicenow_client is None:
+            self._servicenow_client = get_servicenow_client()
+        
+        if not self._servicenow_client.is_connected:
+            await self._servicenow_client.connect()
+        
+        return self._servicenow_client
+    
+    async def _query_servicenow_ci(
+        self,
+        ci_name: str = None,
+        ci_type: str = None,
+        ip_address: str = None,
+        status: str = None,
+        limit: int = 10
+    ) -> Dict[str, Any]:
+        """
+        查询 ServiceNow CMDB 配置项
+        
+        Args:
+            ci_name: 配置项名称
+            ci_type: 配置项类型 (server, network_device, application, database, cluster)
+            ip_address: IP 地址
+            status: 运行状态 (operational, non_operational)
+            limit: 返回数量限制
+        """
+        if not SERVICENOW_AVAILABLE:
+            return {
+                "success": False,
+                "error": "ServiceNow client not available. Please install dependencies and configure environment variables."
+            }
+        
+        try:
+            client = await self._get_servicenow_client()
+            if client is None or not client.is_connected:
+                return {
+                    "success": False,
+                    "error": f"ServiceNow connection failed: {client.connection_error if client else 'Not configured'}"
+                }
+            
+            return await client.query_ci(
+                ci_name=ci_name,
+                ci_type=ci_type,
+                ip_address=ip_address,
+                status=status,
+                limit=limit
+            )
+        except Exception as e:
+            logger.error(f"Failed to query ServiceNow CI: {e}", exc_info=True)
+            return {"success": False, "error": str(e)}
+    
+    async def _query_servicenow_changes(
+        self,
+        ci_name: str = None,
+        change_number: str = None,
+        change_type: str = None,
+        state: str = None,
+        lookback_hours: int = 72,
+        limit: int = 20
+    ) -> Dict[str, Any]:
+        """
+        查询 ServiceNow 变更记录
+        
+        Args:
+            ci_name: 关联的配置项名称
+            change_number: 变更编号
+            change_type: 变更类型 (normal, emergency, standard)
+            state: 变更状态
+            lookback_hours: 回溯时间（小时）
+            limit: 返回数量限制
+        """
+        if not SERVICENOW_AVAILABLE:
+            return {
+                "success": False,
+                "error": "ServiceNow client not available"
+            }
+        
+        try:
+            client = await self._get_servicenow_client()
+            if client is None or not client.is_connected:
+                return {
+                    "success": False,
+                    "error": f"ServiceNow connection failed: {client.connection_error if client else 'Not configured'}"
+                }
+            
+            return await client.query_changes(
+                ci_name=ci_name,
+                change_number=change_number,
+                change_type=change_type,
+                state=state,
+                lookback_hours=lookback_hours,
+                limit=limit
+            )
+        except Exception as e:
+            logger.error(f"Failed to query ServiceNow changes: {e}", exc_info=True)
+            return {"success": False, "error": str(e)}
+    
+    async def _query_servicenow_incidents(
+        self,
+        ci_name: str = None,
+        incident_number: str = None,
+        priority: str = None,
+        state: str = None,
+        lookback_hours: int = 72,
+        limit: int = 20
+    ) -> Dict[str, Any]:
+        """
+        查询 ServiceNow 事件工单
+        
+        Args:
+            ci_name: 关联的配置项名称
+            incident_number: 工单编号
+            priority: 优先级 (1-critical, 2-high, 3-moderate, 4-low)
+            state: 工单状态
+            lookback_hours: 回溯时间（小时）
+            limit: 返回数量限制
+        """
+        if not SERVICENOW_AVAILABLE:
+            return {
+                "success": False,
+                "error": "ServiceNow client not available"
+            }
+        
+        try:
+            client = await self._get_servicenow_client()
+            if client is None or not client.is_connected:
+                return {
+                    "success": False,
+                    "error": f"ServiceNow connection failed: {client.connection_error if client else 'Not configured'}"
+                }
+            
+            return await client.query_incidents(
+                ci_name=ci_name,
+                incident_number=incident_number,
+                priority=priority,
+                state=state,
+                lookback_hours=lookback_hours,
+                limit=limit
+            )
+        except Exception as e:
+            logger.error(f"Failed to query ServiceNow incidents: {e}", exc_info=True)
+            return {"success": False, "error": str(e)}
+    
+    async def _analyze_change_as_root_cause(
+        self,
+        node_name: str,
+        problem_time: str = None,
+        lookback_hours: int = 72
+    ) -> Dict[str, Any]:
+        """
+        分析变更是否可能是问题的根因
+        
+        当查询到某个节点疑似有问题时，调用此工具检查该节点最近是否发生过变更，
+        并分析这个变更是否可能是导致问题的根因。
+        
+        Args:
+            node_name: 节点名称
+            problem_time: 问题发生时间
+            lookback_hours: 回溯时间（小时）
+            
+        Returns:
+            变更根因分析报告
+        """
+        if not SERVICENOW_AVAILABLE:
+            return {
+                "success": False,
+                "error": "ServiceNow client not available"
+            }
+        
+        try:
+            client = await self._get_servicenow_client()
+            if client is None or not client.is_connected:
+                return {
+                    "success": False,
+                    "error": f"ServiceNow connection failed: {client.connection_error if client else 'Not configured'}"
+                }
+            
+            return await client.analyze_change_as_root_cause(
+                node_name=node_name,
+                problem_time=problem_time,
+                lookback_hours=lookback_hours
+            )
+        except Exception as e:
+            logger.error(f"Failed to analyze change as root cause: {e}", exc_info=True)
+            return {"success": False, "error": str(e)}
+    
+    async def _get_servicenow_node_health(
+        self,
+        node_name: str = None,
+        ip_address: str = None,
+        lookback_hours: int = 72
+    ) -> Dict[str, Any]:
+        """
+        获取节点综合健康状态
+        
+        整合 CMDB 信息、关联工单、变更历史，生成健康报告。
+        
+        Args:
+            node_name: 节点名称或主机名
+            ip_address: IP 地址
+            lookback_hours: 回溯时间（小时）
+            
+        Returns:
+            综合健康报告
+        """
+        if not SERVICENOW_AVAILABLE:
+            return {
+                "success": False,
+                "error": "ServiceNow client not available"
+            }
+        
+        try:
+            client = await self._get_servicenow_client()
+            if client is None or not client.is_connected:
+                return {
+                    "success": False,
+                    "error": f"ServiceNow connection failed: {client.connection_error if client else 'Not configured'}"
+                }
+            
+            return await client.get_node_health(
+                node_name=node_name,
+                ip_address=ip_address,
+                lookback_hours=lookback_hours
+            )
+        except Exception as e:
+            logger.error(f"Failed to get node health: {e}", exc_info=True)
+            return {"success": False, "error": str(e)}
+    
     def get_tools_for_llm(self) -> List[Dict[str, Any]]:
         """
         获取 LLM function calling 格式的工具定义
@@ -1783,6 +2230,169 @@ class ToolRegistry:
                                 "type": "array",
                                 "items": {"type": "string"},
                                 "description": "服务过滤列表，只分析指定的服务"
+                            }
+                        },
+                        "required": []
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "query_servicenow_ci",
+                    "description": "查询 ServiceNow CMDB 配置项信息。用于获取服务器、网络设备、应用等配置项的详细信息，包括名称、IP地址、运行状态、位置等。",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "ci_name": {
+                                "type": "string",
+                                "description": "配置项名称（支持模糊匹配）"
+                            },
+                            "ci_type": {
+                                "type": "string",
+                                "enum": ["server", "network_device", "application", "database", "cluster"],
+                                "description": "配置项类型"
+                            },
+                            "ip_address": {
+                                "type": "string",
+                                "description": "IP 地址"
+                            },
+                            "status": {
+                                "type": "string",
+                                "enum": ["operational", "non_operational"],
+                                "description": "运行状态"
+                            },
+                            "limit": {
+                                "type": "integer",
+                                "description": "返回结果数量限制，默认 10"
+                            }
+                        },
+                        "required": []
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "query_servicenow_changes",
+                    "description": "查询 ServiceNow 变更记录。用于获取节点的变更历史，包括变更类型、状态、时间、描述等信息。常用于故障排查时检查最近是否有变更操作。",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "ci_name": {
+                                "type": "string",
+                                "description": "关联的配置项名称"
+                            },
+                            "change_number": {
+                                "type": "string",
+                                "description": "变更编号"
+                            },
+                            "change_type": {
+                                "type": "string",
+                                "enum": ["normal", "emergency", "standard"],
+                                "description": "变更类型"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": ["new", "assess", "authorize", "scheduled", "implement", "review", "closed"],
+                                "description": "变更状态"
+                            },
+                            "lookback_hours": {
+                                "type": "integer",
+                                "description": "回溯时间（小时），默认 72"
+                            },
+                            "limit": {
+                                "type": "integer",
+                                "description": "返回结果数量限制，默认 20"
+                            }
+                        },
+                        "required": []
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "query_servicenow_incidents",
+                    "description": "查询 ServiceNow 事件工单。用于获取节点关联的事件工单信息，包括优先级、状态、描述等。",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "ci_name": {
+                                "type": "string",
+                                "description": "关联的配置项名称"
+                            },
+                            "incident_number": {
+                                "type": "string",
+                                "description": "工单编号"
+                            },
+                            "priority": {
+                                "type": "string",
+                                "enum": ["1-critical", "2-high", "3-moderate", "4-low"],
+                                "description": "优先级"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": ["new", "in_progress", "on_hold", "resolved", "closed"],
+                                "description": "工单状态"
+                            },
+                            "lookback_hours": {
+                                "type": "integer",
+                                "description": "回溯时间（小时），默认 72"
+                            },
+                            "limit": {
+                                "type": "integer",
+                                "description": "返回结果数量限制，默认 20"
+                            }
+                        },
+                        "required": []
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "analyze_change_as_root_cause",
+                    "description": "分析变更是否可能是问题的根因。当查询到某个节点疑似有问题时，调用此工具检查该节点最近是否发生过变更，并分析这个变更是否可能是导致问题的根因。这是故障诊断的关键步骤。",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "node_name": {
+                                "type": "string",
+                                "description": "节点名称"
+                            },
+                            "problem_time": {
+                                "type": "string",
+                                "description": "问题发生时间（可选）"
+                            },
+                            "lookback_hours": {
+                                "type": "integer",
+                                "description": "回溯时间（小时），默认 72"
+                            }
+                        },
+                        "required": ["node_name"]
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_servicenow_node_health",
+                    "description": "获取节点综合健康状态。整合 CMDB 信息、关联工单、变更历史，生成健康评分和报告。用于快速了解节点的整体健康状况。",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "node_name": {
+                                "type": "string",
+                                "description": "节点名称或主机名"
+                            },
+                            "ip_address": {
+                                "type": "string",
+                                "description": "IP 地址"
+                            },
+                            "lookback_hours": {
+                                "type": "integer",
+                                "description": "回溯时间（小时），默认 72"
                             }
                         },
                         "required": []
