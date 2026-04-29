@@ -5,7 +5,7 @@ import {
   DashboardOutlined,
   FileTextOutlined,
   BugOutlined,
-  QuestionCircleOutlined,
+  RobotOutlined,
   ApiOutlined,
   CodeOutlined,
   UserOutlined,
@@ -37,7 +37,7 @@ const menuItems = [
   { key: '/tracing', icon: <ClusterOutlined />, label: '链路追踪', path: '/tracing', permission: 'tracing:view' },
   { key: '/diagnose', icon: <BugOutlined />, label: '故障诊断', path: '/diagnose', permission: 'diagnose:view' },
   { key: '/knowledge', icon: <ApiOutlined />, label: '知识库', path: '/knowledge', permission: 'knowledge:view' },
-  { key: '/qa', icon: <QuestionCircleOutlined />, label: '智能问答', path: '/qa', permission: 'qa:view' },
+  { key: '/qa', icon: <RobotOutlined />, label: 'AI助手', path: '/qa', permission: 'qa:view' },
   { key: '/terminal', icon: <CodeOutlined />, label: 'Web终端', path: '/terminal', permission: 'terminal:access', adminOnly: true },
 ];
 

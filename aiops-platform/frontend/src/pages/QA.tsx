@@ -1,174 +1,232 @@
-import { useState } from 'react';
-import { Card, Input, Button, List, Tag, Spin, message, Typography, Space, Divider } from 'antd';
-import { SendOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-
-import { knowledgeApi } from '../services/api';
+import { useState, useRef, useEffect } from 'react';
+import { Card, Input, Button, List, Spin, message, Typography, Space, Empty, Tooltip } from 'antd';
+import { SendOutlined, RobotOutlined, UserOutlined, ClearOutlined, ReloadOutlined } from '@ant-design/icons';
+import { aiChatApi } from '../services/api';
 
 const { TextArea } = Input;
 const { Text, Paragraph } = Typography;
 
 interface Message {
-  id: number;
-  type: 'user' | 'assistant';
+  id: string;
+  role: 'user' | 'assistant';
   content: string;
-  loading?: boolean;
-  extra?: {
-    intent?: {
-      intent: string;
-      entities: Record<string, string>;
-      confidence: string;
-    };
-    knowledge?: string;
-  };
+  timestamp: Date;
 }
 
-const QA = () => {
+const AIChat = () => {
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 0,
-      type: 'assistant',
-      content: '你好！我是AIOps智能问答助手。你可以问我关于运维的问题，例如：\n• 订单服务的依赖关系是什么？\n• 如何处理数据库连接池耗尽？\n• 最近有哪些故障案例？',
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSend = async () => {
     if (!input.trim()) {
-      message.warning('请输入问题');
+      message.warning('请输入内容');
       return;
     }
 
     const userMessage: Message = {
-      id: Date.now(),
-      type: 'user',
+      id: Date.now().toString(),
+      role: 'user',
       content: input,
+      timestamp: new Date(),
     };
+
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setLoading(true);
 
-    const assistantMessage: Message = {
-      id: Date.now() + 1,
-      type: 'assistant',
-      content: '',
-      loading: true,
-    };
-    setMessages(prev => [...prev, assistantMessage]);
-
     try {
-      const response = await knowledgeApi.chat(input);
-      
-      const updatedMessage: Message = {
-        id: assistantMessage.id,
-        type: 'assistant',
-        content: (response as { answer?: string }).answer || '抱歉，我无法回答这个问题。',
-        loading: false,
-        extra: {
-          intent: (response as { intent?: { intent: string; entities: Record<string, string>; confidence: string } }).intent,
-          knowledge: (response as { knowledge?: { knowledge_report?: string } }).knowledge?.knowledge_report,
-        },
+      const chatMessages = [...messages, userMessage].map(m => ({
+        role: m.role,
+        content: m.content,
+      }));
+
+      const response = await aiChatApi.chat(chatMessages);
+
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: response.response,
+        timestamp: new Date(),
       };
-      setMessages(prev => prev.map(m => m.id === assistantMessage.id ? updatedMessage : m));
+
+      setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
+      message.error('对话失败，请稍后重试');
       const errorMessage: Message = {
-        id: assistantMessage.id,
-        type: 'assistant',
-        content: '抱歉，查询过程中出现错误，请稍后重试。',
-        loading: false,
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: '抱歉，我遇到了一些问题，请稍后再试。',
+        timestamp: new Date(),
       };
-      setMessages(prev => prev.map(m => m.id === assistantMessage.id ? errorMessage : m));
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setLoading(false);
     }
   };
 
-  const getIntentColor = (intent: string) => {
-    const colors: Record<string, string> = { 
-      DIAGNOSE: 'blue', 
-      QUERY_STATUS: 'green', 
-      EXECUTE_FIX: 'orange', 
-      GENERAL_QA: 'purple' 
-    };
-    return colors[intent] || 'default';
+  const handleClear = () => {
+    setMessages([]);
+    message.success('对话已清空');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
   };
 
   return (
     <div style={{ height: 'calc(100vh - 144px)', display: 'flex', flexDirection: 'column' }}>
       <Card 
         title={
-          <span>
-            <QuestionCircleOutlined style={{ marginRight: 8 }} />
-            智能问答
-          </span>
+          <Space>
+            <RobotOutlined style={{ color: '#1890ff' }} />
+            <span>AI助手</span>
+          </Space>
+        }
+        extra={
+          <Space>
+            <Tooltip title="清空对话">
+              <Button 
+                icon={<ClearOutlined />} 
+                onClick={handleClear}
+                disabled={messages.length === 0}
+              >
+                清空
+              </Button>
+            </Tooltip>
+          </Space>
         }
         style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
         bodyStyle={{ flex: 1, overflow: 'auto', padding: 16 }}
       >
-        <List
-          dataSource={messages}
-          renderItem={(item) => (
-            <div style={{ 
-              marginBottom: 16, 
-              textAlign: item.type === 'user' ? 'right' : 'left' 
-            }}>
-              <div style={{
-                display: 'inline-block',
-                maxWidth: '80%',
-                textAlign: 'left',
-                padding: '12px 16px',
-                borderRadius: 8,
-                background: item.type === 'user' ? '#1890ff' : '#f5f5f5',
-                color: item.type === 'user' ? '#fff' : 'inherit',
-              }}>
-                {item.loading ? (
-                  <Spin size="small" />
-                ) : (
-                  <>
-                    <Paragraph style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
-                      {item.content}
-                    </Paragraph>
-                    
-                    {item.extra?.intent && (
-                      <div style={{ marginTop: 12 }}>
-                        <Divider style={{ margin: '8px 0' }} />
-                        <Space size={4} wrap>
-                          <Tag color={getIntentColor(item.extra.intent.intent)}>
-                            {item.extra.intent.intent}
-                          </Tag>
-                          <Tag>置信度: {item.extra.intent.confidence}</Tag>
-                          {item.extra.intent.entities.service && (
-                            <Tag color="blue">服务: {item.extra.intent.entities.service}</Tag>
-                          )}
-                        </Space>
-                      </div>
-                    )}
-                    
-                    {item.extra?.knowledge && (
-                      <div style={{ marginTop: 12 }}>
-                        <Divider style={{ margin: '8px 0' }} />
-                        <Text type="secondary" style={{ fontSize: 12 }}>
-                          知识库参考：
-                        </Text>
-                        <Paragraph 
-                          style={{ 
-                            margin: 0, 
-                            fontSize: 12, 
-                            whiteSpace: 'pre-wrap',
-                            color: item.type === 'user' ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.45)'
-                          }}
-                          ellipsis={{ rows: 3, expandable: true }}
-                        >
-                          {item.extra.knowledge}
-                        </Paragraph>
-                      </div>
-                    )}
-                  </>
-                )}
+        {messages.length === 0 ? (
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description={
+              <Space direction="vertical" size="small">
+                <Text>开始与 AI 助手对话</Text>
+                <Text type="secondary" style={{ fontSize: 12 }}>
+                  你可以问我任何问题，例如：
+                </Text>
+                <Space wrap>
+                  <Text code>如何排查 CPU 使用率过高？</Text>
+                  <Text code>MySQL 死锁怎么处理？</Text>
+                  <Text code>解释一下微服务架构</Text>
+                </Space>
+              </Space>
+            }
+          />
+        ) : (
+          <div style={{ padding: '0 8px' }}>
+            {messages.map((item) => (
+              <div 
+                key={item.id}
+                style={{ 
+                  marginBottom: 16, 
+                  display: 'flex',
+                  justifyContent: item.role === 'user' ? 'flex-end' : 'flex-start',
+                }}
+              >
+                <div style={{ maxWidth: '80%', display: 'flex', gap: 8 }}>
+                  {item.role === 'assistant' && (
+                    <div 
+                      style={{ 
+                        width: 32, 
+                        height: 32, 
+                        borderRadius: '50%', 
+                        background: '#1890ff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <RobotOutlined style={{ color: '#fff' }} />
+                    </div>
+                  )}
+                  <div>
+                    <div
+                      style={{
+                        display: 'inline-block',
+                        padding: '12px 16px',
+                        borderRadius: 12,
+                        background: item.role === 'user' ? '#1890ff' : '#f5f5f5',
+                        color: item.role === 'user' ? '#fff' : 'inherit',
+                        borderTopLeftRadius: item.role === 'assistant' ? 4 : 12,
+                        borderTopRightRadius: item.role === 'user' ? 4 : 12,
+                      }}
+                    >
+                      <Paragraph style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
+                        {item.content}
+                      </Paragraph>
+                    </div>
+                    <Text type="secondary" style={{ fontSize: 11, marginLeft: 4 }}>
+                      {formatTime(item.timestamp)}
+                    </Text>
+                  </div>
+                  {item.role === 'user' && (
+                    <div 
+                      style={{ 
+                        width: 32, 
+                        height: 32, 
+                        borderRadius: '50%', 
+                        background: '#87d068',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <UserOutlined style={{ color: '#fff' }} />
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
-        />
+            ))}
+            {loading && (
+              <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+                <div 
+                  style={{ 
+                    width: 32, 
+                    height: 32, 
+                    borderRadius: '50%', 
+                    background: '#1890ff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <RobotOutlined style={{ color: '#fff' }} />
+                </div>
+                <div style={{ 
+                  padding: '12px 16px', 
+                  background: '#f5f5f5', 
+                  borderRadius: 12,
+                  borderTopLeftRadius: 4,
+                }}>
+                  <Spin size="small" />
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        )}
       </Card>
 
       <Card style={{ marginTop: 16 }}>
@@ -176,29 +234,28 @@ const QA = () => {
           <TextArea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="输入你的运维问题..."
-            autoSize={{ minRows: 1, maxRows: 3 }}
+            onKeyDown={handleKeyDown}
+            placeholder="输入你的问题..."
+            autoSize={{ minRows: 1, maxRows: 4 }}
             style={{ flex: 1 }}
-            onPressEnter={(e) => {
-              if (!e.shiftKey) {
-                e.preventDefault();
-                handleSend();
-              }
-            }}
+            disabled={loading}
           />
           <Button 
             type="primary" 
             icon={<SendOutlined />} 
             onClick={handleSend}
             loading={loading}
-            style={{ height: 'auto' }}
+            style={{ height: 'auto', minHeight: 32 }}
           >
             发送
           </Button>
         </Space.Compact>
+        <Text type="secondary" style={{ fontSize: 11, marginTop: 8, display: 'block' }}>
+          按 Enter 发送，Shift + Enter 换行
+        </Text>
       </Card>
     </div>
   );
 };
 
-export default QA;
+export default AIChat;

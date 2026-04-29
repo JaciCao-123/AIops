@@ -124,13 +124,20 @@ export const knowledgeApi = {
     return response.data;
   },
 
-  chat: async (question: string): Promise<unknown> => {
-    const response = await api.get('/knowledge/qa/chat', { params: { question } });
+  getTopology: async (service?: string, depth: number = 2): Promise<unknown> => {
+    const response = await api.get('/knowledge/topology', { params: { service, depth } });
+    return response.data;
+  },
+};
+
+export const aiChatApi = {
+  chat: async (messages: Array<{ role: string; content: string }>): Promise<{ response: string }> => {
+    const response = await api.post('/ai-chat/chat', { messages });
     return response.data;
   },
 
-  getTopology: async (service?: string, depth: number = 2): Promise<unknown> => {
-    const response = await api.get('/knowledge/topology', { params: { service, depth } });
+  clearHistory: async (): Promise<{ message: string }> => {
+    const response = await api.delete('/ai-chat/history');
     return response.data;
   },
 };

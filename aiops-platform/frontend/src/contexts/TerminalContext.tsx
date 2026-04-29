@@ -51,7 +51,7 @@ export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const host = window.location.hostname;
-    const port = '8003';
+    const port = '8000';
     const wsUrl = `${protocol}//${host}:${port}/ws/terminal`;
 
     console.log('[Terminal] Connecting to', wsUrl);

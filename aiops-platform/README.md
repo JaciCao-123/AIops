@@ -101,19 +101,25 @@
 - **相似案例匹配**: 匹配历史故障处理案例
 - **知识增强**: 结合知识库提供更准确的诊断建议
 
-### 7. 安全审计系统
+### 7. AI 助手
+- **智能对话**: 基于大语言模型的对话式交互
+- **运维专家**: 内置 AIOps 领域专业知识
+- **多轮对话**: 支持上下文记忆的连续对话
+- **问题解答**: 解答运维相关问题，提供排查建议
+
+### 8. 安全审计系统
 - **多源日志检测**: SSH、身份认证、云平台、应用服务器日志
 - **异常检测**: 基于 Prophet 时间序列模型检测异常行为
 - **告警关联**: 多源告警关联识别高级攻击
 - **攻击识别**: 暴力破解、撞库攻击、横向移动、协同攻击
 
-### 8. 成本分析系统
+### 9. 成本分析系统
 - **成本预测**: 基于 Prophet 模型预测云成本趋势
 - **异常检测**: 自动识别成本异常波动
 - **根因分析**: 定位导致成本异常的具体服务和项目
 - **可视化报告**: 生成详细的成本分析报告
 
-### 9. Skills 诊断技能系统
+### 10. Skills 诊断技能系统
 系统内置丰富的诊断技能文件，支持渐进式披露设计：
 
 #### P0 - 核心诊断技能
@@ -140,7 +146,7 @@
 | **ssl_certificate_skill** | SSL, 证书, HTTPS | SSL 证书管理 |
 | **backup_skill** | 备份, 恢复, 灾备 | 数据备份与恢复 |
 
-### 10. Ansible 自动化集成
+### 11. Ansible 自动化集成
 - **服务器状态采集**: 自动采集服务器状态并同步到 Neo4j
 - **动态 Inventory**: 支持 Ansible inventory 管理
 - **自动化运维**: 支持批量执行运维任务
@@ -238,6 +244,144 @@
 - 管理待审批操作
 - 处理邮件回复审批
 - 审批记录持久化
+
+### 6. LangGraph 重构版本 (推荐)
+
+基于 LangGraph 框架重构的多智能体系统，提供更强大的状态管理和流程控制能力。
+
+#### 架构对比
+
+| 维度 | 原架构 | LangGraph 重构版 |
+|------|--------|-----------------|
+| **编排方式** | 手动 while 循环 | 声明式状态图 (StateGraph) |
+| **状态管理** | 字典传递，无持久化 | TypedDict + Checkpoint |
+| **流程控制** | if/else 硬编码 | 条件边 (conditional_edges) |
+| **断点续跑** | 不支持 | Checkpoint 自动保存 |
+| **人工审批** | 工具层实现 | 图级别中断 (interrupt_before) |
+| **流式输出** | SSE 粗粒度 | astream_events 按节点粒度 |
+
+#### 状态图设计
+
+```
+                          ┌─────────────┐
+                          │  START      │
+                          └──────┬──────┘
+                                 │
+                                 ▼
+                      ┌─────────────────────┐
+                      │  intent_parse_node  │  意图识别 + NER
+                      └──────────┬──────────┘
+                                 │
+                    ┌────────────┼────────────┐
+                    │            │            │
+                    ▼            ▼            ▼
+             ┌──────────┐ ┌──────────┐ ┌──────────┐
+             │ diagnose │ │  query   │ │  qa      │
+             │  path    │ │  path    │ │  path    │
+             └─────┬────┘ └────┬─────┘ └────┬─────┘
+                   │           │            │
+                   ▼           │            ▼
+          ┌───────────────┐    │     ┌───────────┐
+          │ ssh_check_    │    │     │ knowledge │
+          │ node          │    │     │ _qa_node  │
+          └───────┬───────┘    │     └─────┬─────┘
+                  │            │           │
+           ┌──────┴──────┐     │           │
+           ▼             ▼     │           │
+    ┌────────────┐ ┌─────────┐ │           │
+    │ human_     │ │ skill_  │ │           │
+    │ review     │ │ match   │ │           │
+    └─────┬──────┘ └────┬────┘ │           │
+          │              │      │           │
+          ▼              ▼      │           │
+    ┌───────────┐ ┌────────────┐│           │
+    │ ssh_login │ │ react_     ││           │
+    │ _node     │ │ agent_node ││           │
+    └─────┬─────┘ │(ReAct循环) ││           │
+          │       └──────┬─────┘│           │
+          │              │      │           │
+          │       ┌──────┴──────┐           │
+          │       ▼             ▼           │
+          │ ┌───────────┐ ┌──────────┐      │
+          │ │ completed │ │ approval │      │
+          │ └─────┬─────┘ └────┬─────┘      │
+          │       │            │            │
+          ▼       ▼            ▼            ▼
+          └─────────────────┬──┘────────────┘
+                            │
+                            ▼
+                     ┌───────────┐
+                     │  END      │
+                     └───────────┘
+```
+
+#### 核心组件
+
+| 文件 | 说明 |
+|------|------|
+| `app/agents/langgraph/state.py` | 全局状态定义 `AIOpsState` |
+| `app/agents/langgraph/graph.py` | StateGraph 构建，定义所有节点和边 |
+| `app/agents/langgraph/nodes/intent_parse.py` | 意图识别节点 |
+| `app/agents/langgraph/nodes/ssh_check.py` | SSH 登录检查节点 |
+| `app/agents/langgraph/nodes/skill_match.py` | Skill 匹配节点 |
+| `app/agents/langgraph/nodes/react_agent.py` | ReAct Agent 核心节点 |
+| `app/agents/langgraph/nodes/knowledge_qa.py` | 知识问答节点 |
+| `app/agents/langgraph/nodes/approval.py` | 审批节点 |
+| `app/agents/langgraph/nodes/human_review.py` | 人工审核节点 |
+| `app/agents/langgraph/routers/` | 条件路由函数 |
+
+#### API 端点
+
+| 端点 | 方法 | 说明 |
+|------|------|------|
+| `/api/multi-agent-lg/process` | POST | 处理诊断请求 |
+| `/api/multi-agent-lg/process/stream` | POST | 流式处理诊断请求 |
+| `/api/multi-agent-lg/approve` | POST | 审批操作 |
+| `/api/multi-agent-lg/state/{session_id}` | GET | 获取会话状态 |
+| `/api/multi-agent-lg/health` | GET | 健康检查 |
+
+#### 使用示例
+
+```python
+import requests
+
+# 发送诊断请求
+response = requests.post(
+    "http://localhost:8000/api/multi-agent-lg/process",
+    json={
+        "query": "order-service 响应变慢，CPU 使用率过高",
+        "session_id": "test-session-001"
+    }
+)
+
+# 流式处理
+import sseclient
+
+response = requests.post(
+    "http://localhost:8000/api/multi-agent-lg/process/stream",
+    json={"query": "诊断 MySQL 死锁问题"},
+    stream=True
+)
+client = sseclient.SSEClient(response)
+for event in client.events():
+    print(event.data)
+
+# 审批操作
+response = requests.post(
+    "http://localhost:8000/api/multi-agent-lg/approve",
+    json={
+        "session_id": "test-session-001",
+        "approved": True,
+        "ssh_user": "root"
+    }
+)
+```
+
+#### 安装依赖
+
+```bash
+pip install langgraph langchain-core langchain-openai
+```
 
 ## 🔒 安全审计系统
 
@@ -865,7 +1009,14 @@ AIOps/
 | GET | `/api/knowledge/query` | 查询知识图谱 |
 | POST | `/api/knowledge/rag/query` | RAG 知识库查询 |
 | GET | `/api/knowledge/topology` | 获取拓扑图 |
-| GET | `/api/knowledge/qa/chat` | 智能问答 |
+
+### AI 助手接口
+
+| 方法 | 路径 | 描述 |
+|------|------|------|
+| POST | `/api/ai-chat/chat` | AI 对话 |
+| DELETE | `/api/ai-chat/history` | 清空对话历史 |
+| GET | `/api/ai-chat/health` | 健康检查 |
 
 ### 审批接口
 
