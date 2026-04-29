@@ -1,9 +1,15 @@
 # AIOps 智能运维平台
 
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.9+-green.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-green.svg)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-18+-blue.svg)](https://reactjs.org/)
+
 基于多智能体架构的自动化运维诊断平台，集成了知识图谱、RAG知识库、动态决策引擎、邮件审批系统、Web Terminal、安全审计和成本分析，实现智能故障诊断、根因分析、安全威胁检测和自动化运维。
 
 ## 📋 目录
 
+- [快速开始](#快速开始)
 - [系统架构](#系统架构)
 - [核心功能](#核心功能)
 - [多智能体系统](#多智能体系统)
@@ -17,6 +23,59 @@
 - [配置说明](#配置说明)
 - [项目结构](#项目结构)
 - [API 接口](#api-接口)
+- [常见问题](#常见问题)
+- [贡献指南](#贡献指南)
+- [更新日志](#更新日志)
+
+## 🚀 快速开始
+
+### 环境要求
+
+- Python 3.9+
+- Node.js 18+
+- Neo4j 5.x (可选，用于知识图谱)
+- MySQL/SQLite (用户认证)
+
+### 一键启动
+
+```bash
+# 克隆项目
+git clone https://github.com/JaciCao-123/AIops.git
+cd AIops/aiops-platform
+
+# 后端启动
+cd backend
+pip install -r requirements.txt
+cp .env.example .env  # 配置环境变量
+python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+# 前端启动 (新终端)
+cd frontend
+npm install
+npm run dev
+```
+
+### 访问地址
+
+| 服务 | 地址 | 说明 |
+|------|------|------|
+| 前端界面 | http://localhost:3000 | 默认用户: admin/admin123 |
+| API 文档 | http://localhost:8000/docs | Swagger UI |
+| 健康检查 | http://localhost:8000/health | 服务状态 |
+
+### 核心功能演示
+
+```bash
+# AI 助手对话
+curl -X POST http://localhost:8000/api/ai-chat/chat \
+  -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"如何排查CPU使用率过高？"}]}'
+
+# LangGraph 多智能体诊断
+curl -X POST http://localhost:8000/api/multi-agent-lg/process \
+  -H "Content-Type: application/json" \
+  -d '{"query":"order-service响应变慢","session_id":"test-001"}'
+```
 
 ## 🏗️ 系统架构
 
@@ -1140,6 +1199,94 @@ kill -9 1539
 - ✅ Docker 容器化
 - ✅ 一键部署脚本
 - ✅ 水平扩展能力
+
+## ❓ 常见问题
+
+### Q1: 如何配置 OpenAI API？
+在 `.env` 文件中配置：
+```bash
+OPENAI_API_KEY=your-api-key
+OPENAI_BASE_URL=https://api.openai.com/v1  # 或其他兼容端点
+OPENAI_MODEL=gpt-4
+```
+
+### Q2: Neo4j 连接失败怎么办？
+1. 确保 Neo4j 服务已启动: `docker run -d -p 7687:7687 neo4j:5.x`
+2. 检查 `.env` 中的连接配置
+3. 如果不使用知识图谱，可以跳过此配置
+
+### Q3: Web Terminal 连接失败？
+确保后端服务运行在端口 8000，前端 WebSocket 配置正确。检查 `TerminalContext.tsx` 中的端口配置。
+
+### Q4: 如何添加新的诊断技能？
+在 `backend/skills/` 目录下创建新的 `.md` 文件，格式参考现有 skill 文件。
+
+### Q5: 邮件审批功能如何配置？
+在 `.env` 中配置 SMTP 信息：
+```bash
+SMTP_HOST=smtp.example.com
+SMTP_PORT=465
+SMTP_USER=your-email@example.com
+SMTP_PASSWORD=your-password
+SMTP_FROM_EMAIL=your-email@example.com
+```
+
+## 🤝 贡献指南
+
+我们欢迎所有形式的贡献！
+
+### 如何贡献
+
+1. Fork 本仓库
+2. 创建特性分支: `git checkout -b feature/your-feature`
+3. 提交更改: `git commit -m 'Add some feature'`
+4. 推送分支: `git push origin feature/your-feature`
+5. 提交 Pull Request
+
+### 代码规范
+
+- Python: 遵循 PEP 8 规范
+- TypeScript/React: 使用 ESLint + Prettier
+- 提交信息: 使用语义化提交信息
+
+### 开发环境
+
+```bash
+# 安装开发依赖
+pip install -r requirements.txt
+cd frontend && npm install
+
+# 运行测试
+pytest backend/tests/
+npm test --prefix frontend
+
+# 代码检查
+ruff check backend/
+npm run lint --prefix frontend
+```
+
+## 📝 更新日志
+
+### v1.2.0 (2024-04-29)
+- ✨ 新增 LangGraph 多智能体重构版本
+- ✨ 新增 AI 助手对话功能
+- 🐛 修复 WebSocket 终端端口配置
+- ⬆️ 升级 FastAPI 以兼容 Pydantic v2
+- 📝 更新 README 文档
+
+### v1.1.0 (2024-04-15)
+- ✨ 新增安全审计系统
+- ✨ 新增成本分析系统
+- ✨ 新增链路追踪功能
+- 🐛 修复多项已知问题
+
+### v1.0.0 (2024-03-01)
+- 🎉 初始版本发布
+- ✨ 多智能体故障诊断
+- ✨ 知识图谱集成
+- ✨ RAG 知识库
+- ✨ Web Terminal
+- ✨ 邮件审批系统
 
 ## 📄 License
 
