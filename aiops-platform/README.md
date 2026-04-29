@@ -1,10 +1,5 @@
 # AIOps 智能运维平台
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.9+-green.svg)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-green.svg)](https://fastapi.tiangolo.com/)
-[![React](https://img.shields.io/badge/React-18+-blue.svg)](https://reactjs.org/)
-
 基于多智能体架构的自动化运维诊断平台，集成了知识图谱、RAG知识库、动态决策引擎、邮件审批系统、Web Terminal、安全审计和成本分析，实现智能故障诊断、根因分析、安全威胁检测和自动化运维。
 
 ## 📋 目录
@@ -1045,52 +1040,25 @@ AIOps/
 
 ## 🔌 API 接口
 
-### 认证接口
+详细的 API 文档请参阅 [API.md](./API.md)。
 
-| 方法 | 路径 | 描述 |
-|------|------|------|
-| POST | `/api/auth/register` | 用户注册 |
-| POST | `/api/auth/login` | 用户登录 |
-| GET | `/api/auth/me` | 获取当前用户信息 |
+### 核心接口概览
 
-### Agent 接口
+| 模块 | 主要接口 | 说明 |
+|------|----------|------|
+| 认证 | `/api/auth/*` | 用户注册、登录、权限管理 |
+| 多智能体 | `/api/multi-agent/*`, `/api/multi-agent-lg/*` | 故障诊断、LangGraph 工作流 |
+| 知识图谱 | `/api/knowledge/*` | 图谱查询、RAG 检索、拓扑图 |
+| AI 助手 | `/api/ai-chat/*` | AI 对话、历史管理 |
+| 审批 | `/api/approval/*` | 操作审批流程 |
+| 日志 | `/api/logs/*` | 日志查询、上传、统计 |
+| 告警 | `/api/alerts/*` | 告警管理、聚类分析 |
+| 链路追踪 | `/api/traces/*` | 分布式链路追踪 |
+| WebSocket | `/ws/terminal` | Web Terminal 实时终端 |
 
-| 方法 | 路径 | 描述 |
-|------|------|------|
-| POST | `/api/multi-agent/process` | 处理用户查询 |
-| GET | `/api/agent/task/{task_id}` | 获取任务状态 |
-| GET | `/api/agent/history` | 获取历史记录 |
+### 在线文档
 
-### 知识图谱接口
-
-| 方法 | 路径 | 描述 |
-|------|------|------|
-| GET | `/api/knowledge/query` | 查询知识图谱 |
-| POST | `/api/knowledge/rag/query` | RAG 知识库查询 |
-| GET | `/api/knowledge/topology` | 获取拓扑图 |
-
-### AI 助手接口
-
-| 方法 | 路径 | 描述 |
-|------|------|------|
-| POST | `/api/ai-chat/chat` | AI 对话 |
-| DELETE | `/api/ai-chat/history` | 清空对话历史 |
-| GET | `/api/ai-chat/health` | 健康检查 |
-
-### 审批接口
-
-| 方法 | 路径 | 描述 |
-|------|------|------|
-| GET | `/api/approval/status/{id}` | 获取审批状态 |
-| POST | `/api/approval/approve/{id}` | 手动批准 |
-| POST | `/api/approval/reject/{id}` | 手动拒绝 |
-| GET | `/api/approval/pending` | 获取待审批列表 |
-
-### WebSocket
-
-| 路径 | 描述 |
-|------|------|
-| `/ws/terminal` | Web Terminal 连接 |
+启动后端服务后，访问 http://localhost:8000/docs 查看交互式 API 文档 (Swagger UI)。
 
 ## 📁 中间文件管理
 
