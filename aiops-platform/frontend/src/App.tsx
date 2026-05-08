@@ -90,8 +90,13 @@ const AppContent = () => {
   ];
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
+    <Layout style={{ height: '100vh', overflow: 'hidden' }}>
+      <Sider 
+        collapsible 
+        collapsed={collapsed} 
+        onCollapse={setCollapsed}
+        style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0 }}
+      >
         <div style={{ height: 32, margin: 16, background: 'rgba(255, 255, 255, 0.2)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <span style={{ color: '#fff', fontWeight: 'bold', fontSize: collapsed ? 12 : 16 }}>
             {collapsed ? 'AI' : 'AIOps'}
@@ -108,8 +113,8 @@ const AppContent = () => {
           }))}
         />
       </Sider>
-      <Layout>
-        <Header style={{ padding: '0 24px', background: '#fff', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Layout style={{ marginLeft: collapsed ? 80 : 200, transition: 'margin-left 0.2s', height: '100vh', overflow: 'hidden' }}>
+        <Header style={{ padding: '0 24px', background: '#fff', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 64, flexShrink: 0 }}>
           <div style={{ fontSize: 18, fontWeight: 500 }}>
             AIOps 智能运维平台
           </div>
@@ -138,7 +143,7 @@ const AppContent = () => {
             </Dropdown>
           </div>
         </Header>
-        <Content style={{ margin: '16px', position: 'relative' }}>
+        <Content style={{ margin: '16px', position: 'relative', flex: 1, overflow: 'hidden' }}>
           {/* Terminal 始终保持在 DOM 中，只是隐藏显示 */}
           <div style={{ 
             position: 'absolute',
@@ -158,7 +163,7 @@ const AppContent = () => {
           
           {/* 其他页面内容 */}
           {!isTerminalPage && (
-            <div style={{ padding: 24, background: '#fff', borderRadius: 8, minHeight: 'calc(100vh - 112px)' }}>
+            <div style={{ padding: 24, background: '#fff', borderRadius: 8, height: '100%', overflow: 'auto' }}>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/alerts" element={

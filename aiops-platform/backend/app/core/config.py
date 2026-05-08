@@ -36,6 +36,12 @@ class Settings(BaseSettings):
     SERVICENOW_PASSWORD: str = ""
     SERVICENOW_API_KEY: str = ""
 
+    # Rate Limiting Configuration
+    RATE_LIMIT_CHAT_ENABLED: bool = True
+    RATE_LIMIT_CHAT_MAX_REQUESTS: int = 30
+    RATE_LIMIT_CHAT_WINDOW_SECONDS: int = 60
+    RATE_LIMIT_CHAT_BLOCK_SECONDS: int = 300
+
     RDS_HOST: str = ""
     RDS_PORT: int = 3306
     RDS_USER: str = ""

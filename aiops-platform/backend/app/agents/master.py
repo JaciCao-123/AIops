@@ -10,14 +10,12 @@ from .tool_registry import ToolRegistry
 
 class MasterAgent:
     """
-    Master Agent (大脑中枢)
-    
-    核心职责：
-    1. 根据 skill 文件动态生成诊断计划
-    2. 使用 function calling 调用工具
-    3. 根据执行结果动态决策下一步操作
-    
-    不再使用硬编码流程，而是根据 skill 文件和 LLM 动态决策
+    Master Agent - 已弃用 (DEPRECATED)
+
+    此模块不再维护。核心诊断逻辑已迁移至 LangGraph 的 react_agent_node。
+    参见: app/agents/langgraph/nodes/react_agent.py
+
+    本 Agent 保留仅供向后兼容，将在未来版本中移除。
     """
     
     def __init__(self, tool_registry: ToolRegistry = None):

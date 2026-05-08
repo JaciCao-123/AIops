@@ -33,13 +33,17 @@
 │                           后端服务层 (FastAPI)                               │
 │                                                                              │
 │  ┌───────────────────────────────────────────────────────────────────────┐  │
-│  │                    Multi-Agent 协调器 (Orchestrator)                   │  │
+│  │          Multi-Agent 协调器 (LangGraph StateGraph)                     │  │
 │  │                                                                        │  │
 │  │   ┌─────────────┐    ┌─────────────────────────────────────────────┐  │  │
-│  │   │ SkillManager│───▶│              MasterAgent                    │  │  │
-│  │   │ (技能文件)   │    │         (动态决策 + Function Calling)        │  │  │
+│  │   │  IntentParse │───▶│         ReAct Agent (LangGraph)             │  │  │
+│  │   │  (NER+意图)   │    │    (Function Calling + ToolRegistry)       │  │  │
 │  │   └─────────────┘    └─────────────────────────────────────────────┘  │  │
 │  │                                    │                                   │  │
+│  │  ┌────────────────────────────────┼──────────────────────────────┐   │  │
+│  │  │  Intent → SSH Check → Skill Match → ReAct → Approval → Finalize│   │  │
+│  │  │        (条件路由 + 断点续跑 + 人工审核中断)                     │   │  │
+│  │  └────────────────────────────────┼──────────────────────────────┘   │  │
 │  │                                    ▼                                   │  │
 │  │   ┌───────────────────────────────────────────────────────────────┐   │  │
 │  │   │                      ToolRegistry                             │   │  │
@@ -47,6 +51,9 @@
 │  │   │  • save_diagnosis_plan  • check_approval_status               │   │  │
 │  │   │  • save_execution_output• execute_approved_command            │   │  │
 │  │   │  • query_knowledge_graph• ask_user_confirmation               │   │  │
+│  │   │  • query_servicenow_ci  • analyze_change_as_root_cause        │   │  │
+│  │   │  • query_servicenow_   • get_servicenow_node_health           │   │  │
+│  │   │    changes/incidents                                          │   │  │
 │  │   └───────────────────────────────────────────────────────────────┘   │  │
 │  └───────────────────────────────────────────────────────────────────────┘  │
 │                                                                              │
@@ -102,9 +109,11 @@
 - **知识增强**: 结合知识库提供更准确的诊断建议
 
 ### 7. AI 助手
-- **智能对话**: 基于大语言模型的对话式交互
-- **运维专家**: 内置 AIOps 领域专业知识
-- **多轮对话**: 支持上下文记忆的连续对话
+- **智能对话**: 基于大语言模型 (qwen-plus) 的对话式交互
+- **流式输出**: SSE (Server-Sent Events) 逐字流式响应，光标闪烁动画
+- **多轮对话**: 会话管理 + 上下文窗口(4000 tokens)，支持会话列表/编辑/删除
+- **安全增强**: 内置五大原则 System Prompt（诚实/风险标注/命令验证/回滚方案/来源引用）
+- **频率限制**: 滑动窗口 Rate Limiting (30次/60秒)，防滥用
 - **问题解答**: 解答运维相关问题，提供排查建议
 
 ### 8. 安全审计系统
@@ -159,18 +168,18 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      MasterAgent (大脑中枢)                      │
+│            ReAct Agent (LangGraph) — 当前主力决策引擎             │
 │                                                                  │
 │   1. 加载相关 Skill 文件 (debug_skill.md, login_skill.md)       │
 │   2. 构建 LLM Prompt (包含 skill 内容和可用工具)                 │
-│   3. LLM 动态规划并调用工具                                      │
-│   4. 根据工具返回结果继续决策                                    │
-│   5. 循环直到得出最终结论                                        │
+│   3. LLM 动态规划并调用 ToolRegistry 工具                        │
+│   4. 根据工具返回结果继续决策 (Think → Act → Observe)            │
+│   5. 循环直到调用 submit_diagnosis_result 或达上限               │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 1. IntentParseAgent (意图解析代理)
+### 1. IntentParseAgent (意图解析代理) ✅
 **职责**: 入口网关，准确识别意图和实体
 
 **核心能力**:
@@ -187,22 +196,11 @@
 - METRIC: 指标名称 (CPU/内存/磁盘等)
 - ACTION: 操作动作
 
-### 2. MasterAgent (主控代理)
-**职责**: 大脑中枢，动态决策
+### 2. MasterAgent (主控代理) ⛔ 已弃用
+> 已迁移至 LangGraph ReAct Agent。保留代码仅供向后兼容，将在 v2.0 移除。
+> 新实现: `app/agents/langgraph/nodes/react_agent.py`
 
-**核心能力**:
-- 根据 skill 文件动态生成诊断计划
-- 使用 Function Calling 调用工具
-- 根据执行结果动态决策下一步
-- 生成最终诊断报告
-
-**关键特性**:
-- 不使用硬编码流程
-- LLM 自主决策执行步骤
-- 支持邮件审批高风险操作
-- 最大迭代次数保护
-
-### 3. SkillManager (技能管理器)
+### 3. SkillManager (技能管理器) ✅
 **职责**: 加载和管理技能文件
 
 **核心能力**:
@@ -219,24 +217,31 @@
 - **备份类**: backup_skill
 - **连接类**: login_skill
 
-### 4. ToolRegistry (工具注册中心)
-**职责**: 注册和执行工具
+### 4. ToolRegistry (工具注册中心) ✅
+**职责**: 注册和执行工具（包含命令安全检查、风险分级、命令注入检测）
 
 **可用工具**:
 
 | 工具名称 | 功能 | 风险等级 |
 |---------|------|---------|
-| `execute_command` | 在目标服务器执行命令 | low-medium |
-| `save_diagnosis_plan` | 保存诊断计划 | low |
-| `save_execution_output` | 保存执行输出 | low |
-| `send_approval_email` | 发送审批邮件 | low |
-| `check_approval_status` | 检查审批状态 | low |
-| `execute_approved_command` | 审批后执行命令 | high |
-| `query_knowledge_graph` | 查询知识图谱 | low |
-| `query_rag` | 查询 RAG 知识库 | low |
-| `ask_user_confirmation` | 请求用户确认 | low |
+| `execute_command` | 在目标服务器执行命令（含 L0-L3 四级安全控制） | L0-L3 |
+| `save_diagnosis_plan` | 保存诊断计划 | L0 |
+| `save_execution_output` | 保存执行输出 | L0 |
+| `send_approval_email` | 发送审批邮件 | L0 |
+| `check_approval_status` | 检查审批状态 | L0 |
+| `execute_approved_command` | 审批后执行命令 | L2-L3 |
+| `query_knowledge_graph` | 查询知识图谱 | L0 |
+| `query_rag` | 查询 RAG 知识库 | L0 |
+| `ask_user_confirmation` | 请求用户确认 | L0 |
+| `query_servicenow_ci` | 查询 ServiceNow CMDB 配置项 | L0 |
+| `query_servicenow_changes` | 查询 ServiceNow 变更记录 | L0 |
+| `query_servicenow_incidents` | 查询 ServiceNow 事件工单 | L0 |
+| `analyze_change_as_root_cause` | 分析变更是否为问题根因 | L0 |
+| `get_servicenow_node_health` | 获取节点综合健康报告 | L0 |
 
-### 5. EmailSender (邮件发送器)
+> ⚠️ ServiceNow 调用已从 ObservabilityAnalystAgent 移至 ToolRegistry，由 ReAct Agent 按需调用。
+
+### 5. EmailSender (邮件发送器) ✅
 **职责**: 发送审批邮件和处理回复
 
 **核心能力**:
@@ -245,9 +250,12 @@
 - 处理邮件回复审批
 - 审批记录持久化
 
-### 6. LangGraph 重构版本 (推荐)
+### 6. LangGraph 重构版本 (✅ 当前主力)
 
-基于 LangGraph 框架重构的多智能体系统，提供更强大的状态管理和流程控制能力。
+> ⚠️ 旧版 MultiAgentOrchestrator + MasterAgent + ActionExecuteAgent 已于 2026-05 下线。
+> 所有 Multi-Agent 功能已完全迁移至 LangGraph 实现。详见 [迁移说明](#迁移说明)。
+
+基于 LangGraph 框架的多智能体系统，提供声明式状态管理和流程控制能力。
 
 #### 架构对比
 
@@ -855,6 +863,17 @@ SMTP_PORT=465
 SMTP_USER="your_email@163.com"
 SMTP_PASSWORD="your_smtp_password"  # 163邮箱使用授权码
 SMTP_FROM_EMAIL="your_email@163.com"
+
+# Rate Limiting 配置 (AI 对话频率限制)
+RATE_LIMIT_CHAT_ENABLED=true        # 是否启用
+RATE_LIMIT_CHAT_MAX_REQUESTS=30     # 每窗口最大请求数
+RATE_LIMIT_CHAT_WINDOW_SECONDS=60   # 滑动窗口大小
+RATE_LIMIT_CHAT_BLOCK_SECONDS=300   # 超限封禁时长
+
+# ServiceNow 配置
+SERVICENOW_INSTANCE="your-instance.service-now.com"
+SERVICENOW_USERNAME="your-username"
+SERVICENOW_PASSWORD="your-password"
 ```
 
 ### debug_skill.md
@@ -996,11 +1015,18 @@ AIOps/
 
 ### Agent 接口
 
-| 方法 | 路径 | 描述 |
-|------|------|------|
-| POST | `/api/multi-agent/process` | 处理用户查询 |
-| GET | `/api/agent/task/{task_id}` | 获取任务状态 |
-| GET | `/api/agent/history` | 获取历史记录 |
+| 方法 | 路径 | 描述 | 状态 |
+|------|------|------|------|
+| POST | `/api/multi-agent-lg/process` | LangGraph 诊断查询（主力接口） | ✅ |
+| POST | `/api/multi-agent-lg/process/stream` | LangGraph 流式诊断 | ✅ |
+| GET | `/api/multi-agent-lg/state/{id}` | 获取会话状态 | ✅ |
+| POST | `/api/multi-agent-lg/approve` | LangGraph 审批操作 | ✅ |
+| POST | `/api/multi-agent/process` | 诊断查询（LangGraph 后端，兼容格式） | ✅ |
+| POST | `/api/agent/diagnose` | 旧版诊断接口 | ⛔ 已弃用 |
+| GET | `/api/agent/status/{id}` | 旧版任务状态 | ⛔ 已弃用 |
+| GET | `/api/agent/history` | 旧版历史记录 | ⛔ 已弃用 |
+
+> ⚠️ `/api/agent/*` 旧版接口已弃用，请迁移至 `/api/multi-agent-lg/*`。
 
 ### 知识图谱接口
 
@@ -1014,8 +1040,16 @@ AIOps/
 
 | 方法 | 路径 | 描述 |
 |------|------|------|
-| POST | `/api/ai-chat/chat` | AI 对话 |
-| DELETE | `/api/ai-chat/history` | 清空对话历史 |
+| POST | `/api/ai-chat/chat` | AI 非流式对话（含 rate limiting） |
+| POST | `/api/ai-chat/chat/stream` | AI SSE 流式对话 |
+| POST | `/api/ai-chat/sessions` | 创建会话 |
+| GET | `/api/ai-chat/sessions` | 获取会话列表 |
+| GET | `/api/ai-chat/sessions/{id}` | 获取会话详情 |
+| PUT | `/api/ai-chat/sessions/{id}/title` | 更新会话标题 |
+| DELETE | `/api/ai-chat/sessions/{id}` | 删除会话 |
+| DELETE | `/api/ai-chat/sessions/{id}/messages` | 清空会话消息 |
+| DELETE | `/api/ai-chat/history` | 清空所有历史 |
+| GET | `/api/ai-chat/stats` | 会话统计 |
 | GET | `/api/ai-chat/health` | 健康检查 |
 
 ### 审批接口
@@ -1140,6 +1174,40 @@ kill -9 1539
 - ✅ Docker 容器化
 - ✅ 一键部署脚本
 - ✅ 水平扩展能力
+
+---
+
+## 🔄 迁移说明 (2026-05)
+
+### 已完成的架构迁移
+
+| 迁移项 | 旧实现 | 新实现 | 状态 |
+|--------|--------|--------|------|
+| Multi-Agent 编排 | `MultiAgentOrchestrator` | LangGraph `StateGraph` | ✅ 完成 |
+| 动态决策引擎 | `MasterAgent` (while 循环) | `ReAct Agent` (LangGraph) | ✅ 完成 |
+| Agent API | `/api/agent/*` | `/api/multi-agent-lg/*` | ✅ 完成 |
+| ServiceNow 集成 | `ObservabilityAnalystAgent` 直接调用 | `ToolRegistry` 注册工具 | ✅ 完成 |
+| 意图识别 | `IntentParseAgent` | 复用（LangGraph Node） | ✅ 保持 |
+| 技能管理 | `SkillManager` | 复用（LangGraph Node） | ✅ 保持 |
+
+### 已弃用的模块
+
+| 模块 | 弃用日期 | 移除计划 |
+|------|---------|---------|
+| `app/agents/orchestrator.py` | 2026-05 | v2.0 |
+| `app/agents/master.py` | 2026-05 | v2.0 |
+| `app/agents/action_execute.py` | 2026-05 | v2.0 |
+| `app/api/agent.py` | 2026-05 | v2.0 |
+
+### 新增功能 (2026-05)
+
+| 功能 | 说明 |
+|------|------|
+| AI 对话 Rate Limiting | 滑动窗口 30次/60秒，超限封禁 300 秒 |
+| AI System Prompt 增强 | 诚实原则、风险标注、命令验证、回滚方案、来源引用 |
+| SSE 流式输出 | AI 助手逐字流式响应，前端光标动画 |
+| 对话框滚动条 | AI 助手对话框支持滚动查看历史 |
+| ServiceNow 边界清理 | ServiceNow 调用移至 ToolRegistry，Agent 职责清晰 |
 
 ## 📄 License
 

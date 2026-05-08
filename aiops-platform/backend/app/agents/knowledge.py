@@ -230,7 +230,7 @@ Output Format
         
         return {
             "service": service,
-            "dependencies": topology_map.get(service, {"upstream": [], "downstream": [], "critical_deps": []}),
+            "dependencies": topology_map.get(service, []),
             "recent_changes": [
                 {"component": "redis-cluster", "change": "主从切换", "time": "5分钟前"}
             ],

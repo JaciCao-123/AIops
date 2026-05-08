@@ -58,15 +58,25 @@ def _convert_tool_registry_to_langchain(registry: ToolRegistry) -> list:
         except Exception:
             args_schema = None
 
-        def make_tool_func(tn: str):
-            @lc_tool(name=tn, description=description, args_schema=args_schema)
-            async def tool_func(**kwargs) -> str:
-                result = await registry.execute(tn, **kwargs)
-                return json.dumps(result, ensure_ascii=False, default=str)
+        def make_tool_func(tn: str, desc: str, schema):
+            if schema is not None:
+                @lc_tool(args_schema=schema)
+                async def tool_func(**kwargs) -> str:
+                    """execute tool"""
+                    result = await registry.execute(tn, **kwargs)
+                    return json.dumps(result, ensure_ascii=False, default=str)
+            else:
+                @lc_tool
+                async def tool_func(**kwargs) -> str:
+                    """execute tool"""
+                    result = await registry.execute(tn, **kwargs)
+                    return json.dumps(result, ensure_ascii=False, default=str)
 
+            tool_func.name = tn
+            tool_func.description = desc
             return tool_func
 
-        lc_tools.append(make_tool_func(tool_name))
+        lc_tools.append(make_tool_func(tool_name, description, args_schema))
 
     return lc_tools
 

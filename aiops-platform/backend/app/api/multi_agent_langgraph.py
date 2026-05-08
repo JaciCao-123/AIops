@@ -28,7 +28,8 @@ async def process_multi_agent_query(request: LangGraphRequest):
     config = {
         "configurable": {
             "thread_id": request.session_id or "default"
-        }
+        },
+        "recursion_limit": 50,
     }
 
     try:
@@ -69,7 +70,8 @@ async def process_multi_agent_stream(request: LangGraphRequest):
     config = {
         "configurable": {
             "thread_id": request.session_id or "default"
-        }
+        },
+        "recursion_limit": 50,
     }
 
     async def event_generator():

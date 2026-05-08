@@ -9,18 +9,16 @@ from ..utils.logger import get_logger
 
 logger = get_logger("observability")
 
-SERVICENOW_AVAILABLE = False
-try:
-    from ..utils.servicenow_client import get_servicenow_client, ServiceNowClient
-    SERVICENOW_AVAILABLE = True
-except ImportError:
-    logger.warning("ServiceNow client not available, change analysis disabled")
 
 class ObservabilityAnalystAgent:
     """
     Observability & Analyst Agent (感知层)
-    核心职责：分析原始数据，产出"有观点"的分析报告，而非罗列数据。
-    支持通过 Ansible 连接节点并查询状态和日志。
+
+    核心职责：分析原始数据，产出诊断分析报告。
+    ServiceNow ITSM 变更分析已移交 ToolRegistry，由 ReAct Agent 按需调用。
+
+    注意：本 Agent 不再直接调用 ServiceNow。变更分析通过 ToolRegistry 中的
+    query_servicenow_changes / analyze_change_as_root_cause 工具完成。
     """
     
     def __init__(self):
@@ -36,7 +34,6 @@ class ObservabilityAnalystAgent:
             os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
             "login_skill.md"
         )
-        self._servicenow_client: Optional[Any] = None
     
     async def analyze_with_skills(
         self, 
@@ -282,27 +279,6 @@ Output Format (JSON):
             content = re.sub(r'^```json\s*', '', content)
             content = re.sub(r'\s*```$', '', content)
             analysis_result = json.loads(content)
-            
-            # 如果检测到异常，自动查询 ServiceNow 变更记录
-            if analysis_result.get("health_status") in ["CRITICAL", "WARNING"]:
-                change_analysis = await self._analyze_servicenow_changes(
-                    server_ip, 
-                    analysis_result.get("anomalies", [])
-                )
-                if change_analysis:
-                    analysis_result["servicenow_change_analysis"] = change_analysis
-                    
-                    # 如果发现可能的变更根因，更新诊断结果
-                    if change_analysis.get("has_recent_changes") and \
-                       change_analysis.get("analysis", {}).get("is_likely_root_cause"):
-                        analysis_result["root_cause_hypothesis"] = (
-                            f"{analysis_result.get('root_cause_hypothesis', '')} | "
-                            f"ServiceNow变更分析: {change_analysis['analysis'].get('reason', '')}"
-                        )
-                        analysis_result["recommendations"].append(
-                            change_analysis["analysis"].get("recommendation", "")
-                        )
-            
             return analysis_result
         except Exception as e:
             return {
@@ -313,50 +289,6 @@ Output Format (JSON):
                 "recommendations": ["建议人工介入排查"],
                 "confidence": "LOW"
             }
-    
-    async def _analyze_servicenow_changes(
-        self,
-        server_ip: str,
-        anomalies: List[str]
-    ) -> Optional[Dict[str, Any]]:
-        """
-        分析 ServiceNow 变更记录
-        
-        当检测到节点异常时，自动查询 ServiceNow 检查该节点最近是否发生过变更，
-        并分析这个变更是否可能是导致问题的根因。
-        """
-        if not SERVICENOW_AVAILABLE:
-            logger.info(f"ServiceNow not available, skipping change analysis for {server_ip}")
-            return None
-        
-        try:
-            if self._servicenow_client is None:
-                self._servicenow_client = get_servicenow_client()
-            
-            if not self._servicenow_client.is_connected:
-                connected = await self._servicenow_client.connect()
-                if not connected:
-                    logger.warning(f"ServiceNow connection failed: {self._servicenow_client.connection_error}")
-                    return None
-            
-            # 分析变更是否可能是根因
-            result = await self._servicenow_client.analyze_change_as_root_cause(
-                node_name=server_ip,
-                lookback_hours=72
-            )
-            
-            if result.get("success"):
-                logger.info(f"ServiceNow change analysis for {server_ip}: "
-                           f"has_changes={result.get('has_recent_changes')}, "
-                           f"is_root_cause={result.get('analysis', {}).get('is_likely_root_cause')}")
-                return result
-            else:
-                logger.warning(f"ServiceNow change analysis failed: {result.get('error')}")
-                return None
-                
-        except Exception as e:
-            logger.error(f"Error analyzing ServiceNow changes: {e}", exc_info=True)
-            return None
     
     async def _generate_summary(self, all_analysis: List[Dict]) -> str:
         if not all_analysis:

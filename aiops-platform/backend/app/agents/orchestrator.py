@@ -22,13 +22,13 @@ logger = get_logger("orchestrator")
 
 class MultiAgentOrchestrator:
     """
-    Multi-Agent 协调器 (动态决策版本)
+    Multi-Agent 协调器 (已弃用 / DEPRECATED)
+
+    此模块不再维护。请使用 LangGraph 实现:
+    - API: POST /api/multi-agent-lg/process
+    - Graph: app/agents/langgraph/graph.py
     
-    核心改进：
-    1. 不再使用硬编码流程
-    2. LLM 根据 skill 文件动态决策执行步骤
-    3. 通过 function calling 调用工具
-    4. 按需生成中间文件
+    本协调器保留仅供向后兼容和参考，将在未来版本中移除。
     """
     
     def __init__(self):

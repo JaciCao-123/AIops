@@ -130,14 +130,159 @@ export const knowledgeApi = {
   },
 };
 
+export interface ChatSession {
+  session_id: string;
+  title: string;
+  message_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ChatSessionDetail extends ChatSession {
+  messages: Array<{ role: string; content: string }>;
+}
+
+export interface ChatResponse {
+  session_id: string;
+  response: string;
+  message_count: number;
+}
+
+export interface StreamCallbacks {
+  onSession?: (sessionId: string) => void;
+  onContent?: (content: string) => void;
+  onDone?: (sessionId: string, messageCount: number) => void;
+  onError?: (error: string) => void;
+}
+
+const API_BASE_URL = 'http://localhost:8000';
+
 export const aiChatApi = {
-  chat: async (messages: Array<{ role: string; content: string }>): Promise<{ response: string }> => {
-    const response = await api.post('/ai-chat/chat', { messages });
+  createSession: async (title?: string): Promise<ChatSession> => {
+    const response = await api.post('/ai-chat/sessions', { title });
+    return response.data;
+  },
+
+  getSessions: async (): Promise<ChatSession[]> => {
+    const response = await api.get('/ai-chat/sessions');
+    return response.data;
+  },
+
+  getSession: async (sessionId: string): Promise<ChatSessionDetail> => {
+    const response = await api.get(`/ai-chat/sessions/${sessionId}`);
+    return response.data;
+  },
+
+  deleteSession: async (sessionId: string): Promise<{ message: string }> => {
+    const response = await api.delete(`/ai-chat/sessions/${sessionId}`);
+    return response.data;
+  },
+
+  updateSessionTitle: async (sessionId: string, title: string): Promise<{ message: string }> => {
+    const response = await api.put(`/ai-chat/sessions/${sessionId}/title`, { title });
+    return response.data;
+  },
+
+  clearSessionMessages: async (sessionId: string): Promise<{ message: string }> => {
+    const response = await api.delete(`/ai-chat/sessions/${sessionId}/messages`);
+    return response.data;
+  },
+
+  chat: async (sessionId: string | null, message: string): Promise<ChatResponse> => {
+    const response = await api.post('/ai-chat/chat', { 
+      session_id: sessionId, 
+      message 
+    });
+    return response.data;
+  },
+
+  chatStream: async (
+    sessionId: string | null,
+    message: string,
+    callbacks: StreamCallbacks
+  ): Promise<void> => {
+    const response = await fetch(`${API_BASE_URL}/api/ai-chat/chat/stream`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        session_id: sessionId,
+        message: message,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      callbacks.onError?.(error);
+      return;
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      callbacks.onError?.('无法读取响应流');
+      return;
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.slice(6));
+              
+              switch (data.type) {
+                case 'session':
+                  callbacks.onSession?.(data.session_id);
+                  break;
+                case 'content':
+                  callbacks.onContent?.(data.content);
+                  break;
+                case 'done':
+                  callbacks.onDone?.(data.session_id, data.message_count);
+                  break;
+                case 'error':
+                  callbacks.onError?.(data.error);
+                  break;
+              }
+            } catch (e) {
+              console.error('解析 SSE 数据失败:', e);
+            }
+          }
+        }
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  },
+
+  legacyChat: async (messages: Array<{ role: string; content: string }>): Promise<{ response: string }> => {
+    const response = await api.post('/ai-chat/chat/legacy', { messages });
     return response.data;
   },
 
   clearHistory: async (): Promise<{ message: string }> => {
     const response = await api.delete('/ai-chat/history');
+    return response.data;
+  },
+
+  getStats: async (): Promise<{
+    total_sessions: number;
+    total_messages: number;
+    max_sessions: number;
+    max_messages_per_session: number;
+  }> => {
+    const response = await api.get('/ai-chat/stats');
     return response.data;
   },
 };

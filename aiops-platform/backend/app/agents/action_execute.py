@@ -6,8 +6,11 @@ from app.core.config import settings
 
 class ActionExecuteAgent:
     """
-    Action Execute Agent (执行层)
-    核心职责：生成安全的阿里云 OOS 指令，严格执行红线管控。
+    Action Execute Agent - 已弃用 (DEPRECATED)
+
+    红线操作定义和安全检查逻辑保留为参考。
+    运行时执行已迁移至 ToolRegistry 的 execute_command 安全控制。
+    参见: app/agents/tool_registry.py → _check_command_security
     """
     
     REDLINE_OPERATIONS = ["delete", "release", "modify_security_group", "drop", "truncate"]
