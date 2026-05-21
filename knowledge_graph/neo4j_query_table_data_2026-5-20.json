@@ -1,0 +1,4572 @@
+[
+  {
+    "n": {
+      "identity": 34257,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "207.46.141.23",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "F5"
+      },
+      "elementId": "34257"
+    },
+    "r": {
+      "identity": 192765,
+      "start": 34292,
+      "end": 34257,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192765",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34257"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34257,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "207.46.141.23",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "F5"
+      },
+      "elementId": "34257"
+    },
+    "r": {
+      "identity": 192752,
+      "start": 34293,
+      "end": 34257,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      "elementId": "192752",
+      "startNodeElementId": "34293",
+      "endNodeElementId": "34257"
+    },
+    "m": {
+      "identity": 34293,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "name": "ForgeRock",
+        "type": "Identity Provider (IDP)"
+      },
+      "elementId": "34293"
+    }
+  },
+  {
+    "n": {
+      "identity": 34257,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "207.46.141.23",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "F5"
+      },
+      "elementId": "34257"
+    },
+    "r": {
+      "identity": 192751,
+      "start": 34258,
+      "end": 34257,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      "elementId": "192751",
+      "startNodeElementId": "34258",
+      "endNodeElementId": "34257"
+    },
+    "m": {
+      "identity": 34258,
+      "labels": [
+        "iEngageProd",
+        "Public"
+      ],
+      "properties": {
+        "name": "iEngage Mobile (Agency)",
+        "type": "Mobile Client"
+      },
+      "elementId": "34258"
+    }
+  },
+  {
+    "n": {
+      "identity": 34257,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "207.46.141.23",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "F5"
+      },
+      "elementId": "34257"
+    },
+    "r": {
+      "identity": 192750,
+      "start": 34257,
+      "end": 34295,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      "elementId": "192750",
+      "startNodeElementId": "34257",
+      "endNodeElementId": "34295"
+    },
+    "m": {
+      "identity": 34295,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-r-infrasvc02-inttcont02-10.204.64.0-21",
+        "protocol": "HTTPS",
+        "port": 8656,
+        "ip": "10.202.89.253",
+        "domain": "aiahk-apigw3-prd.aiaazure.biz",
+        "name": "API Gateway 3"
+      },
+      "elementId": "34295"
+    }
+  },
+  {
+    "n": {
+      "identity": 34258,
+      "labels": [
+        "iEngageProd",
+        "Public"
+      ],
+      "properties": {
+        "name": "iEngage Mobile (Agency)",
+        "type": "Mobile Client"
+      },
+      "elementId": "34258"
+    },
+    "r": {
+      "identity": 192766,
+      "start": 34292,
+      "end": 34258,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192766",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34258"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34258,
+      "labels": [
+        "iEngageProd",
+        "Public"
+      ],
+      "properties": {
+        "name": "iEngage Mobile (Agency)",
+        "type": "Mobile Client"
+      },
+      "elementId": "34258"
+    },
+    "r": {
+      "identity": 192751,
+      "start": 34258,
+      "end": 34257,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      "elementId": "192751",
+      "startNodeElementId": "34258",
+      "endNodeElementId": "34257"
+    },
+    "m": {
+      "identity": 34257,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "207.46.141.23",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "F5"
+      },
+      "elementId": "34257"
+    }
+  },
+  {
+    "n": {
+      "identity": 34259,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "WebServer"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "ip": "10.202.89.15",
+        "name": "HKAZEPLWB0008"
+      },
+      "elementId": "34259"
+    },
+    "r": {
+      "identity": 192767,
+      "start": 34292,
+      "end": 34259,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192767",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34259"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34259,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "WebServer"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "ip": "10.202.89.15",
+        "name": "HKAZEPLWB0008"
+      },
+      "elementId": "34259"
+    },
+    "r": {
+      "identity": 192764,
+      "start": 34260,
+      "end": 34259,
+      "type": "SECURES",
+      "properties": {},
+      "elementId": "192764",
+      "startNodeElementId": "34260",
+      "endNodeElementId": "34259"
+    },
+    "m": {
+      "identity": 34260,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01"
+      },
+      "elementId": "34260"
+    }
+  },
+  {
+    "n": {
+      "identity": 34259,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "WebServer"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "ip": "10.202.89.15",
+        "name": "HKAZEPLWB0008"
+      },
+      "elementId": "34259"
+    },
+    "r": {
+      "identity": 192757,
+      "start": 34298,
+      "end": 34259,
+      "type": "LOAD_BALANCES",
+      "properties": {},
+      "elementId": "192757",
+      "startNodeElementId": "34298",
+      "endNodeElementId": "34259"
+    },
+    "m": {
+      "identity": 34298,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-sharedsvc01",
+          "apache-lbs01"
+        ],
+        "ip": "10.202.89.248",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "Azure ILB (External)"
+      },
+      "elementId": "34298"
+    }
+  },
+  {
+    "n": {
+      "identity": 34260,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01"
+      },
+      "elementId": "34260"
+    },
+    "r": {
+      "identity": 192802,
+      "start": 34260,
+      "end": 34298,
+      "type": "SECURES",
+      "properties": {},
+      "elementId": "192802",
+      "startNodeElementId": "34260",
+      "endNodeElementId": "34298"
+    },
+    "m": {
+      "identity": 34298,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-sharedsvc01",
+          "apache-lbs01"
+        ],
+        "ip": "10.202.89.248",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "Azure ILB (External)"
+      },
+      "elementId": "34298"
+    }
+  },
+  {
+    "n": {
+      "identity": 34260,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01"
+      },
+      "elementId": "34260"
+    },
+    "r": {
+      "identity": 192768,
+      "start": 34292,
+      "end": 34260,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192768",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34260"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34260,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01"
+      },
+      "elementId": "34260"
+    },
+    "r": {
+      "identity": 192764,
+      "start": 34260,
+      "end": 34259,
+      "type": "SECURES",
+      "properties": {},
+      "elementId": "192764",
+      "startNodeElementId": "34260",
+      "endNodeElementId": "34259"
+    },
+    "m": {
+      "identity": 34259,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "WebServer"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "ip": "10.202.89.15",
+        "name": "HKAZEPLWB0008"
+      },
+      "elementId": "34259"
+    }
+  },
+  {
+    "n": {
+      "identity": 34260,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01"
+      },
+      "elementId": "34260"
+    },
+    "r": {
+      "identity": 192763,
+      "start": 34260,
+      "end": 34299,
+      "type": "SECURES",
+      "properties": {},
+      "elementId": "192763",
+      "startNodeElementId": "34260",
+      "endNodeElementId": "34299"
+    },
+    "m": {
+      "identity": 34299,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "WebServer"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "ip": "10.202.89.14",
+        "name": "HKAZEPLWB0007"
+      },
+      "elementId": "34299"
+    }
+  },
+  {
+    "n": {
+      "identity": 34261,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "AKS"
+      ],
+      "properties": {
+        "subnet": "subnet-r-infrasvc02-inttcont02-10.204.64.0-21",
+        "name": "aks-hk01-sea-r-internet-cu03"
+      },
+      "elementId": "34261"
+    },
+    "r": {
+      "identity": 192769,
+      "start": 34292,
+      "end": 34261,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192769",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34261"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34262,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "protocol": "HTTPS",
+        "port": 8556,
+        "ip": "10.202.79.254",
+        "domain": "aiahk-apigw4-prd.aiaazure.biz",
+        "name": "API Gateway 4"
+      },
+      "elementId": "34262"
+    },
+    "r": {
+      "identity": 192770,
+      "start": 34292,
+      "end": 34262,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192770",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34262"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34262,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "protocol": "HTTPS",
+        "port": 8556,
+        "ip": "10.202.79.254",
+        "domain": "aiahk-apigw4-prd.aiaazure.biz",
+        "name": "API Gateway 4"
+      },
+      "elementId": "34262"
+    },
+    "r": {
+      "identity": 192758,
+      "start": 34262,
+      "end": 34263,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 8556
+      },
+      "elementId": "192758",
+      "startNodeElementId": "34262",
+      "endNodeElementId": "34263"
+    },
+    "m": {
+      "identity": 34263,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-infrasvc01-inttweb01"
+        ],
+        "ip": "10.202.73.254",
+        "domain": "aiahk-ibs4-prd.aiaazure.biz",
+        "name": "Azure ILB (Internal)"
+      },
+      "elementId": "34263"
+    }
+  },
+  {
+    "n": {
+      "identity": 34263,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-infrasvc01-inttweb01"
+        ],
+        "ip": "10.202.73.254",
+        "domain": "aiahk-ibs4-prd.aiaazure.biz",
+        "name": "Azure ILB (Internal)"
+      },
+      "elementId": "34263"
+    },
+    "r": {
+      "identity": 192803,
+      "start": 34282,
+      "end": 34263,
+      "type": "SECURES",
+      "properties": {},
+      "elementId": "192803",
+      "startNodeElementId": "34282",
+      "endNodeElementId": "34263"
+    },
+    "m": {
+      "identity": 34282,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01-internal"
+      },
+      "elementId": "34282"
+    }
+  },
+  {
+    "n": {
+      "identity": 34263,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-infrasvc01-inttweb01"
+        ],
+        "ip": "10.202.73.254",
+        "domain": "aiahk-ibs4-prd.aiaazure.biz",
+        "name": "Azure ILB (Internal)"
+      },
+      "elementId": "34263"
+    },
+    "r": {
+      "identity": 192771,
+      "start": 34292,
+      "end": 34263,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192771",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34263"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34263,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-infrasvc01-inttweb01"
+        ],
+        "ip": "10.202.73.254",
+        "domain": "aiahk-ibs4-prd.aiaazure.biz",
+        "name": "Azure ILB (Internal)"
+      },
+      "elementId": "34263"
+    },
+    "r": {
+      "identity": 192760,
+      "start": 34263,
+      "end": 34265,
+      "type": "LOAD_BALANCES",
+      "properties": {},
+      "elementId": "192760",
+      "startNodeElementId": "34263",
+      "endNodeElementId": "34265"
+    },
+    "m": {
+      "identity": 34265,
+      "labels": [
+        "iEngageProd",
+        "WebServer",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "ip": "10.202.73.5",
+        "name": "HKAZEPLWB0004"
+      },
+      "elementId": "34265"
+    }
+  },
+  {
+    "n": {
+      "identity": 34263,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-infrasvc01-inttweb01"
+        ],
+        "ip": "10.202.73.254",
+        "domain": "aiahk-ibs4-prd.aiaazure.biz",
+        "name": "Azure ILB (Internal)"
+      },
+      "elementId": "34263"
+    },
+    "r": {
+      "identity": 192759,
+      "start": 34263,
+      "end": 34264,
+      "type": "LOAD_BALANCES",
+      "properties": {},
+      "elementId": "192759",
+      "startNodeElementId": "34263",
+      "endNodeElementId": "34264"
+    },
+    "m": {
+      "identity": 34264,
+      "labels": [
+        "iEngageProd",
+        "WebServer",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "ip": "10.202.73.4",
+        "name": "HKAZEPLWB0003"
+      },
+      "elementId": "34264"
+    }
+  },
+  {
+    "n": {
+      "identity": 34263,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-infrasvc01-inttweb01"
+        ],
+        "ip": "10.202.73.254",
+        "domain": "aiahk-ibs4-prd.aiaazure.biz",
+        "name": "Azure ILB (Internal)"
+      },
+      "elementId": "34263"
+    },
+    "r": {
+      "identity": 192758,
+      "start": 34262,
+      "end": 34263,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 8556
+      },
+      "elementId": "192758",
+      "startNodeElementId": "34262",
+      "endNodeElementId": "34263"
+    },
+    "m": {
+      "identity": 34262,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "protocol": "HTTPS",
+        "port": 8556,
+        "ip": "10.202.79.254",
+        "domain": "aiahk-apigw4-prd.aiaazure.biz",
+        "name": "API Gateway 4"
+      },
+      "elementId": "34262"
+    }
+  },
+  {
+    "n": {
+      "identity": 34264,
+      "labels": [
+        "iEngageProd",
+        "WebServer",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "ip": "10.202.73.4",
+        "name": "HKAZEPLWB0003"
+      },
+      "elementId": "34264"
+    },
+    "r": {
+      "identity": 192798,
+      "start": 34282,
+      "end": 34264,
+      "type": "SECURES",
+      "properties": {},
+      "elementId": "192798",
+      "startNodeElementId": "34282",
+      "endNodeElementId": "34264"
+    },
+    "m": {
+      "identity": 34282,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01-internal"
+      },
+      "elementId": "34282"
+    }
+  },
+  {
+    "n": {
+      "identity": 34264,
+      "labels": [
+        "iEngageProd",
+        "WebServer",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "ip": "10.202.73.4",
+        "name": "HKAZEPLWB0003"
+      },
+      "elementId": "34264"
+    },
+    "r": {
+      "identity": 192772,
+      "start": 34292,
+      "end": 34264,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192772",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34264"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34264,
+      "labels": [
+        "iEngageProd",
+        "WebServer",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "ip": "10.202.73.4",
+        "name": "HKAZEPLWB0003"
+      },
+      "elementId": "34264"
+    },
+    "r": {
+      "identity": 192759,
+      "start": 34263,
+      "end": 34264,
+      "type": "LOAD_BALANCES",
+      "properties": {},
+      "elementId": "192759",
+      "startNodeElementId": "34263",
+      "endNodeElementId": "34264"
+    },
+    "m": {
+      "identity": 34263,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-infrasvc01-inttweb01"
+        ],
+        "ip": "10.202.73.254",
+        "domain": "aiahk-ibs4-prd.aiaazure.biz",
+        "name": "Azure ILB (Internal)"
+      },
+      "elementId": "34263"
+    }
+  },
+  {
+    "n": {
+      "identity": 34265,
+      "labels": [
+        "iEngageProd",
+        "WebServer",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "ip": "10.202.73.5",
+        "name": "HKAZEPLWB0004"
+      },
+      "elementId": "34265"
+    },
+    "r": {
+      "identity": 192799,
+      "start": 34282,
+      "end": 34265,
+      "type": "SECURES",
+      "properties": {},
+      "elementId": "192799",
+      "startNodeElementId": "34282",
+      "endNodeElementId": "34265"
+    },
+    "m": {
+      "identity": 34282,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01-internal"
+      },
+      "elementId": "34282"
+    }
+  },
+  {
+    "n": {
+      "identity": 34265,
+      "labels": [
+        "iEngageProd",
+        "WebServer",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "ip": "10.202.73.5",
+        "name": "HKAZEPLWB0004"
+      },
+      "elementId": "34265"
+    },
+    "r": {
+      "identity": 192773,
+      "start": 34292,
+      "end": 34265,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192773",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34265"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34265,
+      "labels": [
+        "iEngageProd",
+        "WebServer",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "ip": "10.202.73.5",
+        "name": "HKAZEPLWB0004"
+      },
+      "elementId": "34265"
+    },
+    "r": {
+      "identity": 192760,
+      "start": 34263,
+      "end": 34265,
+      "type": "LOAD_BALANCES",
+      "properties": {},
+      "elementId": "192760",
+      "startNodeElementId": "34263",
+      "endNodeElementId": "34265"
+    },
+    "m": {
+      "identity": 34263,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-infrasvc01-inttweb01"
+        ],
+        "ip": "10.202.73.254",
+        "domain": "aiahk-ibs4-prd.aiaazure.biz",
+        "name": "Azure ILB (Internal)"
+      },
+      "elementId": "34263"
+    }
+  },
+  {
+    "n": {
+      "identity": 34266,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "10.204.63.172",
+        "domain": "aiahk-iengageesa-api-prd.aiaazure.biz",
+        "name": "iEngage System Service"
+      },
+      "elementId": "34266"
+    },
+    "r": {
+      "identity": 192774,
+      "start": 34292,
+      "end": 34266,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192774",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34266"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34267,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-subscriber-api-prd.aiaazure.biz",
+        "ip": "10.204.63.206",
+        "name": "iEngage Kafka Subscriber Service"
+      },
+      "elementId": "34267"
+    },
+    "r": {
+      "identity": 192775,
+      "start": 34292,
+      "end": 34267,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192775",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34267"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34267,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-subscriber-api-prd.aiaazure.biz",
+        "ip": "10.204.63.206",
+        "name": "iEngage Kafka Subscriber Service"
+      },
+      "elementId": "34267"
+    },
+    "r": {
+      "identity": 192761,
+      "start": 34267,
+      "end": 34269,
+      "type": "CONSUMES_FROM",
+      "properties": {
+        "protocol": "Kafka",
+        "port": 9092
+      },
+      "elementId": "192761",
+      "startNodeElementId": "34267",
+      "endNodeElementId": "34269"
+    },
+    "m": {
+      "identity": 34269,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Internal",
+        "MessageQueue"
+      ],
+      "properties": {
+        "protocol": "Kafka",
+        "port": 9092,
+        "ip": "10.204.63.210",
+        "domain": "kafka-aiahk-prd.aiaazure.biz",
+        "name": "Kafka"
+      },
+      "elementId": "34269"
+    }
+  },
+  {
+    "n": {
+      "identity": 34268,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-iengage-api-prd.aiaazure.biz",
+        "ip": "10.204.63.207",
+        "name": "iEngage Core-Backend Service"
+      },
+      "elementId": "34268"
+    },
+    "r": {
+      "identity": 192804,
+      "start": 34268,
+      "end": 34271,
+      "type": "SENDS_EMAIL_VIA",
+      "properties": {
+        "protocol": "SMTP",
+        "purpose": "User Notifications & Alerts",
+        "port": 587
+      },
+      "elementId": "192804",
+      "startNodeElementId": "34268",
+      "endNodeElementId": "34271"
+    },
+    "m": {
+      "identity": 34271,
+      "labels": [
+        "iEngageProd",
+        "Internal",
+        "Email"
+      ],
+      "properties": {
+        "protocol": "SMTP",
+        "port": 587,
+        "ip": "10.238.1.38",
+        "domain": "smtpazure-eas01.aia.com",
+        "name": "Group SMTP"
+      },
+      "elementId": "34271"
+    }
+  },
+  {
+    "n": {
+      "identity": 34268,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-iengage-api-prd.aiaazure.biz",
+        "ip": "10.204.63.207",
+        "name": "iEngage Core-Backend Service"
+      },
+      "elementId": "34268"
+    },
+    "r": {
+      "identity": 192800,
+      "start": 34268,
+      "end": 34272,
+      "type": "STORES_DATA_IN",
+      "properties": {
+        "protocol": "HTTPS",
+        "purpose": "User Media & Documents"
+      },
+      "elementId": "192800",
+      "startNodeElementId": "34268",
+      "endNodeElementId": "34272"
+    },
+    "m": {
+      "identity": 34272,
+      "labels": [
+        "Storage",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "name": "sahk01easpshared01ieng01.blob.core.windows.net",
+        "description": "Blob (Restrict Media)",
+        "type": "Azure Blob Storage"
+      },
+      "elementId": "34272"
+    }
+  },
+  {
+    "n": {
+      "identity": 34268,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-iengage-api-prd.aiaazure.biz",
+        "ip": "10.204.63.207",
+        "name": "iEngage Core-Backend Service"
+      },
+      "elementId": "34268"
+    },
+    "r": {
+      "identity": 192797,
+      "start": 34268,
+      "end": 34270,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "TDS",
+        "port": 1433,
+        "purpose": "Primary Data Store"
+      },
+      "elementId": "192797",
+      "startNodeElementId": "34268",
+      "endNodeElementId": "34270"
+    },
+    "m": {
+      "identity": 34270,
+      "labels": [
+        "Database",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "TDS",
+        "port": 1433,
+        "name": "sqlfg-hk01-p-iengage.database.windows.net",
+        "type": "Azure SQL Database"
+      },
+      "elementId": "34270"
+    }
+  },
+  {
+    "n": {
+      "identity": 34268,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-iengage-api-prd.aiaazure.biz",
+        "ip": "10.204.63.207",
+        "name": "iEngage Core-Backend Service"
+      },
+      "elementId": "34268"
+    },
+    "r": {
+      "identity": 192776,
+      "start": 34292,
+      "end": 34268,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192776",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34268"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34268,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-iengage-api-prd.aiaazure.biz",
+        "ip": "10.204.63.207",
+        "name": "iEngage Core-Backend Service"
+      },
+      "elementId": "34268"
+    },
+    "r": {
+      "identity": 192762,
+      "start": 34268,
+      "end": 34294,
+      "type": "AUTHENTICATES_WITH",
+      "properties": {
+        "protocol": "OAuth",
+        "port": 443
+      },
+      "elementId": "192762",
+      "startNodeElementId": "34268",
+      "endNodeElementId": "34294"
+    },
+    "m": {
+      "identity": 34294,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "name": "Okta (Public)",
+        "type": "IAM / OAuth Provider"
+      },
+      "elementId": "34294"
+    }
+  },
+  {
+    "n": {
+      "identity": 34269,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Internal",
+        "MessageQueue"
+      ],
+      "properties": {
+        "protocol": "Kafka",
+        "port": 9092,
+        "ip": "10.204.63.210",
+        "domain": "kafka-aiahk-prd.aiaazure.biz",
+        "name": "Kafka"
+      },
+      "elementId": "34269"
+    },
+    "r": {
+      "identity": 192777,
+      "start": 34292,
+      "end": 34269,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192777",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34269"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34269,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Internal",
+        "MessageQueue"
+      ],
+      "properties": {
+        "protocol": "Kafka",
+        "port": 9092,
+        "ip": "10.204.63.210",
+        "domain": "kafka-aiahk-prd.aiaazure.biz",
+        "name": "Kafka"
+      },
+      "elementId": "34269"
+    },
+    "r": {
+      "identity": 192761,
+      "start": 34267,
+      "end": 34269,
+      "type": "CONSUMES_FROM",
+      "properties": {
+        "protocol": "Kafka",
+        "port": 9092
+      },
+      "elementId": "192761",
+      "startNodeElementId": "34267",
+      "endNodeElementId": "34269"
+    },
+    "m": {
+      "identity": 34267,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-subscriber-api-prd.aiaazure.biz",
+        "ip": "10.204.63.206",
+        "name": "iEngage Kafka Subscriber Service"
+      },
+      "elementId": "34267"
+    }
+  },
+  {
+    "n": {
+      "identity": 34270,
+      "labels": [
+        "Database",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "TDS",
+        "port": 1433,
+        "name": "sqlfg-hk01-p-iengage.database.windows.net",
+        "type": "Azure SQL Database"
+      },
+      "elementId": "34270"
+    },
+    "r": {
+      "identity": 192797,
+      "start": 34268,
+      "end": 34270,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "TDS",
+        "port": 1433,
+        "purpose": "Primary Data Store"
+      },
+      "elementId": "192797",
+      "startNodeElementId": "34268",
+      "endNodeElementId": "34270"
+    },
+    "m": {
+      "identity": 34268,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-iengage-api-prd.aiaazure.biz",
+        "ip": "10.204.63.207",
+        "name": "iEngage Core-Backend Service"
+      },
+      "elementId": "34268"
+    }
+  },
+  {
+    "n": {
+      "identity": 34270,
+      "labels": [
+        "Database",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "TDS",
+        "port": 1433,
+        "name": "sqlfg-hk01-p-iengage.database.windows.net",
+        "type": "Azure SQL Database"
+      },
+      "elementId": "34270"
+    },
+    "r": {
+      "identity": 192778,
+      "start": 34292,
+      "end": 34270,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192778",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34270"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34271,
+      "labels": [
+        "iEngageProd",
+        "Internal",
+        "Email"
+      ],
+      "properties": {
+        "protocol": "SMTP",
+        "port": 587,
+        "ip": "10.238.1.38",
+        "domain": "smtpazure-eas01.aia.com",
+        "name": "Group SMTP"
+      },
+      "elementId": "34271"
+    },
+    "r": {
+      "identity": 192804,
+      "start": 34268,
+      "end": 34271,
+      "type": "SENDS_EMAIL_VIA",
+      "properties": {
+        "protocol": "SMTP",
+        "purpose": "User Notifications & Alerts",
+        "port": 587
+      },
+      "elementId": "192804",
+      "startNodeElementId": "34268",
+      "endNodeElementId": "34271"
+    },
+    "m": {
+      "identity": 34268,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-iengage-api-prd.aiaazure.biz",
+        "ip": "10.204.63.207",
+        "name": "iEngage Core-Backend Service"
+      },
+      "elementId": "34268"
+    }
+  },
+  {
+    "n": {
+      "identity": 34271,
+      "labels": [
+        "iEngageProd",
+        "Internal",
+        "Email"
+      ],
+      "properties": {
+        "protocol": "SMTP",
+        "port": 587,
+        "ip": "10.238.1.38",
+        "domain": "smtpazure-eas01.aia.com",
+        "name": "Group SMTP"
+      },
+      "elementId": "34271"
+    },
+    "r": {
+      "identity": 192779,
+      "start": 34292,
+      "end": 34271,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192779",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34271"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34272,
+      "labels": [
+        "Storage",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "name": "sahk01easpshared01ieng01.blob.core.windows.net",
+        "description": "Blob (Restrict Media)",
+        "type": "Azure Blob Storage"
+      },
+      "elementId": "34272"
+    },
+    "r": {
+      "identity": 192801,
+      "start": 34296,
+      "end": 34272,
+      "type": "STORES_DATA_IN",
+      "properties": {
+        "protocol": "HTTPS",
+        "purpose": "Agent Profile Pictures"
+      },
+      "elementId": "192801",
+      "startNodeElementId": "34296",
+      "endNodeElementId": "34272"
+    },
+    "m": {
+      "identity": 34296,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "Microservice"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "10.202.71.237",
+        "domain": "aiahk-iengageea-api-prd.aiaazure.biz",
+        "name": "iEngage EA Service"
+      },
+      "elementId": "34296"
+    }
+  },
+  {
+    "n": {
+      "identity": 34272,
+      "labels": [
+        "Storage",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "name": "sahk01easpshared01ieng01.blob.core.windows.net",
+        "description": "Blob (Restrict Media)",
+        "type": "Azure Blob Storage"
+      },
+      "elementId": "34272"
+    },
+    "r": {
+      "identity": 192800,
+      "start": 34268,
+      "end": 34272,
+      "type": "STORES_DATA_IN",
+      "properties": {
+        "protocol": "HTTPS",
+        "purpose": "User Media & Documents"
+      },
+      "elementId": "192800",
+      "startNodeElementId": "34268",
+      "endNodeElementId": "34272"
+    },
+    "m": {
+      "identity": 34268,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-iengage-api-prd.aiaazure.biz",
+        "ip": "10.204.63.207",
+        "name": "iEngage Core-Backend Service"
+      },
+      "elementId": "34268"
+    }
+  },
+  {
+    "n": {
+      "identity": 34272,
+      "labels": [
+        "Storage",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "name": "sahk01easpshared01ieng01.blob.core.windows.net",
+        "description": "Blob (Restrict Media)",
+        "type": "Azure Blob Storage"
+      },
+      "elementId": "34272"
+    },
+    "r": {
+      "identity": 192780,
+      "start": 34292,
+      "end": 34272,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192780",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34272"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34273,
+      "labels": [
+        "Storage",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "name": "sahk01easpshared01ieng02.blob.core.windows.net",
+        "description": "Blob (CMS UI)",
+        "type": "Azure Blob Storage"
+      },
+      "elementId": "34273"
+    },
+    "r": {
+      "identity": 192781,
+      "start": 34292,
+      "end": 34273,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192781",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34273"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34274,
+      "labels": [
+        "iEngageProd",
+        "AKS",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-r-infrasvc03-intlcont03-10.204.56.0-21",
+        "name": "aks-hk01-sea-r-Internal-cu03"
+      },
+      "elementId": "34274"
+    },
+    "r": {
+      "identity": 192782,
+      "start": 34292,
+      "end": 34274,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192782",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34274"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34275,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "Microservice",
+        "Upstream"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-frintegrator-intt-prod.aiaazure.biz",
+        "ip": "10.229.175.251",
+        "name": "ForgeRock Integrator Experience API"
+      },
+      "elementId": "34275"
+    },
+    "r": {
+      "identity": 192783,
+      "start": 34292,
+      "end": 34275,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192783",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34275"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34276,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal",
+        "Upstream"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-frintegrator-intl-prod.aiaazure.biz",
+        "ip": "10.229.167.247",
+        "name": "ForgeRock Integrator Process API"
+      },
+      "elementId": "34276"
+    },
+    "r": {
+      "identity": 192784,
+      "start": 34292,
+      "end": 34276,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192784",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34276"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34277,
+      "labels": [
+        "iEngageProd",
+        "Public",
+        "Upstream",
+        "WebApp"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "name": "aiahk-ibs4-prd.aiaazure.biz",
+        "description": "iEngage CMS (Web for Staff)",
+        "tls_version": "TLS 1.2",
+        "url_path": "/iengage-cms/cms/index.html"
+      },
+      "elementId": "34277"
+    },
+    "r": {
+      "identity": 192785,
+      "start": 34292,
+      "end": 34277,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192785",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34277"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34278,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "External",
+        "Upstream"
+      ],
+      "properties": {
+        "name": "External APIM",
+        "type": "Azure API Management (External)"
+      },
+      "elementId": "34278"
+    },
+    "r": {
+      "identity": 192786,
+      "start": 34292,
+      "end": 34278,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192786",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34278"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34279,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "Internal",
+        "Upstream"
+      ],
+      "properties": {
+        "name": "Internal APIM",
+        "type": "Azure API Management (Internal)"
+      },
+      "elementId": "34279"
+    },
+    "r": {
+      "identity": 192787,
+      "start": 34292,
+      "end": 34279,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192787",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34279"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34280,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "AKS",
+        "Upstream"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttcont04-10.229.168.0-21",
+        "name": "aks-hk02-eas-p-extl04-mgwuzi40"
+      },
+      "elementId": "34280"
+    },
+    "r": {
+      "identity": 192788,
+      "start": 34292,
+      "end": 34280,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192788",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34280"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34281,
+      "labels": [
+        "iEngageProd",
+        "AKS",
+        "Internal",
+        "Upstream"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-intlcont04-10.229.160.0-21",
+        "name": "aks-hk02-eas-p-intl04-wtmkqt45"
+      },
+      "elementId": "34281"
+    },
+    "r": {
+      "identity": 192789,
+      "start": 34292,
+      "end": 34281,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192789",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34281"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34282,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01-internal"
+      },
+      "elementId": "34282"
+    },
+    "r": {
+      "identity": 192803,
+      "start": 34282,
+      "end": 34263,
+      "type": "SECURES",
+      "properties": {},
+      "elementId": "192803",
+      "startNodeElementId": "34282",
+      "endNodeElementId": "34263"
+    },
+    "m": {
+      "identity": 34263,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-infrasvc01-inttweb01"
+        ],
+        "ip": "10.202.73.254",
+        "domain": "aiahk-ibs4-prd.aiaazure.biz",
+        "name": "Azure ILB (Internal)"
+      },
+      "elementId": "34263"
+    }
+  },
+  {
+    "n": {
+      "identity": 34282,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01-internal"
+      },
+      "elementId": "34282"
+    },
+    "r": {
+      "identity": 192799,
+      "start": 34282,
+      "end": 34265,
+      "type": "SECURES",
+      "properties": {},
+      "elementId": "192799",
+      "startNodeElementId": "34282",
+      "endNodeElementId": "34265"
+    },
+    "m": {
+      "identity": 34265,
+      "labels": [
+        "iEngageProd",
+        "WebServer",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "ip": "10.202.73.5",
+        "name": "HKAZEPLWB0004"
+      },
+      "elementId": "34265"
+    }
+  },
+  {
+    "n": {
+      "identity": 34282,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01-internal"
+      },
+      "elementId": "34282"
+    },
+    "r": {
+      "identity": 192798,
+      "start": 34282,
+      "end": 34264,
+      "type": "SECURES",
+      "properties": {},
+      "elementId": "192798",
+      "startNodeElementId": "34282",
+      "endNodeElementId": "34264"
+    },
+    "m": {
+      "identity": 34264,
+      "labels": [
+        "iEngageProd",
+        "WebServer",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "ip": "10.202.73.4",
+        "name": "HKAZEPLWB0003"
+      },
+      "elementId": "34264"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192788,
+      "start": 34292,
+      "end": 34280,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192788",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34280"
+    },
+    "m": {
+      "identity": 34280,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "AKS",
+        "Upstream"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttcont04-10.229.168.0-21",
+        "name": "aks-hk02-eas-p-extl04-mgwuzi40"
+      },
+      "elementId": "34280"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192770,
+      "start": 34292,
+      "end": 34262,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192770",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34262"
+    },
+    "m": {
+      "identity": 34262,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "protocol": "HTTPS",
+        "port": 8556,
+        "ip": "10.202.79.254",
+        "domain": "aiahk-apigw4-prd.aiaazure.biz",
+        "name": "API Gateway 4"
+      },
+      "elementId": "34262"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192780,
+      "start": 34292,
+      "end": 34272,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192780",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34272"
+    },
+    "m": {
+      "identity": 34272,
+      "labels": [
+        "Storage",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "name": "sahk01easpshared01ieng01.blob.core.windows.net",
+        "description": "Blob (Restrict Media)",
+        "type": "Azure Blob Storage"
+      },
+      "elementId": "34272"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192792,
+      "start": 34292,
+      "end": 34295,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192792",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34295"
+    },
+    "m": {
+      "identity": 34295,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-r-infrasvc02-inttcont02-10.204.64.0-21",
+        "protocol": "HTTPS",
+        "port": 8656,
+        "ip": "10.202.89.253",
+        "domain": "aiahk-apigw3-prd.aiaazure.biz",
+        "name": "API Gateway 3"
+      },
+      "elementId": "34295"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192775,
+      "start": 34292,
+      "end": 34267,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192775",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34267"
+    },
+    "m": {
+      "identity": 34267,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-subscriber-api-prd.aiaazure.biz",
+        "ip": "10.204.63.206",
+        "name": "iEngage Kafka Subscriber Service"
+      },
+      "elementId": "34267"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192767,
+      "start": 34292,
+      "end": 34259,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192767",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34259"
+    },
+    "m": {
+      "identity": 34259,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "WebServer"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "ip": "10.202.89.15",
+        "name": "HKAZEPLWB0008"
+      },
+      "elementId": "34259"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192776,
+      "start": 34292,
+      "end": 34268,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192776",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34268"
+    },
+    "m": {
+      "identity": 34268,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-iengage-api-prd.aiaazure.biz",
+        "ip": "10.204.63.207",
+        "name": "iEngage Core-Backend Service"
+      },
+      "elementId": "34268"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192779,
+      "start": 34292,
+      "end": 34271,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192779",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34271"
+    },
+    "m": {
+      "identity": 34271,
+      "labels": [
+        "iEngageProd",
+        "Internal",
+        "Email"
+      ],
+      "properties": {
+        "protocol": "SMTP",
+        "port": 587,
+        "ip": "10.238.1.38",
+        "domain": "smtpazure-eas01.aia.com",
+        "name": "Group SMTP"
+      },
+      "elementId": "34271"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192777,
+      "start": 34292,
+      "end": 34269,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192777",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34269"
+    },
+    "m": {
+      "identity": 34269,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Internal",
+        "MessageQueue"
+      ],
+      "properties": {
+        "protocol": "Kafka",
+        "port": 9092,
+        "ip": "10.204.63.210",
+        "domain": "kafka-aiahk-prd.aiaazure.biz",
+        "name": "Kafka"
+      },
+      "elementId": "34269"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192789,
+      "start": 34292,
+      "end": 34281,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192789",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34281"
+    },
+    "m": {
+      "identity": 34281,
+      "labels": [
+        "iEngageProd",
+        "AKS",
+        "Internal",
+        "Upstream"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-intlcont04-10.229.160.0-21",
+        "name": "aks-hk02-eas-p-intl04-wtmkqt45"
+      },
+      "elementId": "34281"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192769,
+      "start": 34292,
+      "end": 34261,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192769",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34261"
+    },
+    "m": {
+      "identity": 34261,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "AKS"
+      ],
+      "properties": {
+        "subnet": "subnet-r-infrasvc02-inttcont02-10.204.64.0-21",
+        "name": "aks-hk01-sea-r-internet-cu03"
+      },
+      "elementId": "34261"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192794,
+      "start": 34292,
+      "end": 34297,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192794",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34297"
+    },
+    "m": {
+      "identity": 34297,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "Microservice"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "10.202.71.220",
+        "domain": "aiahk-iengagebp-api-prd.aiaazure.biz",
+        "name": "Authorization Service"
+      },
+      "elementId": "34297"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192774,
+      "start": 34292,
+      "end": 34266,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192774",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34266"
+    },
+    "m": {
+      "identity": 34266,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "10.204.63.172",
+        "domain": "aiahk-iengageesa-api-prd.aiaazure.biz",
+        "name": "iEngage System Service"
+      },
+      "elementId": "34266"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192765,
+      "start": 34292,
+      "end": 34257,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192765",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34257"
+    },
+    "m": {
+      "identity": 34257,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "207.46.141.23",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "F5"
+      },
+      "elementId": "34257"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192786,
+      "start": 34292,
+      "end": 34278,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192786",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34278"
+    },
+    "m": {
+      "identity": 34278,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "External",
+        "Upstream"
+      ],
+      "properties": {
+        "name": "External APIM",
+        "type": "Azure API Management (External)"
+      },
+      "elementId": "34278"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192795,
+      "start": 34292,
+      "end": 34298,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192795",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34298"
+    },
+    "m": {
+      "identity": 34298,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-sharedsvc01",
+          "apache-lbs01"
+        ],
+        "ip": "10.202.89.248",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "Azure ILB (External)"
+      },
+      "elementId": "34298"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192771,
+      "start": 34292,
+      "end": 34263,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192771",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34263"
+    },
+    "m": {
+      "identity": 34263,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-infrasvc01-inttweb01"
+        ],
+        "ip": "10.202.73.254",
+        "domain": "aiahk-ibs4-prd.aiaazure.biz",
+        "name": "Azure ILB (Internal)"
+      },
+      "elementId": "34263"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192796,
+      "start": 34292,
+      "end": 34299,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192796",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34299"
+    },
+    "m": {
+      "identity": 34299,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "WebServer"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "ip": "10.202.89.14",
+        "name": "HKAZEPLWB0007"
+      },
+      "elementId": "34299"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192790,
+      "start": 34292,
+      "end": 34293,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192790",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34293"
+    },
+    "m": {
+      "identity": 34293,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "name": "ForgeRock",
+        "type": "Identity Provider (IDP)"
+      },
+      "elementId": "34293"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192783,
+      "start": 34292,
+      "end": 34275,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192783",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34275"
+    },
+    "m": {
+      "identity": 34275,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "Microservice",
+        "Upstream"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-frintegrator-intt-prod.aiaazure.biz",
+        "ip": "10.229.175.251",
+        "name": "ForgeRock Integrator Experience API"
+      },
+      "elementId": "34275"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192778,
+      "start": 34292,
+      "end": 34270,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192778",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34270"
+    },
+    "m": {
+      "identity": 34270,
+      "labels": [
+        "Database",
+        "iEngageProd",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "TDS",
+        "port": 1433,
+        "name": "sqlfg-hk01-p-iengage.database.windows.net",
+        "type": "Azure SQL Database"
+      },
+      "elementId": "34270"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192772,
+      "start": 34292,
+      "end": 34264,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192772",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34264"
+    },
+    "m": {
+      "identity": 34264,
+      "labels": [
+        "iEngageProd",
+        "WebServer",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "ip": "10.202.73.4",
+        "name": "HKAZEPLWB0003"
+      },
+      "elementId": "34264"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192773,
+      "start": 34292,
+      "end": 34265,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192773",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34265"
+    },
+    "m": {
+      "identity": 34265,
+      "labels": [
+        "iEngageProd",
+        "WebServer",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.73.0-24",
+        "ip": "10.202.73.5",
+        "name": "HKAZEPLWB0004"
+      },
+      "elementId": "34265"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192768,
+      "start": 34292,
+      "end": 34260,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192768",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34260"
+    },
+    "m": {
+      "identity": 34260,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01"
+      },
+      "elementId": "34260"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192787,
+      "start": 34292,
+      "end": 34279,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192787",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34279"
+    },
+    "m": {
+      "identity": 34279,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "Internal",
+        "Upstream"
+      ],
+      "properties": {
+        "name": "Internal APIM",
+        "type": "Azure API Management (Internal)"
+      },
+      "elementId": "34279"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192784,
+      "start": 34292,
+      "end": 34276,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192784",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34276"
+    },
+    "m": {
+      "identity": 34276,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal",
+        "Upstream"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-frintegrator-intl-prod.aiaazure.biz",
+        "ip": "10.229.167.247",
+        "name": "ForgeRock Integrator Process API"
+      },
+      "elementId": "34276"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192791,
+      "start": 34292,
+      "end": 34294,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192791",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34294"
+    },
+    "m": {
+      "identity": 34294,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "name": "Okta (Public)",
+        "type": "IAM / OAuth Provider"
+      },
+      "elementId": "34294"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192785,
+      "start": 34292,
+      "end": 34277,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192785",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34277"
+    },
+    "m": {
+      "identity": 34277,
+      "labels": [
+        "iEngageProd",
+        "Public",
+        "Upstream",
+        "WebApp"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "name": "aiahk-ibs4-prd.aiaazure.biz",
+        "description": "iEngage CMS (Web for Staff)",
+        "tls_version": "TLS 1.2",
+        "url_path": "/iengage-cms/cms/index.html"
+      },
+      "elementId": "34277"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192766,
+      "start": 34292,
+      "end": 34258,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192766",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34258"
+    },
+    "m": {
+      "identity": 34258,
+      "labels": [
+        "iEngageProd",
+        "Public"
+      ],
+      "properties": {
+        "name": "iEngage Mobile (Agency)",
+        "type": "Mobile Client"
+      },
+      "elementId": "34258"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192782,
+      "start": 34292,
+      "end": 34274,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192782",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34274"
+    },
+    "m": {
+      "identity": 34274,
+      "labels": [
+        "iEngageProd",
+        "AKS",
+        "Internal"
+      ],
+      "properties": {
+        "subnet": "subnet-r-infrasvc03-intlcont03-10.204.56.0-21",
+        "name": "aks-hk01-sea-r-Internal-cu03"
+      },
+      "elementId": "34274"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192793,
+      "start": 34292,
+      "end": 34296,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192793",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34296"
+    },
+    "m": {
+      "identity": 34296,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "Microservice"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "10.202.71.237",
+        "domain": "aiahk-iengageea-api-prd.aiaazure.biz",
+        "name": "iEngage EA Service"
+      },
+      "elementId": "34296"
+    }
+  },
+  {
+    "n": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    },
+    "r": {
+      "identity": 192781,
+      "start": 34292,
+      "end": 34273,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192781",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34273"
+    },
+    "m": {
+      "identity": 34273,
+      "labels": [
+        "Storage",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "name": "sahk01easpshared01ieng02.blob.core.windows.net",
+        "description": "Blob (CMS UI)",
+        "type": "Azure Blob Storage"
+      },
+      "elementId": "34273"
+    }
+  },
+  {
+    "n": {
+      "identity": 34293,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "name": "ForgeRock",
+        "type": "Identity Provider (IDP)"
+      },
+      "elementId": "34293"
+    },
+    "r": {
+      "identity": 192790,
+      "start": 34292,
+      "end": 34293,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192790",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34293"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34293,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "name": "ForgeRock",
+        "type": "Identity Provider (IDP)"
+      },
+      "elementId": "34293"
+    },
+    "r": {
+      "identity": 192753,
+      "start": 34293,
+      "end": 34294,
+      "type": "INTEGRATES_WITH",
+      "properties": {
+        "protocol": "OAuth",
+        "direction": "bidirectional"
+      },
+      "elementId": "192753",
+      "startNodeElementId": "34293",
+      "endNodeElementId": "34294"
+    },
+    "m": {
+      "identity": 34294,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "name": "Okta (Public)",
+        "type": "IAM / OAuth Provider"
+      },
+      "elementId": "34294"
+    }
+  },
+  {
+    "n": {
+      "identity": 34293,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "name": "ForgeRock",
+        "type": "Identity Provider (IDP)"
+      },
+      "elementId": "34293"
+    },
+    "r": {
+      "identity": 192752,
+      "start": 34293,
+      "end": 34257,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      "elementId": "192752",
+      "startNodeElementId": "34293",
+      "endNodeElementId": "34257"
+    },
+    "m": {
+      "identity": 34257,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "207.46.141.23",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "F5"
+      },
+      "elementId": "34257"
+    }
+  },
+  {
+    "n": {
+      "identity": 34294,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "name": "Okta (Public)",
+        "type": "IAM / OAuth Provider"
+      },
+      "elementId": "34294"
+    },
+    "r": {
+      "identity": 192791,
+      "start": 34292,
+      "end": 34294,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192791",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34294"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34294,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "name": "Okta (Public)",
+        "type": "IAM / OAuth Provider"
+      },
+      "elementId": "34294"
+    },
+    "r": {
+      "identity": 192762,
+      "start": 34268,
+      "end": 34294,
+      "type": "AUTHENTICATES_WITH",
+      "properties": {
+        "protocol": "OAuth",
+        "port": 443
+      },
+      "elementId": "192762",
+      "startNodeElementId": "34268",
+      "endNodeElementId": "34294"
+    },
+    "m": {
+      "identity": 34268,
+      "labels": [
+        "iEngageProd",
+        "Microservice",
+        "Internal"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "domain": "aiahk-iengage-api-prd.aiaazure.biz",
+        "ip": "10.204.63.207",
+        "name": "iEngage Core-Backend Service"
+      },
+      "elementId": "34268"
+    }
+  },
+  {
+    "n": {
+      "identity": 34294,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "name": "Okta (Public)",
+        "type": "IAM / OAuth Provider"
+      },
+      "elementId": "34294"
+    },
+    "r": {
+      "identity": 192753,
+      "start": 34293,
+      "end": 34294,
+      "type": "INTEGRATES_WITH",
+      "properties": {
+        "protocol": "OAuth",
+        "direction": "bidirectional"
+      },
+      "elementId": "192753",
+      "startNodeElementId": "34293",
+      "endNodeElementId": "34294"
+    },
+    "m": {
+      "identity": 34293,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "name": "ForgeRock",
+        "type": "Identity Provider (IDP)"
+      },
+      "elementId": "34293"
+    }
+  },
+  {
+    "n": {
+      "identity": 34295,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-r-infrasvc02-inttcont02-10.204.64.0-21",
+        "protocol": "HTTPS",
+        "port": 8656,
+        "ip": "10.202.89.253",
+        "domain": "aiahk-apigw3-prd.aiaazure.biz",
+        "name": "API Gateway 3"
+      },
+      "elementId": "34295"
+    },
+    "r": {
+      "identity": 192792,
+      "start": 34292,
+      "end": 34295,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192792",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34295"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34295,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-r-infrasvc02-inttcont02-10.204.64.0-21",
+        "protocol": "HTTPS",
+        "port": 8656,
+        "ip": "10.202.89.253",
+        "domain": "aiahk-apigw3-prd.aiaazure.biz",
+        "name": "API Gateway 3"
+      },
+      "elementId": "34295"
+    },
+    "r": {
+      "identity": 192754,
+      "start": 34295,
+      "end": 34296,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      "elementId": "192754",
+      "startNodeElementId": "34295",
+      "endNodeElementId": "34296"
+    },
+    "m": {
+      "identity": 34296,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "Microservice"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "10.202.71.237",
+        "domain": "aiahk-iengageea-api-prd.aiaazure.biz",
+        "name": "iEngage EA Service"
+      },
+      "elementId": "34296"
+    }
+  },
+  {
+    "n": {
+      "identity": 34295,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-r-infrasvc02-inttcont02-10.204.64.0-21",
+        "protocol": "HTTPS",
+        "port": 8656,
+        "ip": "10.202.89.253",
+        "domain": "aiahk-apigw3-prd.aiaazure.biz",
+        "name": "API Gateway 3"
+      },
+      "elementId": "34295"
+    },
+    "r": {
+      "identity": 192750,
+      "start": 34257,
+      "end": 34295,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      "elementId": "192750",
+      "startNodeElementId": "34257",
+      "endNodeElementId": "34295"
+    },
+    "m": {
+      "identity": 34257,
+      "labels": [
+        "iEngageProd",
+        "EdgeNode",
+        "Public"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "207.46.141.23",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "F5"
+      },
+      "elementId": "34257"
+    }
+  },
+  {
+    "n": {
+      "identity": 34296,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "Microservice"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "10.202.71.237",
+        "domain": "aiahk-iengageea-api-prd.aiaazure.biz",
+        "name": "iEngage EA Service"
+      },
+      "elementId": "34296"
+    },
+    "r": {
+      "identity": 192801,
+      "start": 34296,
+      "end": 34272,
+      "type": "STORES_DATA_IN",
+      "properties": {
+        "protocol": "HTTPS",
+        "purpose": "Agent Profile Pictures"
+      },
+      "elementId": "192801",
+      "startNodeElementId": "34296",
+      "endNodeElementId": "34272"
+    },
+    "m": {
+      "identity": 34272,
+      "labels": [
+        "Storage",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "name": "sahk01easpshared01ieng01.blob.core.windows.net",
+        "description": "Blob (Restrict Media)",
+        "type": "Azure Blob Storage"
+      },
+      "elementId": "34272"
+    }
+  },
+  {
+    "n": {
+      "identity": 34296,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "Microservice"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "10.202.71.237",
+        "domain": "aiahk-iengageea-api-prd.aiaazure.biz",
+        "name": "iEngage EA Service"
+      },
+      "elementId": "34296"
+    },
+    "r": {
+      "identity": 192793,
+      "start": 34292,
+      "end": 34296,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192793",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34296"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34296,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "Microservice"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "10.202.71.237",
+        "domain": "aiahk-iengageea-api-prd.aiaazure.biz",
+        "name": "iEngage EA Service"
+      },
+      "elementId": "34296"
+    },
+    "r": {
+      "identity": 192755,
+      "start": 34296,
+      "end": 34298,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      "elementId": "192755",
+      "startNodeElementId": "34296",
+      "endNodeElementId": "34298"
+    },
+    "m": {
+      "identity": 34298,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-sharedsvc01",
+          "apache-lbs01"
+        ],
+        "ip": "10.202.89.248",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "Azure ILB (External)"
+      },
+      "elementId": "34298"
+    }
+  },
+  {
+    "n": {
+      "identity": 34296,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "Microservice"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "10.202.71.237",
+        "domain": "aiahk-iengageea-api-prd.aiaazure.biz",
+        "name": "iEngage EA Service"
+      },
+      "elementId": "34296"
+    },
+    "r": {
+      "identity": 192754,
+      "start": 34295,
+      "end": 34296,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      "elementId": "192754",
+      "startNodeElementId": "34295",
+      "endNodeElementId": "34296"
+    },
+    "m": {
+      "identity": 34295,
+      "labels": [
+        "iEngageProd",
+        "APIGateway",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-r-infrasvc02-inttcont02-10.204.64.0-21",
+        "protocol": "HTTPS",
+        "port": 8656,
+        "ip": "10.202.89.253",
+        "domain": "aiahk-apigw3-prd.aiaazure.biz",
+        "name": "API Gateway 3"
+      },
+      "elementId": "34295"
+    }
+  },
+  {
+    "n": {
+      "identity": 34297,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "Microservice"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "10.202.71.220",
+        "domain": "aiahk-iengagebp-api-prd.aiaazure.biz",
+        "name": "Authorization Service"
+      },
+      "elementId": "34297"
+    },
+    "r": {
+      "identity": 192794,
+      "start": 34292,
+      "end": 34297,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192794",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34297"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34298,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-sharedsvc01",
+          "apache-lbs01"
+        ],
+        "ip": "10.202.89.248",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "Azure ILB (External)"
+      },
+      "elementId": "34298"
+    },
+    "r": {
+      "identity": 192802,
+      "start": 34260,
+      "end": 34298,
+      "type": "SECURES",
+      "properties": {},
+      "elementId": "192802",
+      "startNodeElementId": "34260",
+      "endNodeElementId": "34298"
+    },
+    "m": {
+      "identity": 34260,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01"
+      },
+      "elementId": "34260"
+    }
+  },
+  {
+    "n": {
+      "identity": 34298,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-sharedsvc01",
+          "apache-lbs01"
+        ],
+        "ip": "10.202.89.248",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "Azure ILB (External)"
+      },
+      "elementId": "34298"
+    },
+    "r": {
+      "identity": 192795,
+      "start": 34292,
+      "end": 34298,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192795",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34298"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34298,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-sharedsvc01",
+          "apache-lbs01"
+        ],
+        "ip": "10.202.89.248",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "Azure ILB (External)"
+      },
+      "elementId": "34298"
+    },
+    "r": {
+      "identity": 192757,
+      "start": 34298,
+      "end": 34259,
+      "type": "LOAD_BALANCES",
+      "properties": {},
+      "elementId": "192757",
+      "startNodeElementId": "34298",
+      "endNodeElementId": "34259"
+    },
+    "m": {
+      "identity": 34259,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "WebServer"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "ip": "10.202.89.15",
+        "name": "HKAZEPLWB0008"
+      },
+      "elementId": "34259"
+    }
+  },
+  {
+    "n": {
+      "identity": 34298,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-sharedsvc01",
+          "apache-lbs01"
+        ],
+        "ip": "10.202.89.248",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "Azure ILB (External)"
+      },
+      "elementId": "34298"
+    },
+    "r": {
+      "identity": 192756,
+      "start": 34298,
+      "end": 34299,
+      "type": "LOAD_BALANCES",
+      "properties": {},
+      "elementId": "192756",
+      "startNodeElementId": "34298",
+      "endNodeElementId": "34299"
+    },
+    "m": {
+      "identity": 34299,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "WebServer"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "ip": "10.202.89.14",
+        "name": "HKAZEPLWB0007"
+      },
+      "elementId": "34299"
+    }
+  },
+  {
+    "n": {
+      "identity": 34298,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-sharedsvc01",
+          "apache-lbs01"
+        ],
+        "ip": "10.202.89.248",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "Azure ILB (External)"
+      },
+      "elementId": "34298"
+    },
+    "r": {
+      "identity": 192755,
+      "start": 34296,
+      "end": 34298,
+      "type": "CONNECTS_TO",
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443
+      },
+      "elementId": "192755",
+      "startNodeElementId": "34296",
+      "endNodeElementId": "34298"
+    },
+    "m": {
+      "identity": 34296,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "Microservice"
+      ],
+      "properties": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "ip": "10.202.71.237",
+        "domain": "aiahk-iengageea-api-prd.aiaazure.biz",
+        "name": "iEngage EA Service"
+      },
+      "elementId": "34296"
+    }
+  },
+  {
+    "n": {
+      "identity": 34299,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "WebServer"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "ip": "10.202.89.14",
+        "name": "HKAZEPLWB0007"
+      },
+      "elementId": "34299"
+    },
+    "r": {
+      "identity": 192796,
+      "start": 34292,
+      "end": 34299,
+      "type": "CONTAINS",
+      "properties": {},
+      "elementId": "192796",
+      "startNodeElementId": "34292",
+      "endNodeElementId": "34299"
+    },
+    "m": {
+      "identity": 34292,
+      "labels": [
+        "iEngageProd",
+        "VNET"
+      ],
+      "properties": {
+        "name": "AIA Azure VNET",
+        "description": "Main Azure Virtual Network for iEngage PROD"
+      },
+      "elementId": "34292"
+    }
+  },
+  {
+    "n": {
+      "identity": 34299,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "WebServer"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "ip": "10.202.89.14",
+        "name": "HKAZEPLWB0007"
+      },
+      "elementId": "34299"
+    },
+    "r": {
+      "identity": 192763,
+      "start": 34260,
+      "end": 34299,
+      "type": "SECURES",
+      "properties": {},
+      "elementId": "192763",
+      "startNodeElementId": "34260",
+      "endNodeElementId": "34299"
+    },
+    "m": {
+      "identity": 34260,
+      "labels": [
+        "NSG",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "name": "nsg-hk01-eas-p-infrasvc01-inttweba01"
+      },
+      "elementId": "34260"
+    }
+  },
+  {
+    "n": {
+      "identity": 34299,
+      "labels": [
+        "iEngageProd",
+        "External",
+        "WebServer"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "ip": "10.202.89.14",
+        "name": "HKAZEPLWB0007"
+      },
+      "elementId": "34299"
+    },
+    "r": {
+      "identity": 192756,
+      "start": 34298,
+      "end": 34299,
+      "type": "LOAD_BALANCES",
+      "properties": {},
+      "elementId": "192756",
+      "startNodeElementId": "34298",
+      "endNodeElementId": "34299"
+    },
+    "m": {
+      "identity": 34298,
+      "labels": [
+        "LoadBalancer",
+        "iEngageProd",
+        "External"
+      ],
+      "properties": {
+        "subnet": "subnet-p-infrasvc01-inttweba01-10.202.89.0-24",
+        "backend_pool": [
+          "ilb-hk01-eas-p-sharedsvc01",
+          "apache-lbs01"
+        ],
+        "ip": "10.202.89.248",
+        "domain": "aiahk-blob01-prd.aia.com.hk",
+        "name": "Azure ILB (External)"
+      },
+      "elementId": "34298"
+    }
+  }
+]
