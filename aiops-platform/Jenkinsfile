@@ -10,14 +10,12 @@ metadata:
 spec:
   containers:
   - name: docker
-    image: docker:24
-    securityContext:
-      privileged: true
+    image: docker:24-cli
     volumeMounts:
     - name: docker-sock
       mountPath: /var/run/docker.sock
   - name: kubectl
-    image: bitnami/kubectl:1.28
+    image: bitnami/kubectl:latest
     command: ['cat']
     tty: true
   volumes:
