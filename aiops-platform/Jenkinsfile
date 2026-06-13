@@ -16,10 +16,6 @@ spec:
     volumeMounts:
     - name: docker-sock
       mountPath: /var/run/docker.sock
-  - name: kubectl
-    image: bitnami/kubectl:latest
-    command: ['cat']
-    tty: true
   volumes:
   - name: docker-sock
     hostPath:
@@ -69,7 +65,7 @@ spec:
 
         stage('Update K8s Manifests') {
             steps {
-                container('kubectl') {
+                container('jnlp') {
                     sh """
                         cd aiops-platform/k8s/base
                         sed -i "s|172.21.36.94:80/aiops/backend:.*|172.21.36.94:80/aiops/backend:v1.0.${IMAGE_TAG}|g" backend-deployment.yaml
@@ -81,7 +77,7 @@ spec:
 
         stage('Push Updated Manifests') {
             steps {
-                container('kubectl') {
+                container('jnlp') {
                     sh """
                         cd aiops-platform
                         git config user.email "jenkins@aiops.local"
