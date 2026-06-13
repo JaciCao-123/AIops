@@ -116,7 +116,7 @@ const AppContent = () => {
       <Layout style={{ marginLeft: collapsed ? 80 : 200, transition: 'margin-left 0.2s', height: '100vh', overflow: 'hidden' }}>
         <Header style={{ padding: '0 24px', background: '#fff', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: 64, flexShrink: 0 }}>
           <div style={{ fontSize: 18, fontWeight: 500 }}>
-            AIOps 智能运维平台
+            AIOps 智能运维平台 v1.0.0
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             {user?.scope && user.scope.length > 0 && (
