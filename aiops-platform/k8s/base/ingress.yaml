@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aiops-ingress
+  namespace: aiops
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/websocket-services: "aiops-frontend"
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /aiops(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: aiops-frontend
+            port:
+              number: 80

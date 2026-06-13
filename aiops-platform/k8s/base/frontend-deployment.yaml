@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiops-frontend
+  namespace: aiops
+  labels:
+    app: aiops-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aiops-frontend
+  template:
+    metadata:
+      labels:
+        app: aiops-frontend
+    spec:
+      containers:
+      - name: aiops-frontend
+        image: 172.21.36.94:80/aiops/frontend:v1.0.2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: http
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aiops-frontend
+  namespace: aiops
+spec:
+  selector:
+    app: aiops-frontend
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+  type: ClusterIP

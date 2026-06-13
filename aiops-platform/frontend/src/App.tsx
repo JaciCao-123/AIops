@@ -207,7 +207,7 @@ const AppContent = () => {
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/aiops">
       <AuthProvider>
         <TerminalProvider>
           <Routes>

@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiops-backend
+  namespace: aiops
+  labels:
+    app: aiops-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aiops-backend
+  template:
+    metadata:
+      labels:
+        app: aiops-backend
+    spec:
+      containers:
+      - name: aiops-backend
+        image: 172.21.36.94:80/aiops/backend:v1.0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: DATABASE_URL
+          value: "sqlite:///./data/aiops.db"
+        - name: NEO4J_URI
+          value: "bolt://neo4j:7687"
+        - name: NEO4J_USER
+          valueFrom:
+            secretKeyRef:
+              name: aiops-secrets
+              key: NEO4J_USER
+        - name: NEO4J_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: aiops-secrets
+              key: NEO4J_PASSWORD
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aiops-secrets
+              key: OPENAI_API_KEY
+        - name: OPENAI_BASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: aiops-secrets
+              key: OPENAI_BASE_URL
+        - name: OPENAI_MODEL
+          valueFrom:
+            configMapKeyRef:
+              name: aiops-config
+              key: LLM_MODEL
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aiops-secrets
+              key: SECRET_KEY
+        - name: SSH_USER
+          valueFrom:
+            secretKeyRef:
+              name: aiops-secrets
+              key: SSH_USER
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        volumeMounts:
+        - name: app-data
+          mountPath: /app/data
+      volumes:
+      - name: app-data
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aiops-backend
+  namespace: aiops
+spec:
+  selector:
+    app: aiops-backend
+  ports:
+  - port: 8000
+    targetPort: 8000
+    name: http
+  type: ClusterIP

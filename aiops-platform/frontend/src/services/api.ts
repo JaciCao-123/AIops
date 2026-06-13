@@ -9,7 +9,7 @@ import type {
 } from '../types';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: '/aiops/api',
   timeout: 120000,
 });
 
@@ -26,7 +26,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      window.location.href = '/aiops/login';
     } else if (error.response?.status === 403) {
       message.error('无权限访问');
     } else if (error.response?.data?.message) {
@@ -155,7 +155,7 @@ export interface StreamCallbacks {
   onError?: (error: string) => void;
 }
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = '';
 
 export const aiChatApi = {
   createSession: async (title?: string): Promise<ChatSession> => {
@@ -201,10 +201,12 @@ export const aiChatApi = {
     message: string,
     callbacks: StreamCallbacks
   ): Promise<void> => {
-    const response = await fetch(`${API_BASE_URL}/api/ai-chat/chat/stream`, {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_BASE_URL}/aiops/api/ai-chat/chat/stream`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify({
         session_id: sessionId,
@@ -365,4 +367,4 @@ export const observabilityApi = {
   },
 };
 
-export const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/api/logs/ws/simulate`;
+export const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/aiops/api/logs/ws/simulate`;
