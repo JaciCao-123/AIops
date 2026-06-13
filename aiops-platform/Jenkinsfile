@@ -11,6 +11,8 @@ spec:
   containers:
   - name: docker
     image: docker:24-cli
+    command: ['cat']
+    tty: true
     volumeMounts:
     - name: docker-sock
       mountPath: /var/run/docker.sock
