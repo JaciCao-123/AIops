@@ -1,0 +1,15 @@
+{
+  "plan_name": "disk_full_and_oom_diagnosis",
+  "check_type": "resource_exhaustion",
+  "commands": [
+    "df -h",
+    "free -h",
+    "top -b -n1 | head -20",
+    "dmesg -T | grep -i 'killed process'",
+    "ls -lt /var/log/ | head -10",
+    "du -sh /var/log/* 2>/dev/null | sort -hr | head -5"
+  ],
+  "reasoning": "针对 disk full 和 OOM 并发告警，需同步检查磁盘使用率、内存可用性、OOM Killer 日志、日志目录时间序与大小分布，以识别空间耗尽源头和内存异常进程。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T13:38:25.537170"
+}

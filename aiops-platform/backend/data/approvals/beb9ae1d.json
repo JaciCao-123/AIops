@@ -1,0 +1,15 @@
+{
+  "approval_id": "beb9ae1d",
+  "operation": "Terminate stress process (PID 5259)",
+  "risk": "L2",
+  "impact": "Stop memory stress test and free ~700MB RAM, restoring system stability.",
+  "commands": [
+    "sudo kill -9 5259"
+  ],
+  "target_host": "8.136.186.115",
+  "email": "jaci@company.com",
+  "status": "pending",
+  "created_at": "2026-05-08T11:54:07.620904",
+  "approved_at": null,
+  "approved_by": null
+}

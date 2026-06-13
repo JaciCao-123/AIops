@@ -1,0 +1,16 @@
+{
+  "plan_name": "alert_diagnosis_8.136.186.115_jaci",
+  "check_type": "system_and_alert_context",
+  "commands": [
+    "ssh -o ConnectTimeout=5 -o BatchMode=yes jaci@8.136.186.115 'uptime'",
+    "ssh -o ConnectTimeout=5 -o BatchMode=yes jaci@8.136.186.115 'free -h && df -h'",
+    "ssh -o ConnectTimeout=5 -o BatchMode=yes jaci@8.136.186.115 'systemctl list-units --state=failed --no-pager'",
+    "ssh -o ConnectTimeout=5 -o BatchMode=yes jaci@8.136.186.115 'journalctl -n 50 --no-pager -p 3'",
+    "ssh -o ConnectTimeout=5 -o BatchMode=yes jaci@8.136.186.115 'grep -i \"alert\\|warning\" /var/log/messages /var/log/syslog 2>/dev/null | tail -n 20'",
+    "ssh -o ConnectTimeout=5 -o BatchMode=yes jaci@8.136.186.115 'last -n 20 jaci'",
+    "ssh -o ConnectTimeout=5 -o BatchMode=yes jaci@8.136.186.115 'grep jaci /var/log/auth.log 2>/dev/null | tail -n 20'"
+  ],
+  "reasoning": "先验证SSH连通性，再采集系统资源、服务状态、错误日志、告警相关日志、用户登录及认证行为，全面覆盖告警可能根因。所有命令均为只读低风险操作。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T18:07:57.519563"
+}

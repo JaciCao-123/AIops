@@ -1,0 +1,32 @@
+# Argo CD Application - AIOps 平台
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: aiops
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: aiops-platform
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/JaciCao-123/AIops.git
+    targetRevision: main
+    path: aiops-platform/k8s/base
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: aiops
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 5m

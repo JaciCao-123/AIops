@@ -1,0 +1,23 @@
+[ 7579.077170] br-53589b64aeee: port 1(veth4942e0e) entered disabled state
+[ 7579.080838] br-53589b64aeee: port 1(veth4942e0e) entered disabled state
+[ 7579.081842] device veth4942e0e left promiscuous mode
+[ 7579.081852] br-53589b64aeee: port 1(veth4942e0e) entered disabled state
+[ 7639.051160] br-53589b64aeee: port 1(veth91c7d7d) entered blocking state
+[ 7639.051164] br-53589b64aeee: port 1(veth91c7d7d) entered disabled state
+[ 7639.051199] device veth91c7d7d entered promiscuous mode
+[ 7639.051260] IPv6: ADDRCONF(NETDEV_UP): veth91c7d7d: link is not ready
+[ 7639.051262] br-53589b64aeee: port 1(veth91c7d7d) entered blocking state
+[ 7639.051264] br-53589b64aeee: port 1(veth91c7d7d) entered forwarding state
+[ 7639.052099] br-53589b64aeee: port 1(veth91c7d7d) entered disabled state
+[ 7639.226248] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+[ 7639.226397] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+[ 7639.226408] IPv6: ADDRCONF(NETDEV_CHANGE): veth91c7d7d: link becomes ready
+[ 7639.226430] br-53589b64aeee: port 1(veth91c7d7d) entered blocking state
+[ 7639.226432] br-53589b64aeee: port 1(veth91c7d7d) entered forwarding state
+[ 7639.706252] br-53589b64aeee: port 1(veth91c7d7d) entered disabled state
+[ 7639.709543] br-53589b64aeee: port 1(veth91c7d7d) entered disabled state
+[ 7639.710453] device veth91c7d7d left promiscuous mode
+[ 7639.710470] br-53589b64aeee: port 1(veth91c7d7d) entered disabled state
+
+hostfile_replace_entries: mkstemp: Operation not permitted
+update_known_hosts: hostfile_replace_entries failed for /Users/jaci-j/.ssh/known_hosts: Operation not permitted

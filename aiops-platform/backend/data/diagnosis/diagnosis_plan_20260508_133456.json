@@ -1,0 +1,13 @@
+{
+  "plan_name": "disk_issue_diagnosis",
+  "check_type": "disk_usage",
+  "commands": [
+    "df -h",
+    "df -i",
+    "ls -la /var/log/",
+    "du -sh /* 2>/dev/null | sort -hr | head -10"
+  ],
+  "reasoning": "诊断磁盘问题需要检查磁盘使用率、inode使用率、日志目录大小以及大文件分布情况。首先执行df -h获取基础磁盘使用信息，然后根据结果决定是否需要进一步检查。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T13:34:56.368436"
+}

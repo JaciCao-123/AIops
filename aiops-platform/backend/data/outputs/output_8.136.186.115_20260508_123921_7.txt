@@ -1,0 +1,13 @@
+89M	/var/log/journal
+4.4M	/var/log/messages
+3.5M	/var/log/messages-20260330
+2.9M	/var/log/messages-20260506
+1.6M	/var/log/cloud-init.log
+640K	/var/log/messages-20260417
+552K	/var/log/sa
+116K	/var/log/pods
+96K	/var/log/wtmp
+80K	/var/log/secure-20260330
+
+hostfile_replace_entries: mkstemp: Operation not permitted
+update_known_hosts: hostfile_replace_entries failed for /Users/jaci-j/.ssh/known_hosts: Operation not permitted

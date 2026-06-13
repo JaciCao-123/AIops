@@ -29,7 +29,7 @@ async def process_multi_agent_query(request: LangGraphRequest):
         "configurable": {
             "thread_id": request.session_id or "default"
         },
-        "recursion_limit": 50,
+        "recursion_limit": 100,
     }
 
     try:
@@ -57,6 +57,8 @@ async def process_multi_agent_query(request: LangGraphRequest):
             "approval_status": result.get("approval_status"),
             "warning_cleared": result.get("warning_cleared", False),
             "iteration_count": result.get("iteration_count", 0),
+            "execution_history": result.get("execution_history", []),
+            "saved_to": result.get("full_result_path"),
         }
     except Exception as e:
         raise HTTPException(
@@ -71,7 +73,7 @@ async def process_multi_agent_stream(request: LangGraphRequest):
         "configurable": {
             "thread_id": request.session_id or "default"
         },
-        "recursion_limit": 50,
+        "recursion_limit": 100,
     }
 
     async def event_generator():

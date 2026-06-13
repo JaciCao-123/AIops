@@ -1,0 +1,13 @@
+{
+  "plan_name": "server_alert_diagnosis",
+  "check_type": "DIAGNOSE",
+  "commands": [
+    "check_system_status",
+    "check_recent_logs",
+    "check_service_health",
+    "check_resource_usage"
+  ],
+  "reasoning": "针对IP 8.136.186.115的告警问题，需要检查系统状态、最近日志、服务健康状况和资源使用情况。由于已知SSH用户名jaci，可以直接连接服务器进行诊断。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T18:11:47.681261"
+}

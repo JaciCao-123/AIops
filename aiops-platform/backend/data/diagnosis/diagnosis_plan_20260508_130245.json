@@ -1,0 +1,15 @@
+{
+  "plan_name": "server_alert_diagnosis",
+  "check_type": "alert",
+  "commands": [
+    "uptime",
+    "df -h",
+    "free -h",
+    "systemctl list-units --state=failed",
+    "journalctl -n 50 --no-pager",
+    "dmesg -T | tail -20"
+  ],
+  "reasoning": "针对服务器告警问题，需要检查系统基本状态（uptime）、磁盘使用率（df -h）、内存使用率（free -h）、失败的服务（systemctl list-units --state=failed）、最近的日志（journalctl -n 50 --no-pager）和内核日志（dmesg -T | tail -20）",
+  "expected_findings": [],
+  "created_at": "2026-05-08T13:02:45.350394"
+}

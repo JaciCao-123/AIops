@@ -1,0 +1,12 @@
+{
+  "plan_name": "shm_full_diagnosis",
+  "check_type": "storage",
+  "commands": [
+    "df -h /dev/shm",
+    "ls -la /dev/shm",
+    "du -sh /dev/shm/* 2>/dev/null | sort -hr | head -20"
+  ],
+  "reasoning": "诊断 /dev/shm 满的问题，需要检查磁盘使用情况、目录内容和各文件大小分布",
+  "expected_findings": [],
+  "created_at": "2026-05-08T13:53:21.369959"
+}

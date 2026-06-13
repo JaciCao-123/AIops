@@ -1,0 +1,13 @@
+{
+  "approval_id": "e3b1bebb",
+  "operation": "delete /dev/shm/mem-hog",
+  "risk": "L2",
+  "impact": "释放 1.9GB /dev/shm 空间，缓解内存压力，防止 OOM 再次触发。该文件为压测残留，无业务关联。",
+  "commands": [],
+  "target_host": "远程服务器",
+  "email": "18565693545@163.com",
+  "status": "pending",
+  "created_at": "2026-05-08T13:39:20.516412",
+  "approved_at": null,
+  "approved_by": null
+}

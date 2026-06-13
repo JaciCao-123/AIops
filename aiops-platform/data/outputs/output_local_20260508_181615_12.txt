@@ -1,0 +1,6 @@
+Server:		240e:1f:1::1
+Address:	240e:1f:1::1#53
+
+** server can't find 115.186.136.8.in-addr.arpa: NXDOMAIN
+
+

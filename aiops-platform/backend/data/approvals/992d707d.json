@@ -1,0 +1,15 @@
+{
+  "approval_id": "992d707d",
+  "operation": "rm -f /dev/shm/mem-hog",
+  "risk": "L2",
+  "impact": "释放 1.9GB 内存，解决 /dev/shm 满和 OOM 问题",
+  "commands": [
+    "rm -f /dev/shm/mem-hog"
+  ],
+  "target_host": "8.136.186.115",
+  "email": "jaci@example.com",
+  "status": "approved",
+  "created_at": "2026-05-08T12:55:39.871556",
+  "approved_at": "2026-05-08T14:37:47.337608",
+  "approved_by": "api_manual"
+}

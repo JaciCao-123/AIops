@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tsp-api
+  namespace: aiops
+  labels:
+    app: tsp-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tsp-api
+  template:
+    metadata:
+      labels:
+        app: tsp-api
+    spec:
+      nodeName: k8s-master
+      containers:
+      - name: tsp-api
+        image: aiops/tsp-api:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        volumeMounts:
+        - name: tsp-data
+          mountPath: /app/base/data
+        - name: tsp-models
+          mountPath: /app/base/models
+        - name: tsp-events
+          mountPath: /app/correlation_engine/events
+      volumes:
+      - name: tsp-data
+        emptyDir: {}
+      - name: tsp-models
+        emptyDir: {}
+      - name: tsp-events
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tsp-api
+  namespace: aiops
+spec:
+  selector:
+    app: tsp-api
+  ports:
+  - port: 8000
+    targetPort: 8000
+    name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tsp-api-nodeport
+  namespace: aiops
+spec:
+  type: NodePort
+  selector:
+    app: tsp-api
+  ports:
+  - port: 8000
+    targetPort: 8000
+    nodePort: 30082
+    name: http

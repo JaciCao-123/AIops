@@ -1,0 +1,8 @@
+total 1939952
+drwxrwxrwt  2 root root         80 May  8 11:32 .
+drwxr-xr-x 19 root root       2980 May  8 11:27 ..
+-rw-------  1 root root          0 May  8 11:27 aliyun-assist-agent-coldstarted
+-rw-r--r--  1 root root 1986510848 May  8 11:32 mem-hog
+
+hostfile_replace_entries: mkstemp: Operation not permitted
+update_known_hosts: hostfile_replace_entries failed for /Users/jaci-j/.ssh/known_hosts: Operation not permitted

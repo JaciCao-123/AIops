@@ -1,0 +1,14 @@
+{
+  "plan_name": "server_alert_diagnosis_8.136.186.115",
+  "check_type": "alert",
+  "commands": [
+    "uptime && hostname && df -h && free -h",
+    "systemctl list-units --state=failed",
+    "journalctl -n 50 --since \"1 hour ago\" | grep -i 'error\\|fail\\|warn'",
+    "df -i",
+    "ss -tuln | wc -l"
+  ],
+  "reasoning": "针对IP 8.136.186.115的告警问题，需首先确认SSH连通性、系统资源水位、失败服务、近期错误日志及端口占用情况，为后续深度诊断提供依据。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T12:45:20.049590"
+}

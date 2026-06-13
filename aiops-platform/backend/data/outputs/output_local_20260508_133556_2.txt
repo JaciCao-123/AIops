@@ -1,0 +1,10 @@
+Filesystem      Inodes  IUsed   IFree IUse% Mounted on
+devtmpfs        482344    334  482010    1% /dev
+tmpfs           484988      3  484985    1% /dev/shm
+tmpfs           484988    540  484448    1% /run
+tmpfs           484988     16  484972    1% /sys/fs/cgroup
+/dev/vda1      1310720 142997 1167723   11% /
+tmpfs           484988      1  484987    1% /run/user/1000
+
+hostfile_replace_entries: mkstemp: Operation not permitted
+update_known_hosts: hostfile_replace_entries failed for /Users/jaci-j/.ssh/known_hosts: Operation not permitted

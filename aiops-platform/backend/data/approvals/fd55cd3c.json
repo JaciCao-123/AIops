@@ -1,0 +1,15 @@
+{
+  "approval_id": "fd55cd3c",
+  "operation": "Test TCP connectivity to port 22 on 8.136.186.115",
+  "risk": "L2",
+  "impact": "Confirms whether the SSH port is open and reachable from this diagnostic environment. If port is closed, root cause is network/firewall/sshd service; if open, root cause is authentication (user/config).",
+  "commands": [
+    "nc -zv 8.136.186.115 22"
+  ],
+  "target_host": "远程服务器",
+  "email": "18565693545@163.com",
+  "status": "pending",
+  "created_at": "2026-05-08T18:10:13.234161",
+  "approved_at": null,
+  "approved_by": null
+}

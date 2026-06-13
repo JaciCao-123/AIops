@@ -1,0 +1,13 @@
+{
+  "approval_id": "489fcc87",
+  "operation": "删除 /dev/shm/mem-hog 文件",
+  "risk": "L2",
+  "impact": "释放 /dev/shm 的全部空间（约 1.9GB），解决磁盘满问题；该文件疑似非必要占位文件，删除后应无业务影响",
+  "commands": [],
+  "target_host": "远程服务器",
+  "email": "18565693545@163.com",
+  "status": "pending",
+  "created_at": "2026-05-08T13:33:02.994457",
+  "approved_at": null,
+  "approved_by": null
+}

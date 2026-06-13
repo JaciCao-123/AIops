@@ -1,0 +1,4 @@
+[Fri May  8 11:33:50 2026] Killed process 4246 (stress), UID 0, total-vm:1055892kB, anon-rss:814960kB, file-rss:12kB, shmem-rss:0kB
+
+hostfile_replace_entries: mkstemp: Operation not permitted
+update_known_hosts: hostfile_replace_entries failed for /Users/jaci-j/.ssh/known_hosts: Operation not permitted

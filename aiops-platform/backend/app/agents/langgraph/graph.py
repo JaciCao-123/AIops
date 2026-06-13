@@ -87,5 +87,5 @@ def build_aiops_graph():
 
     return graph.compile(
         checkpointer=memory,
-        interrupt_before=["human_review", "approval"],
+        interrupt_before=["human_review"],
     )

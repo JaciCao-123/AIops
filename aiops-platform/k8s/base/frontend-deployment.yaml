@@ -10,10 +10,14 @@ spec:
   selector:
     matchLabels:
       app: aiops-frontend
+      app.kubernetes.io/managed-by: argocd
+      app.kubernetes.io/part-of: aiops-platform
   template:
     metadata:
       labels:
         app: aiops-frontend
+        app.kubernetes.io/managed-by: argocd
+        app.kubernetes.io/part-of: aiops-platform
     spec:
       containers:
       - name: aiops-frontend

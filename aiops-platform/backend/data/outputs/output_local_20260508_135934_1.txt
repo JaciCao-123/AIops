@@ -1,0 +1,5 @@
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           1.9G  1.9G     0 100% /dev/shm
+
+hostfile_replace_entries: mkstemp: Operation not permitted
+update_known_hosts: hostfile_replace_entries failed for /Users/jaci-j/.ssh/known_hosts: Operation not permitted

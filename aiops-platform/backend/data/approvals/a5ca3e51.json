@@ -1,0 +1,13 @@
+{
+  "approval_id": "a5ca3e51",
+  "operation": "删除 /dev/shm/mem-hog 文件",
+  "risk": "L2",
+  "impact": "释放约 1.9G 空间，解决 /dev/shm 满的问题",
+  "commands": [],
+  "target_host": "远程服务器",
+  "email": "18565693545@163.com",
+  "status": "pending",
+  "created_at": "2026-05-08T13:53:57.356766",
+  "approved_at": null,
+  "approved_by": null
+}

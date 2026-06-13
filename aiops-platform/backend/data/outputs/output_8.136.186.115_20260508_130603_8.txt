@@ -1,0 +1,1 @@
+{"success": false, "target_host": "8.136.186.115", "command": "rm -f /dev/shm/mem-hog", "error": "需要用户确认", "risk_level": "L2", "reason": "删除操作需要确认目标路径", "requires_confirmation": true, "suggestion": "建议使用 ask_user_confirmation 工具确认删除操作", "confirmation_hint": "请使用 ask_user_confirmation 工具获取用户确认后再执行此命令"}

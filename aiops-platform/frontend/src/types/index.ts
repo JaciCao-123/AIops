@@ -71,6 +71,25 @@ export interface AgentTask {
   execution_outputs?: ExecutionOutput[];
   saved_outputs?: SavedOutput[];
   raw_response?: string;
+  skill_matching?: SkillMatchInfo | null;
+  email_approval?: EmailApprovalInfo | null;
+  saved_to?: string;
+}
+
+export interface SkillMatchInfo {
+  matched_skills: string[];
+  skill_summary: string;
+  skills_preview: string;
+}
+
+export interface EmailApprovalInfo {
+  email_sent: boolean;
+  approval_id: string;
+  to_email: string;
+  operation: string;
+  risk: string;
+  message: string;
+  status: string;
 }
 
 export interface DiagnosisPlan {
@@ -129,20 +148,21 @@ export interface IntentData {
 }
 
 export interface AnalysisReport {
-  service: string;
+  service?: string;
   analysis_report: string;
-  metrics_summary: Record<string, string | number>;
-  log_patterns: string[];
-  trace_anomalies: Array<{ span: string; duration: string; anomaly: string }>;
+  metrics_summary?: Record<string, string | number>;
+  log_patterns?: string[];
+  trace_anomalies?: Array<{ span: string; duration: string; anomaly: string }>;
+  diagnosis_plan?: DiagnosisPlan | null;
 }
 
 export interface KnowledgeContext {
-  service: string;
-  symptom: string;
+  service?: string;
+  symptom?: string;
   knowledge_report: string;
-  topology_info: Record<string, unknown>;
-  similar_incidents: Record<string, unknown>;
-  sop_docs: Record<string, unknown>;
+  topology_info?: Record<string, unknown>;
+  similar_incidents?: Record<string, unknown>;
+  sop_docs?: Record<string, unknown>;
 }
 
 export interface Decision {

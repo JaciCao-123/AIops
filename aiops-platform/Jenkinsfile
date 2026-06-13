@@ -1,0 +1,103 @@
+pipeline {
+    agent {
+        kubernetes {
+            yaml '''
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: aiops-builder
+spec:
+  containers:
+  - name: docker
+    image: docker:24-dind
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - name: docker-sock
+      mountPath: /var/run/docker.sock
+  - name: kubectl
+    image: bitnami/kubectl:1.28
+    command: ['cat']
+    tty: true
+  volumes:
+  - name: docker-sock
+    hostPath:
+      path: /var/run/docker.sock
+'''
+        }
+    }
+
+    environment {
+        HARBOR_URL    = '172.21.36.94:80'
+        HARBOR_CREDS  = credentials('harbor-credentials')
+        GIT_CREDS     = credentials('github-credentials')
+        IMAGE_TAG     = "${env.BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', credentialsId: 'github-credentials', url: 'https://github.com/JaciCao-123/AIops.git'
+            }
+        }
+
+        stage('Build Backend Image') {
+            steps {
+                container('docker') {
+                    sh """
+                        cd aiops-platform/backend
+                        docker build -t ${HARBOR_URL}/aiops/backend:v1.0.${IMAGE_TAG} .
+                        docker push ${HARBOR_URL}/aiops/backend:v1.0.${IMAGE_TAG}
+                    """
+                }
+            }
+        }
+
+        stage('Build Frontend Image') {
+            steps {
+                container('docker') {
+                    sh """
+                        cd aiops-platform/frontend
+                        docker build -t ${HARBOR_URL}/aiops/frontend:v1.0.${IMAGE_TAG} .
+                        docker push ${HARBOR_URL}/aiops/frontend:v1.0.${IMAGE_TAG}
+                    """
+                }
+            }
+        }
+
+        stage('Update K8s Manifests') {
+            steps {
+                container('kubectl') {
+                    sh """
+                        cd aiops-platform/k8s/base
+                        sed -i "s|172.21.36.94:80/aiops/backend:.*|172.21.36.94:80/aiops/backend:v1.0.${IMAGE_TAG}|g" backend-deployment.yaml
+                        sed -i "s|172.21.36.94:80/aiops/frontend:.*|172.21.36.94:80/aiops/frontend:v1.0.${IMAGE_TAG}|g" frontend-deployment.yaml
+                    """
+                }
+            }
+        }
+
+        stage('Push Updated Manifests') {
+            steps {
+                sh """
+                    cd aiops-platform
+                    git config user.email "jenkins@aiops.local"
+                    git config user.name "Jenkins CI"
+                    git add k8s/base/backend-deployment.yaml k8s/base/frontend-deployment.yaml
+                    git commit -m "ci: update image tags to v1.0.${IMAGE_TAG}" || true
+                    git push https://\${GIT_CREDS_USR}:\${GIT_CREDS_PSW}@github.com/JaciCao-123/AIops.git main
+                """
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'CI Pipeline completed! Argo CD will auto-sync the new manifests.'
+        }
+        failure {
+            echo 'CI Pipeline failed! Check logs above.'
+        }
+    }
+}

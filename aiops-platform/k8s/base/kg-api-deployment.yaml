@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kg-api
+  namespace: aiops
+  labels:
+    app: kg-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kg-api
+  template:
+    metadata:
+      labels:
+        app: kg-api
+    spec:
+      containers:
+      - name: kg-api
+        image: 172.21.36.94:80/aiops/kg-api:v1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8001
+        env:
+        - name: NEO4J_URI
+          value: "bolt://neo4j:7687"
+        - name: NEO4J_USER
+          valueFrom:
+            secretKeyRef:
+              name: aiops-secrets
+              key: NEO4J_USER
+        - name: NEO4J_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: aiops-secrets
+              key: NEO4J_PASSWORD
+        - name: LLM_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aiops-secrets
+              key: OPENAI_API_KEY
+        - name: LLM_API_BASE
+          valueFrom:
+            secretKeyRef:
+              name: aiops-secrets
+              key: OPENAI_BASE_URL
+        - name: LLM_MODEL
+          valueFrom:
+            configMapKeyRef:
+              name: aiops-config
+              key: LLM_MODEL
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10

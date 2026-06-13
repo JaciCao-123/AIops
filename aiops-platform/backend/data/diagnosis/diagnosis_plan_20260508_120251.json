@@ -1,0 +1,13 @@
+{
+  "plan_name": "disk_usage_high_diagnosis_8.136.186.115",
+  "check_type": "disk_usage",
+  "commands": [
+    "df -h",
+    "du -sh /* 2>/dev/null | sort -hr | head -10",
+    "find /var/log -type f -size +100M -ls 2>/dev/null | head -10",
+    "journalctl --disk-usage"
+  ],
+  "reasoning": "先确认磁盘使用率异常分区，再逐层定位大目录和大文件，重点检查日志和临时文件，最后结合变更历史分析根因。所有命令均为只读安全操作。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T12:02:51.662061"
+}

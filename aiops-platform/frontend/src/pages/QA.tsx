@@ -5,7 +5,7 @@ import {
   PlusOutlined, DeleteOutlined, EditOutlined, MessageOutlined,
   ExclamationCircleOutlined
 } from '@ant-design/icons';
-import { aiChatApi, ChatSession, ChatSessionDetail } from '../services/api';
+import { aiChatApi, ChatSession } from '../services/api';
 
 const { TextArea } = Input;
 const { Text, Paragraph } = Typography;
@@ -191,7 +191,7 @@ const AIChat = () => {
             );
             scrollToBottom();
           },
-          onDone: (sessionId, messageCount) => {
+          onDone: (_sessionId, messageCount) => {
             setMessages(prev => 
               prev.map(m => 
                 m.id === assistantMessageId 

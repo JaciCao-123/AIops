@@ -1,0 +1,16 @@
+{
+  "plan_name": "disk_full_and_oom_diagnosis",
+  "check_type": "system_health",
+  "commands": [
+    "df -h",
+    "du -sh * | sort -hr",
+    "free -h",
+    "top -b -n1",
+    "dmesg -T | grep -i \"out of memory\"",
+    "find / -type f -size +100M 2>/dev/null | head -20",
+    "ps aux --sort=-%mem | head -10"
+  ],
+  "reasoning": "针对磁盘空间耗尽和OOM问题，需要检查磁盘使用情况、内存使用情况、系统日志中的OOM记录、大文件位置以及内存占用最高的进程",
+  "expected_findings": [],
+  "created_at": "2026-05-08T12:49:28.441263"
+}

@@ -1,0 +1,15 @@
+{
+  "approval_id": "f1e05be1",
+  "operation": "rm -f /dev/shm/mem-hog",
+  "risk": "MEDIUM",
+  "impact": "释放 1.9G 共享内存，解决 /dev/shm 100% 占用导致的 OOM 和服务异常",
+  "commands": [
+    "sudo rm -f /dev/shm/mem-hog"
+  ],
+  "target_host": "8.136.186.115",
+  "email": "jaci@company.com",
+  "status": "pending",
+  "created_at": "2026-05-08T13:05:41.148593",
+  "approved_at": null,
+  "approved_by": null
+}

@@ -1,0 +1,15 @@
+{
+  "plan_name": "server_alert_diagnosis",
+  "check_type": "alert",
+  "commands": [
+    "uptime",
+    "free -h",
+    "df -h",
+    "systemctl list-units --state=failed",
+    "journalctl -n 50 --no-pager -p 3",
+    "ps aux --sort=-%cpu | head -10"
+  ],
+  "reasoning": "针对IP 8.136.186.115的告警问题，需先评估系统基础健康状态（负载、内存、磁盘），再检查失败服务、高优先级系统日志和CPU占用异常进程，为后续深入分析提供上下文。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T12:43:15.037373"
+}

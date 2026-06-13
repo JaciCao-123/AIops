@@ -1,0 +1,11 @@
+{
+  "plan_name": "disk_full_diagnosis",
+  "check_type": "disk_usage",
+  "commands": [
+    "df -h",
+    "du -sh /"
+  ],
+  "reasoning": "先用 df -h 查看各挂载点使用率，再用 du -sh / 扫描根目录下各子目录大小，定位占用磁盘最多的目录。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T13:32:23.477846"
+}

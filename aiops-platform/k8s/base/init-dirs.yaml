@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-data-dirs
+  namespace: aiops
+spec:
+  template:
+    spec:
+      containers:
+      - name: create-dir
+        image: busybox
+        command: ["/bin/sh", "-c", "mkdir -p /data/neo4j && chmod 777 /data/neo4j"]
+        volumeMounts:
+        - name: data-dir
+          mountPath: /data
+      volumes:
+      - name: data-dir
+        hostPath:
+          path: /data
+          type: DirectoryOrCreate
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node1
+      restartPolicy: OnFailure
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-data-dirs-node2
+  namespace: aiops
+spec:
+  template:
+    spec:
+      containers:
+      - name: create-dir
+        image: busybox
+        command: ["/bin/sh", "-c", "mkdir -p /data/neo4j && chmod 777 /data/neo4j"]
+        volumeMounts:
+        - name: data-dir
+          mountPath: /data
+      volumes:
+      - name: data-dir
+        hostPath:
+          path: /data
+          type: DirectoryOrCreate
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node2
+      restartPolicy: OnFailure

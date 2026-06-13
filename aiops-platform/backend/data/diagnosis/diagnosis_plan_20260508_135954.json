@@ -1,0 +1,13 @@
+{
+  "plan_name": "disk_full_diagnosis",
+  "check_type": "disk_usage",
+  "commands": [
+    "df -h",
+    "du -sh /dev/shm/*",
+    "ls -la /dev/shm/",
+    "find /dev/shm/ -type f -name 'mem-hog' -ls"
+  ],
+  "reasoning": "诊断磁盘满问题需要：1) 检查整体磁盘使用情况；2) 检查/dev/shm目录下的文件大小；3) 列出/dev/shm目录内容确认mem-hog文件存在；4) 查找mem-hog文件的详细信息。如果确认mem-hog是垃圾文件且占用大量空间，则需要删除它。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T13:59:54.304460"
+}

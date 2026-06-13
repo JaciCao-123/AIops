@@ -1,0 +1,14 @@
+{
+  "plan_name": "disk_full_root_cause_analysis",
+  "check_type": "disk_usage",
+  "commands": [
+    "df -h",
+    "df -i",
+    "du -sh */ 2>/dev/null | sort -hr | head -10",
+    "ls -lh /var/log/ | tail -5",
+    "find / -xdev -type f -size +100M 2>/dev/null | xargs ls -lh 2>/dev/null | head -10"
+  ],
+  "reasoning": "针对 8.136.186.115 磁盘使用率 99% 问题，需分层排查：1) 确认具体挂载点及使用率；2) 排查 inode 耗尽可能；3) 定位大目录；4) 检查日志目录最新文件；5) 扫描超大文件。所有命令均为只读，无风险。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T11:49:41.289454"
+}

@@ -60,6 +60,7 @@ class ToolRegistry:
         self.file_manager = file_manager or IntermediateFileManager()
         self._pending_approvals: Dict[str, Dict] = {}
         self._servicenow_client: Optional[Any] = None
+        self._last_pending_command: Dict = {}
         self._register_default_tools()
     
     def _register_default_tools(self):
@@ -76,6 +77,7 @@ class ToolRegistry:
         self.register("send_approval_email", self._send_approval_email)
         self.register("check_approval_status", self._check_approval_status)
         self.register("execute_approved_command", self._execute_approved_command)
+        self.register("wait_for_approval", self._wait_for_approval)
         self.register("submit_diagnosis_result", self._submit_diagnosis_result)
         self.register("parse_logs", self._parse_logs)
         self.register("load_metrics_and_detect_anomalies", self._load_metrics_and_detect_anomalies)
@@ -177,6 +179,12 @@ class ToolRegistry:
         # L2 中风险：返回模拟的"需用户确认"结果
         if security_check["risk_level"] == RISK_MEDIUM and security_check.get("requires_confirmation"):
             logger.info(f"Command requires confirmation (L2): {command[:100]}...")
+            self._last_pending_command = {
+                "command": command,
+                "target_host": target_host or "",
+                "risk": security_check.get("risk_level", RISK_MEDIUM),
+                "reason": security_check.get("reason", ""),
+            }
             return {
                 "success": False,
                 "target_host": target_host,
@@ -612,18 +620,58 @@ class ToolRegistry:
         self,
         operation: str,
         risk: str,
-        impact: str = ""
+        impact: str = "",
+        command: str = "",
+        target_host: str = ""
     ) -> Dict[str, Any]:
         """
-        向用户请求确认（高风险操作）
+        请求用户确认（高风险操作）— 自动发送邮件审批
         """
+        from ..utils.email_sender import email_sender as _email_sender
+
+        if not command and self._last_pending_command:
+            command = self._last_pending_command.get("command", "")
+            if not target_host:
+                target_host = self._last_pending_command.get("target_host", "")
+
+        to_email = settings.SMTP_FROM_EMAIL or settings.SMTP_USER or ""
+        commands_list = [command] if command else []
+        final_target_host = target_host or "远程服务器"
+
+        if to_email and operation:
+            try:
+                result = await _email_sender.send_approval_request(
+                    to_email=to_email,
+                    operation=operation,
+                    risk=risk,
+                    impact=impact,
+                    commands=commands_list,
+                    target_host=final_target_host,
+                )
+                if result.get("success"):
+                    return {
+                        "success": True,
+                        "email_sent": True,
+                        "approval_id": result.get("approval_id", ""),
+                        "to_email": to_email,
+                        "operation": operation,
+                        "risk": risk,
+                        "impact": impact,
+                        "message": f"审批邮件已发送至 {to_email}，审批ID: {result.get('approval_id','')}。回复邮件含 APPROVE 或 批准 即批准执行。",
+                        "next_step": "请使用 check_approval_status 工具检查审批状态，approval_id 为上述值。",
+                    }
+            except Exception as e:
+                logger.error(f"Failed to send approval email: {e}")
+
         return {
             "success": True,
             "requires_confirmation": True,
             "operation": operation,
             "risk": risk,
             "impact": impact,
-            "message": f"需要用户确认: {operation} (风险: {risk})"
+            "message": f"需要用户确认: {operation} (风险: {risk})",
+            "email_sent": False,
+            "email_error": "SMTP 不可用，请手动确认",
         }
     
     async def _send_approval_email(
@@ -685,6 +733,29 @@ class ToolRegistry:
                 "success": False,
                 "error": str(e)
             }
+
+    async def _wait_for_approval(
+        self,
+        approval_id: str,
+        timeout_seconds: int = 60
+    ) -> Dict[str, Any]:
+        """
+        等待审批完成（短轮询，每次 10 秒，默认 60 秒超时）
+        """
+        try:
+            from ..utils.email_sender import email_sender
+            
+            result = await email_sender.wait_for_approval(
+                approval_id=approval_id,
+                timeout_seconds=timeout_seconds,
+                poll_interval=10,
+            )
+            return result
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }
     
     async def _submit_diagnosis_result(
         self,
@@ -722,7 +793,7 @@ class ToolRegistry:
         timeout_seconds: int = 3600
     ) -> Dict[str, Any]:
         """
-        等待审批并执行命令
+        等待审批并执行命令（已审批通过的命令直接执行，跳过安全检查）
         """
         try:
             from ..utils.email_sender import email_sender
@@ -749,10 +820,9 @@ class ToolRegistry:
                 
                 execution_results = []
                 for cmd in commands:
-                    exec_result = await self._execute_command(
-                        target_host=target_host,
+                    exec_result = await self._execute_direct(
                         command=cmd,
-                        risk_level="high"
+                        target_host=target_host
                     )
                     execution_results.append(exec_result)
                 
@@ -769,6 +839,58 @@ class ToolRegistry:
             return {
                 "success": False,
                 "error": str(e)
+            }
+
+    async def _execute_direct(
+        self,
+        command: str,
+        target_host: str = ""
+    ) -> Dict[str, Any]:
+        """
+        直接执行命令（跳过安全检查，仅用于已审批通过的命令）
+        """
+        try:
+            if target_host:
+                effective_ssh_user = settings.SSH_USER or "jaci"
+                ssh_opts = f"-o ConnectTimeout={settings.SSH_CONNECT_TIMEOUT}"
+                if not settings.SSH_STRICT_HOST_KEY_CHECK:
+                    ssh_opts += " -o StrictHostKeyChecking=no"
+                escaped_command = shlex.quote(command)
+                exec_command = f"ssh {ssh_opts} -i {settings.SSH_KEY_PATH} {effective_ssh_user}@{target_host} {escaped_command}"
+            else:
+                exec_command = command
+
+            result = subprocess.run(
+                exec_command,
+                shell=True,
+                capture_output=True,
+                text=True,
+                timeout=120
+            )
+
+            output = result.stdout + "\n" + result.stderr
+
+            return {
+                "success": result.returncode == 0,
+                "target_host": target_host,
+                "command": command,
+                "output": output,
+                "return_code": result.returncode,
+                "bypass_security": True,
+            }
+        except subprocess.TimeoutExpired:
+            return {
+                "success": False,
+                "target_host": target_host,
+                "command": command,
+                "error": "Command execution timeout",
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "target_host": target_host,
+                "command": command,
+                "error": str(e),
             }
     
     async def _parse_logs(

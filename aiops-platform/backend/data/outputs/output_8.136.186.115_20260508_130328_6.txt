@@ -1,0 +1,23 @@
+[Fri May  8 13:01:25 2026] br-53589b64aeee: port 1(veth9524ef3) entered disabled state
+[Fri May  8 13:01:25 2026] br-53589b64aeee: port 1(veth9524ef3) entered disabled state
+[Fri May  8 13:01:25 2026] device veth9524ef3 left promiscuous mode
+[Fri May  8 13:01:25 2026] br-53589b64aeee: port 1(veth9524ef3) entered disabled state
+[Fri May  8 13:02:25 2026] br-53589b64aeee: port 1(veth468dd26) entered blocking state
+[Fri May  8 13:02:25 2026] br-53589b64aeee: port 1(veth468dd26) entered disabled state
+[Fri May  8 13:02:25 2026] device veth468dd26 entered promiscuous mode
+[Fri May  8 13:02:25 2026] IPv6: ADDRCONF(NETDEV_UP): veth468dd26: link is not ready
+[Fri May  8 13:02:25 2026] br-53589b64aeee: port 1(veth468dd26) entered blocking state
+[Fri May  8 13:02:25 2026] br-53589b64aeee: port 1(veth468dd26) entered forwarding state
+[Fri May  8 13:02:25 2026] br-53589b64aeee: port 1(veth468dd26) entered disabled state
+[Fri May  8 13:02:25 2026] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready
+[Fri May  8 13:02:25 2026] IPv6: ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+[Fri May  8 13:02:25 2026] IPv6: ADDRCONF(NETDEV_CHANGE): veth468dd26: link becomes ready
+[Fri May  8 13:02:25 2026] br-53589b64aeee: port 1(veth468dd26) entered blocking state
+[Fri May  8 13:02:25 2026] br-53589b64aeee: port 1(veth468dd26) entered forwarding state
+[Fri May  8 13:02:26 2026] br-53589b64aeee: port 1(veth468dd26) entered disabled state
+[Fri May  8 13:02:26 2026] br-53589b64aeee: port 1(veth468dd26) entered disabled state
+[Fri May  8 13:02:26 2026] device veth468dd26 left promiscuous mode
+[Fri May  8 13:02:26 2026] br-53589b64aeee: port 1(veth468dd26) entered disabled state
+
+hostfile_replace_entries: mkstemp: Operation not permitted
+update_known_hosts: hostfile_replace_entries failed for /Users/jaci-j/.ssh/known_hosts: Operation not permitted

@@ -1,0 +1,15 @@
+{
+  "approval_id": "8421dc77",
+  "operation": "执行sudo journalctl命令检查系统日志中的错误和警告",
+  "risk": "L2",
+  "impact": "读取系统日志，不会修改系统状态",
+  "commands": [
+    "sudo journalctl --since \"1 hour ago\" | grep -i -E \"error|warn|alert|critical|failed\" | tail -20"
+  ],
+  "target_host": "8.136.186.115",
+  "email": "18565693545@163.com",
+  "status": "pending",
+  "created_at": "2026-05-08T18:11:57.663527",
+  "approved_at": null,
+  "approved_by": null
+}

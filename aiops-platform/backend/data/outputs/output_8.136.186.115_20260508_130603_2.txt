@@ -1,0 +1,6 @@
+              total        used        free      shared  buff/cache   available
+Mem:           3.7G        561M        721M        1.9G        2.4G        1.0G
+Swap:            0B          0B          0B
+
+hostfile_replace_entries: mkstemp: Operation not permitted
+update_known_hosts: hostfile_replace_entries failed for /Users/jaci-j/.ssh/known_hosts: Operation not permitted

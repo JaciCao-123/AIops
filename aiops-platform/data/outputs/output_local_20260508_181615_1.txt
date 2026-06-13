@@ -1,0 +1,6 @@
+ 18:11:50 up  6:44,  2 users,  load average: 1.23, 0.95, 0.52
+k8s-worker2
+jaci
+
+hostfile_replace_entries: mkstemp: Operation not permitted
+update_known_hosts: hostfile_replace_entries failed for /Users/jaci-j/.ssh/known_hosts: Operation not permitted

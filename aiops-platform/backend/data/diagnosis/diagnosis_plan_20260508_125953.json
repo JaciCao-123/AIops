@@ -1,0 +1,13 @@
+{
+  "plan_name": "server_alert_diagnosis",
+  "check_type": "alert",
+  "commands": [
+    "check_system_status",
+    "check_service_health",
+    "check_logs",
+    "check_network_connectivity"
+  ],
+  "reasoning": "针对服务器告警问题，需要检查系统状态、服务健康状况、日志信息和网络连通性。由于用户提供了SSH用户名jaci和IP地址8.136.186.115，可以直接连接进行诊断。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T12:59:53.880399"
+}

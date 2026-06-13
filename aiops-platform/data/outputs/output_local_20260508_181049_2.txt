@@ -1,0 +1,5 @@
+
+hostfile_replace_entries: mkstemp: Operation not permitted
+update_known_hosts: hostfile_replace_entries failed for /Users/jaci-j/.ssh/known_hosts: Operation not permitted
+Warning: Permanently added '8.136.186.115' (ECDSA) to the list of known hosts.
+Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).

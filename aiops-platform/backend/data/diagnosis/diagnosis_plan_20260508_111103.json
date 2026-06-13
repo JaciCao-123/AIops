@@ -1,0 +1,12 @@
+{
+  "plan_name": "cpu_high_diagnosis_plan",
+  "check_type": "cpu_usage",
+  "commands": [
+    "uptime",
+    "ps -eo pid,ppid,cmd,%cpu,%mem --sort=-%cpu | head -10",
+    "ps aux | awk '$8 ~ /D/ {print $0}'"
+  ],
+  "reasoning": "根据 debug_skill.md 的 CPU 负载过高诊断规范，首先确认系统负载水平（uptime），再定位高 CPU 进程（ps top10），最后检查是否存在 D 状态进程（I/O 阻塞嫌疑）。所有命令均为只读低风险操作。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T11:11:03.011086"
+}

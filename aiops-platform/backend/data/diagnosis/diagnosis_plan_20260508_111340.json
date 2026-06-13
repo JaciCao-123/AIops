@@ -1,0 +1,12 @@
+{
+  "plan_name": "cpu_usage_high_diagnosis",
+  "check_type": "cpu_anomaly",
+  "commands": [
+    "uptime",
+    "top -bn1 | head -15",
+    "ps -eo pid,ppid,cmd,%cpu,%mem --sort=-%cpu | head -10"
+  ],
+  "reasoning": "根据debug_skill中CPU负载过高排查流程，首先检查系统负载、CPU使用率概览，然后定位CPU占用最高的进程",
+  "expected_findings": [],
+  "created_at": "2026-05-08T11:13:40.151540"
+}

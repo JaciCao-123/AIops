@@ -1,0 +1,13 @@
+{
+  "approval_id": "85a56499",
+  "operation": "Request original alert notification text for IP 8.136.186.115",
+  "risk": "L0",
+  "impact": "Alert text contains the exact problem description (e.g., 'CPU usage > 90%', 'SSH process not running'), enabling immediate root cause identification without infrastructure dependencies.",
+  "commands": [],
+  "target_host": "远程服务器",
+  "email": "18565693545@163.com",
+  "status": "pending",
+  "created_at": "2026-05-08T18:09:46.189184",
+  "approved_at": null,
+  "approved_by": null
+}

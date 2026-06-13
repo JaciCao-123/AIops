@@ -1,0 +1,39 @@
+ 12:45:32 up  1:18,  2 users,  load average: 0.05, 0.06, 0.13
+k8s-worker2
+--- DISK USAGE ---
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        1.9G     0  1.9G   0% /dev
+tmpfs           1.9G  1.9G     0 100% /dev/shm
+tmpfs           1.9G  892K  1.9G   1% /run
+tmpfs           1.9G     0  1.9G   0% /sys/fs/cgroup
+/dev/vda1        20G  8.9G  9.7G  48% /
+tmpfs           379M     0  379M   0% /run/user/1000
+--- MEMORY ---
+              total        used        free      shared  buff/cache   available
+Mem:           3.7G        567M        879M        1.9G        2.3G        1.1G
+Swap:            0B          0B          0B
+--- FAILED UNITS ---
+0 loaded units listed. Pass --all to see loaded but inactive units, too.
+To show all installed unit files use 'systemctl list-unit-files'.
+--- RECENT ERROR/WARN LOGS ---
+May 08 11:45:41 k8s-worker2 kubelet[1057]: E0508 11:45:41.177866    1057 eviction_manager.go:258] "Eviction manager: failed to get summary stats" err="failed to get node info: node \"k8s-worker2\" not found"
+May 08 11:45:48 k8s-worker2 kubelet[1057]: E0508 11:45:48.217379    1057 controller.go:146] "Failed to ensure lease exists, will retry" err="Get \"https://10.0.1.232:6443/apis/coordination.k8s.io/v1/namespaces/kube-node-lease/leases/k8s-worker2?timeout=10s\": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)" interval="7s"
+May 08 11:45:51 k8s-worker2 kubelet[1057]: E0508 11:45:51.178120    1057 eviction_manager.go:258] "Eviction manager: failed to get summary stats" err="failed to get node info: node \"k8s-worker2\" not found"
+May 08 11:46:00 k8s-worker2 containerd[887]: time="2026-05-08T11:46:00.615968059+08:00" level=warning msg="cleaning up after shim disconnected" id=808526f4a6c3f08b1155d453b087c1f67317704d6b665f081c435fbe6349eb75 namespace=moby
+May 08 11:46:01 k8s-worker2 kubelet[1057]: E0508 11:46:01.184245    1057 eviction_manager.go:258] "Eviction manager: failed to get summary stats" err="failed to get node info: node \"k8s-worker2\" not found"
+May 08 11:46:05 k8s-worker2 kubelet[1057]: E0508 11:46:05.241118    1057 controller.go:146] "Failed to ensure lease exists, will retry" err="Get \"https://10.0.1.232:6443/apis/coordination.k8s.io/v1/namespaces/kube-node-lease/leases/k8s-worker2?timeout=10s\": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)" interval="7s"
+May 08 11:46:11 k8s-worker2 kubelet[1057]: E0508 11:46:11.186266    1057 eviction_manager.go:258] "Eviction manager: failed to get summary stats" err="failed to get node info: node \"k8s-worker2\" not found"
+--- INODE USAGE ---
+Filesystem      Inodes  IUsed   IFree IUse% Mounted on
+devtmpfs        482344    334  482010    1% /dev
+tmpfs           484988      3  484985    1% /dev/shm
+tmpfs           484988    541  484447    1% /run
+tmpfs           484988     16  484972    1% /sys/fs/cgroup
+/dev/vda1      1310720 142997 1167723   11% /
+tmpfs           484988      1  484987    1% /run/user/1000
+--- LISTENING PORTS COUNT ---
+0
+
+hostfile_replace_entries: mkstemp: Operation not permitted
+update_known_hosts: hostfile_replace_entries failed for /Users/jaci-j/.ssh/known_hosts: Operation not permitted
+bash: ss: command not found

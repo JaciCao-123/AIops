@@ -3,7 +3,7 @@ from typing import Dict, Any, List
 
 from langchain_openai import ChatOpenAI
 from langchain_core.tools import tool as lc_tool
-from langchain_core.pydantic_v1 import BaseModel as LCBaseModel, create_model
+from pydantic import BaseModel as LCBaseModel, create_model, Field
 from langgraph.prebuilt import create_react_agent
 
 from ..state import AIOpsState
@@ -23,23 +23,23 @@ def _build_param_model(name: str, params_schema: dict):
         field_type = field_info.get("type", "string")
 
         type_map = {
-            "string": (str, ...),
-            "integer": (int, ...),
-            "number": (float, ...),
-            "boolean": (bool, ...),
-            "array": (list, ...),
-            "object": (dict, ...),
+            "string": str,
+            "integer": int,
+            "number": float,
+            "boolean": bool,
+            "array": list,
+            "object": dict,
         }
 
-        python_type, default_marker = type_map.get(field_type, (str, ...))
+        python_type = type_map.get(field_type, str)
 
         if field_name not in required:
-            default_marker = None
-
-        fields[field_name] = (python_type, default_marker)
+            fields[field_name] = (python_type, Field(default=None))
+        else:
+            fields[field_name] = (python_type, ...)
 
     if not fields:
-        fields["_placeholder"] = (str, None)
+        fields["_placeholder"] = (str, Field(default=None))
 
     return create_model(f"{name}Schema", **fields)
 
@@ -109,13 +109,17 @@ SYSTEM_PROMPT = """你是一个智能运维诊断专家。你需要根据用户�
 
 ## 安全规则
 - 危险命令绝对禁止执行 (rm -rf, shutdown, reboot, dd, mkfs 等)
-- 中风险操作需要调用 `ask_user_confirmation` 获取用户确认
+- 中风险操作需要调用 `ask_user_confirmation` 获取用户确认（会自动发送审批邮件）
+- 执行命令后如果返回 requires_confirmation=true 或 risk_level=L2/L3，必须调用 `ask_user_confirmation` 工具，**并传递原始的 `command` 参数和 `target_host`**
+- 调用 `ask_user_confirmation` 后会获得 `approval_id`，然后调用 `wait_for_approval` 等待邮件审批（timeout_seconds=60）
+- **审批通过前不要调用 submit_diagnosis_result**，必须先完成 `wait_for_approval` → `execute_approved_command` 流程
+- 审批通过后使用 `execute_approved_command(approval_id)` 执行已批准的命令
 - 只读操作可以安全执行
 
 ## SSH 连接
 - 如果需要远程连接服务器，使用 `execute_command` 工具并设置 `target_host` 参数
 - 如果用户查询中提到了用户名，使用 `ssh_user` 参数传递
-- 如果用户名未知，使用 `ask_user_confirmation` 询问用户
+- 如果用户名未知，在查询中包含 SSH 用户名后重试
 """
 
 
@@ -176,7 +180,10 @@ async def react_agent_node(state: AIOpsState) -> dict:
         {"role": "user", "content": user_message}
     ]
 
-    result = await agent.ainvoke({"messages": input_messages})
+    result = await agent.ainvoke(
+        {"messages": input_messages},
+        config={"recursion_limit": 200},
+    )
 
     last_message = result["messages"][-1]
     content = (
@@ -227,9 +234,31 @@ async def react_agent_node(state: AIOpsState) -> dict:
             except (json.JSONDecodeError, AttributeError):
                 confirmation_request = {"message": "需要用户确认"}
 
+    execution_history = []
+    pending_tool_calls = {}
+    for msg in result["messages"]:
+        if hasattr(msg, "tool_calls") and msg.tool_calls:
+            for tc in msg.tool_calls:
+                pending_tool_calls[tc.get("id", "")] = {
+                    "tool": tc.get("name", ""),
+                    "args": tc.get("args", {}) if isinstance(tc.get("args"), dict) else {},
+                }
+        if hasattr(msg, "tool_call_id") and getattr(msg, "tool_call_id", None):
+            tc_id = msg.tool_call_id
+            if tc_id in pending_tool_calls:
+                entry = pending_tool_calls.pop(tc_id)
+                content_raw = msg.content if hasattr(msg, "content") else ""
+                try:
+                    parsed = json.loads(content_raw) if isinstance(content_raw, str) else content_raw
+                except (json.JSONDecodeError, TypeError):
+                    parsed = {"output": str(content_raw)}
+                entry["result"] = parsed if isinstance(parsed, dict) else {"output": str(content_raw)}
+                execution_history.append(entry)
+
     return {
         "diagnosis_result": diagnosis_result,
         "confirmation_request": confirmation_request,
         "messages": result["messages"],
         "iteration_count": state.get("iteration_count", 0) + 1,
+        "execution_history": execution_history,
     }

@@ -1,0 +1,17 @@
+{
+  "plan_name": "OOM_Diagnosis_Plan_8.136.186.115",
+  "check_type": "memory_exhaustion",
+  "commands": [
+    "free -m",
+    "cat /proc/meminfo",
+    "dmesg -T | grep -i 'out of memory\\|kill process'",
+    "ps aux --sort=-%mem | head -20",
+    "top -b -n1 | head -50",
+    "ls /sys/fs/cgroup/memory/ 2>/dev/null || echo 'cgroups v1 not mounted'",
+    "systemctl list-units --type=service --state=running | grep -E '(java|redis|elasticsearch|nginx|mysql)'",
+    "journalctl -u systemd-journald --since '2 hours ago' | grep -i 'memory\\|oom\\|segfault' | tail -20"
+  ],
+  "reasoning": "Plan covers memory state verification, OOM killer logs, top memory consumers, service health, and recent kernel/journal anomalies. All commands are safe read-only diagnostics.",
+  "expected_findings": [],
+  "created_at": "2026-05-08T11:53:05.335227"
+}

@@ -1,0 +1,18 @@
+{
+  "plan_name": "disk_full_and_oom_diagnosis",
+  "check_type": "system_health",
+  "commands": [
+    "df -h",
+    "free -h",
+    "uptime",
+    "du -sh /* 2>/dev/null | sort -hr | head -10",
+    "find /var/log -type f -size +100M 2>/dev/null | xargs ls -lh",
+    "lsof +L1",
+    "dmesg -T | grep -i 'killed process'",
+    "ps aux --sort=-%mem | head -10",
+    "swapon --show"
+  ],
+  "reasoning": "针对 disk full 和 OOM 双告警，需并行检查磁盘空间分布、大文件/删除未释放文件、OOM Killer 日志、内存占用Top进程、swap状态，以定位根因。所有命令均为安全只读操作。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T13:04:27.320231"
+}

@@ -1,0 +1,13 @@
+{
+  "approval_id": "66c2533d",
+  "operation": "delete /dev/shm/mem-hog",
+  "risk": "L2",
+  "impact": "释放 1.9G /dev/shm 空间，恢复系统正常运行；文件删除后不可恢复",
+  "commands": [],
+  "target_host": "远程服务器",
+  "email": "18565693545@163.com",
+  "status": "pending",
+  "created_at": "2026-05-08T14:34:21.526254",
+  "approved_at": null,
+  "approved_by": null
+}

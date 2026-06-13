@@ -1,0 +1,13 @@
+{
+  "plan_name": "shm_mem_hog_cleanup",
+  "check_type": "disk_usage_and_file_removal",
+  "commands": [
+    "df -h /dev/shm",
+    "ls -lh /dev/shm/mem-hog",
+    "lsof +D /dev/shm 2>/dev/null | grep mem-hog",
+    "rm -f /dev/shm/mem-hog"
+  ],
+  "reasoning": "先确认 /dev/shm 满载状态和 mem-hog 文件详情，再申请用户确认后安全删除。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T14:33:52.666844"
+}

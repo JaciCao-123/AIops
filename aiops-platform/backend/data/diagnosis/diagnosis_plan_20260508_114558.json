@@ -1,0 +1,14 @@
+{
+  "plan_name": "disk_full_diagnosis_8.136.186.115",
+  "check_type": "disk_usage",
+  "commands": [
+    "df -h",
+    "du -sh /* 2>/dev/null | sort -hr | head -20",
+    "find / -xdev -type f -size +100M 2>/dev/null | xargs ls -lh 2>/dev/null | sort -k5 -hr | head -20",
+    "du -sh /var/log/* 2>/dev/null | sort -hr | head -10",
+    "lsof +L1 2>/dev/null | head -20"
+  ],
+  "reasoning": "针对磁盘满问题，需先确认使用率，再逐层定位大目录、大文件、日志膨胀及被删除但仍被进程占用的大文件。",
+  "expected_findings": [],
+  "created_at": "2026-05-08T11:45:58.531589"
+}

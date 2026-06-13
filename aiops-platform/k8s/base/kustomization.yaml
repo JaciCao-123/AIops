@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: aiops
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secret.yaml
+  - init-dirs.yaml
+  - neo4j-pvc.yaml
+  - neo4j-deployment.yaml
+  - neo4j-service.yaml
+  - backend-deployment.yaml
+  - frontend-deployment.yaml
+  - ingress.yaml
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: aiops-platform
+      app.kubernetes.io/managed-by: argocd
+    includeSelectors: true

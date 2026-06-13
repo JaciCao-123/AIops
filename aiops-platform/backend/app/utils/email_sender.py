@@ -1,5 +1,8 @@
 import os
 import smtplib
+import imaplib
+import email
+import re
 import json
 import uuid
 import asyncio
@@ -29,10 +32,13 @@ class ApprovalManager:
         加载待审批的操作
         """
         for filepath in self.data_dir.glob("*.json"):
-            with open(filepath, 'r', encoding='utf-8') as f:
-                approval = json.load(f)
-                if approval.get("status") == "pending":
-                    self.pending_approvals[approval["approval_id"]] = approval
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    approval = json.load(f)
+                    if approval.get("status") == "pending":
+                        self.pending_approvals[approval["approval_id"]] = approval
+            except Exception:
+                pass
     
     def create_approval(
         self,
@@ -74,7 +80,16 @@ class ApprovalManager:
         批准操作
         """
         if approval_id not in self.pending_approvals:
-            return None
+            filepath = self.data_dir / f"{approval_id}.json"
+            if filepath.exists():
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    approval = json.load(f)
+                if approval.get("status") == "pending":
+                    self.pending_approvals[approval_id] = approval
+                else:
+                    return None
+            else:
+                return None
         
         approval = self.pending_approvals[approval_id]
         approval["status"] = "approved"
@@ -94,7 +109,16 @@ class ApprovalManager:
         拒绝操作
         """
         if approval_id not in self.pending_approvals:
-            return None
+            filepath = self.data_dir / f"{approval_id}.json"
+            if filepath.exists():
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    approval = json.load(f)
+                if approval.get("status") == "pending":
+                    self.pending_approvals[approval_id] = approval
+                else:
+                    return None
+            else:
+                return None
         
         approval = self.pending_approvals[approval_id]
         approval["status"] = "rejected"
@@ -118,8 +142,11 @@ class ApprovalManager:
         
         filepath = self.data_dir / f"{approval_id}.json"
         if filepath.exists():
-            with open(filepath, 'r', encoding='utf-8') as f:
-                return json.load(f)
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            except Exception:
+                pass
         
         return None
 
@@ -136,7 +163,9 @@ class EmailSender:
         self.smtp_user = settings.SMTP_USER
         self.smtp_password = settings.SMTP_PASSWORD
         self.from_email = settings.SMTP_FROM_EMAIL or settings.SMTP_USER
-        self.approval_manager = ApprovalManager()
+
+        base_dir = Path(__file__).resolve().parent.parent.parent / "data"
+        self.approval_manager = ApprovalManager(str(base_dir / "approvals"))
     
     def _create_approval_email(
         self,
@@ -348,7 +377,90 @@ AIOps 智能运维平台 - 操作审批请求
             "approval": approval,
             "status": approval.get("status")
         }
-    
+
+    async def _check_inbox_for_replies(self) -> Dict[str, str]:
+        """
+        IMAP 检查收件箱中的 APPROVE/REJECT 回复邮件
+
+        Returns:
+            Dict mapping approval_id -> action (approved/rejected) for each found reply
+        """
+        results = {}
+        if not self.smtp_user or not self.smtp_password:
+            return results
+
+        imap_server = "imap.163.com"
+        if "qq.com" in self.smtp_user:
+            imap_server = "imap.qq.com"
+        elif "gmail.com" in self.smtp_user:
+            imap_server = "imap.gmail.com"
+
+        try:
+            import ssl
+            context = ssl.create_default_context()
+
+            conn = imaplib.IMAP4_SSL(imap_server, 993, ssl_context=context, timeout=10)
+            conn.login(self.smtp_user, self.smtp_password)
+            conn.select("INBOX")
+
+            status, msg_ids = conn.search(
+                None,
+                '(OR (OR (OR (UNSEEN SUBJECT "APPROVE") (UNSEEN SUBJECT "REJECT")) (UNSEEN SUBJECT "批准")) (UNSEEN SUBJECT "拒绝"))'
+            )
+
+            if status == "OK" and msg_ids[0]:
+                for msg_id in msg_ids[0].split():
+                    try:
+                        status, msg_data = conn.fetch(msg_id, "(RFC822)")
+                        if status != "OK" or not msg_data or not msg_data[0]:
+                            continue
+
+                        msg = email.message_from_bytes(msg_data[0][1])
+                        body = ""
+
+                        if msg.is_multipart():
+                            for part in msg.walk():
+                                content_type = part.get_content_type()
+                                if content_type == "text/plain" or content_type == "text/html":
+                                    payload = part.get_payload(decode=True)
+                                    if payload:
+                                        body += str(payload.decode('utf-8', errors='ignore'))
+                        else:
+                            payload = msg.get_payload(decode=True)
+                            if payload:
+                                body = str(payload.decode('utf-8', errors='ignore'))
+
+                        subject = str(msg.get("Subject", ""))
+
+                        combined = subject + " " + body
+                        combined_upper = combined.upper()
+
+                        approval_match = re.search(r'(?:APPROVE|批准|同意)\s*([a-f0-9]{8})', combined_upper)
+                        if approval_match:
+                            aid = approval_match.group(1).lower()
+                            results[aid] = "approved"
+                            conn.store(msg_id, '+FLAGS', '\\Seen')
+                            continue
+
+                        reject_match = re.search(r'(?:REJECT|拒绝|不同意)\s*([a-f0-9]{8})', combined_upper)
+                        if reject_match:
+                            aid = reject_match.group(1).lower()
+                            results[aid] = "rejected"
+                            conn.store(msg_id, '+FLAGS', '\\Seen')
+
+                    except Exception:
+                        pass
+
+            conn.close()
+            conn.logout()
+
+        except Exception as e:
+            from app.utils.logger import get_logger
+            logger_imap = get_logger("email_sender.imap")
+            logger_imap.warning(f"IMAP check failed (will retry): {e}")
+
+        return results
+
     async def wait_for_approval(
         self,
         approval_id: str,
@@ -356,10 +468,11 @@ AIOps 智能运维平台 - 操作审批请求
         poll_interval: int = 30
     ) -> Dict[str, Any]:
         """
-        等待审批结果
+        等待审批结果（轮询文件 + IMAP 收件箱检查）
         """
         start_time = datetime.now()
-        
+        imap_check_counter = 0
+
         while (datetime.now() - start_time).total_seconds() < timeout_seconds:
             approval = self.approval_manager.get_approval(approval_id)
             
@@ -384,6 +497,25 @@ AIOps 智能运维平台 - 操作审批请求
                     "approved": False,
                     "approval": approval
                 }
+
+            imap_check_counter += 1
+            if imap_check_counter >= 3:
+                imap_check_counter = 0
+                replies = await self._check_inbox_for_replies()
+
+                if approval_id in replies:
+                    action = replies[approval_id]
+                    if action == "approved":
+                        self.approval_manager.approve(approval_id, "email_reply")
+                    elif action == "rejected":
+                        self.approval_manager.reject(approval_id, "email_reply")
+
+                for aid, action in replies.items():
+                    if aid != approval_id:
+                        if action == "approved":
+                            self.approval_manager.approve(aid, "email_reply")
+                        elif action == "rejected":
+                            self.approval_manager.reject(aid, "email_reply")
             
             await asyncio.sleep(poll_interval)
         

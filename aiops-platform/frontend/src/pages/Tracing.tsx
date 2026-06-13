@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Card, Table, Tag, Input, Select, Space, Button, Spin, message, Row, Col, Statistic, Modal, Descriptions, Timeline, Badge, Tabs } from 'antd';
+import { Card, Table, Tag, Input, Select, Space, Button, message, Row, Col, Statistic, Modal, Descriptions, Timeline, Badge, Tabs } from 'antd';
 import { SearchOutlined, ReloadOutlined, ApiOutlined, WarningOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import ReactECharts from 'echarts-for-react';
 import dayjs from 'dayjs';
 
 import { traceApi } from '../services/api';
-import type { TraceInfo, TraceDetail, ServiceDependency, Span, ServiceEdge } from '../types';
+import type { TraceInfo, TraceDetail, ServiceDependency, Span } from '../types';
 
 const { Search } = Input;
 

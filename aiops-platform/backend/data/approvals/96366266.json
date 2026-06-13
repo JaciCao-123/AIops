@@ -1,0 +1,13 @@
+{
+  "approval_id": "96366266",
+  "operation": "delete /dev/shm/mem-hog",
+  "risk": "L2",
+  "impact": "释放1.9GB磁盘空间，解决/dev/shm文件系统100%满的问题",
+  "commands": [],
+  "target_host": "远程服务器",
+  "email": "18565693545@163.com",
+  "status": "pending",
+  "created_at": "2026-05-08T14:00:15.802364",
+  "approved_at": null,
+  "approved_by": null
+}

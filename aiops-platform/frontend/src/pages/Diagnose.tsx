@@ -56,31 +56,23 @@ const Diagnose = () => {
 
       const data = await response.json();
       
-      const dynamicExecution = data.stages?.dynamic_execution;
-      const executionHistory = dynamicExecution?.execution_history || [];
-      
-      const diagnosisPlan = executionHistory.find(
-        (h: any) => h.tool === 'save_diagnosis_plan'
-      )?.result?.plan;
-      
-      const executionOutputs = executionHistory
-        .filter((h: any) => h.tool === 'execute_command')
-        .map((h: any) => ({
-          command: h.args?.command,
-          output: h.result?.output,
-          success: h.result?.success,
-          target_host: h.result?.target_host,
-        }));
-      
-      const savedOutputs = executionHistory
-        .filter((h: any) => h.tool === 'save_execution_output')
-        .map((h: any) => h.result);
-      
-      const dynamicStatus = data.stages?.dynamic_execution?.status;
+      const stages = data.stages || {};
+      const intentParsing = stages.intent_parsing || {};
+      const skillMatching = stages.skill_matching || {};
+      const obsAnalysis = stages.observability_analysis || {};
+      const knowledgeQuery = stages.knowledge_query || {};
+      const dynamicExec = stages.dynamic_execution || {};
+
+      const diagnosisPlan = obsAnalysis.diagnosis_plan || null;
+      const commandEntries = dynamicExec.command_entries || [];
+      const emailApproval = dynamicExec.email_approval || null;
+
+      const dynamicStatus = dynamicExec.status || 'processing';
       let taskStatus: 'completed' | 'processing' | 'needs_confirmation' = 'processing';
       if (dynamicStatus === 'completed') {
         taskStatus = 'completed';
-      } else if (dynamicStatus === 'needs_confirmation' || data.final_decision?.decision === 'NEEDS_CONFIRMATION') {
+      } else if (dynamicStatus === 'needs_confirmation' || dynamicStatus === 'waiting_approval' 
+                 || data.final_decision?.decision === 'NEEDS_CONFIRMATION') {
         taskStatus = 'needs_confirmation';
       }
       
@@ -88,27 +80,33 @@ const Diagnose = () => {
         task_id: 'multi-agent-' + Date.now(),
         user_input: input,
         status: taskStatus,
-        intent_data: data.stages?.intent_parsing || null,
-        analysis_report: data.stages?.observability_analysis || {
-          analysis_report: data.raw_response || '',
-          execution_history: executionHistory,
+        intent_data: intentParsing,
+        analysis_report: {
+          analysis_report: obsAnalysis.analysis_report || data.raw_response || '',
+          diagnosis_plan: diagnosisPlan,
         },
-        knowledge_context: data.stages?.knowledge_query || {
-          knowledge_report: diagnosisPlan?.reasoning || '',
+        knowledge_context: {
+          knowledge_report: knowledgeQuery.knowledge_report || '',
+          service: knowledgeQuery.service || '',
         },
         decision: data.final_decision || null,
         action_result: data.execution_result || null,
         created_at: data.start_time,
         updated_at: data.end_time,
         warning_cleared: data.warning_cleared || false,
-        ansible_playbook: data.stages?.ansible_playbook || null,
         server_status_check: data.stages?.server_status_check || null,
         mode: data.mode,
-        iterations: dynamicExecution?.iterations,
+        iterations: dynamicExec.iterations,
         diagnosis_plan: diagnosisPlan,
-        execution_outputs: executionOutputs,
-        saved_outputs: savedOutputs,
+        execution_outputs: commandEntries,
+        skill_matching: {
+          matched_skills: skillMatching.matched_skills || [],
+          skill_summary: skillMatching.skill_summary || '',
+          skills_preview: skillMatching.skills_preview || '',
+        },
+        email_approval: emailApproval,
         raw_response: data.raw_response,
+        saved_to: data.saved_to,
       });
       
       message.success('诊断完成');
@@ -122,8 +120,8 @@ const Diagnose = () => {
   const getCurrentStep = () => {
     if (!currentTask) return -1;
     if (currentTask.status === 'pending') return 0;
-    if (currentTask.status === 'processing') {
-      if (currentTask.intent_data) return 1;
+    if (currentTask.status === 'needs_confirmation') {
+      if (currentTask.email_approval?.email_sent) return 3;
       return 0;
     }
     if (currentTask.status === 'completed') return 4;
@@ -175,11 +173,11 @@ const Diagnose = () => {
             current={getCurrentStep()}
             status={currentTask.status === 'failed' ? 'error' : 'process'}
             items={[
-              { title: '意图识别', description: 'Intent Parse Agent' },
-              { title: '观测分析', description: 'Observability Agent' },
-              { title: '知识检索', description: 'Knowledge Agent' },
-              { title: '决策生成', description: 'Master Agent' },
-              { title: '执行方案', description: 'Action Agent' },
+              { title: '意图识别', description: 'NER + Intent Parsing' },
+              { title: 'Skill 匹配', description: 'Skill Manager' },
+              { title: '故障诊断', description: 'ReAct Agent (LangGraph)' },
+              { title: '人工审批', description: 'Human-in-the-Loop' },
+              { title: '结果汇总', description: 'Finalize' },
             ]}
           />
         </Card>
@@ -198,7 +196,7 @@ const Diagnose = () => {
             </Card>
           )}
           
-          <Collapse defaultActiveKey={['1', '2', '3', '4', '5', '6', '7']}>
+          <Collapse defaultActiveKey={['1', '2', '3', '4', '5', '6', '7', '8']}>
             <Panel header="意图识别结果" key="1">
               {currentTask.intent_data && (
                 <Descriptions column={2} size="small">
@@ -214,11 +212,28 @@ const Diagnose = () => {
                   </Descriptions.Item>
                   <Descriptions.Item label="服务">{currentTask.intent_data.entities.service}</Descriptions.Item>
                   <Descriptions.Item label="症状">{currentTask.intent_data.entities.symptom}</Descriptions.Item>
-                  <Descriptions.Item label="时间范围">{currentTask.intent_data.entities.time_range}</Descriptions.Item>
                   <Descriptions.Item label="标准化查询">{currentTask.intent_data.normalized_query}</Descriptions.Item>
                 </Descriptions>
               )}
             </Panel>
+
+            {currentTask.skill_matching && (
+              <Panel header="Skill 匹配结果" key="8">
+                <Descriptions column={1} size="small">
+                  <Descriptions.Item label="匹配到的技能">
+                    {currentTask.skill_matching.matched_skills.map((s: string) => (
+                      <Tag key={s} color="blue" style={{ marginBottom: 4 }}>{s}</Tag>
+                    ))}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="匹配摘要">{currentTask.skill_matching.skill_summary}</Descriptions.Item>
+                </Descriptions>
+                {currentTask.skill_matching.skills_preview && (
+                  <Paragraph style={{ marginTop: 12, whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: 12, backgroundColor: '#f5f5f5', padding: 12, borderRadius: 4, maxHeight: 200, overflow: 'auto' }}>
+                    {currentTask.skill_matching.skills_preview}
+                  </Paragraph>
+                )}
+              </Panel>
+            )}
 
             {currentTask.ansible_playbook && (
               <Panel header="生成的 Ansible Playbook" key="6">
@@ -305,7 +320,7 @@ const Diagnose = () => {
             )}
 
             {currentTask.execution_outputs && currentTask.execution_outputs.length > 0 && (
-              <Panel header="命令执行结果" key="9">
+              <Panel header="诊断命令执行结果" key="9">
                 {currentTask.execution_outputs.map((exec, index) => (
                   <Card key={index} size="small" style={{ marginBottom: 16 }} title={
                     <Space>
@@ -350,17 +365,25 @@ const Diagnose = () => {
             <Panel header="观测分析报告" key="2">
               {currentTask.analysis_report && (
                 <div>
-                  <Paragraph style={{ whiteSpace: 'pre-wrap' }}>
+                  {currentTask.analysis_report.diagnosis_plan && (
+                    <>
+                      <Descriptions column={2} size="small" title="诊断计划">
+                        <Descriptions.Item label="计划名称">
+                          <Tag color="blue">{currentTask.analysis_report.diagnosis_plan.plan_name}</Tag>
+                        </Descriptions.Item>
+                        <Descriptions.Item label="检查类型">
+                          <Tag>{currentTask.analysis_report.diagnosis_plan.check_type}</Tag>
+                        </Descriptions.Item>
+                      </Descriptions>
+                      <Paragraph style={{ marginTop: 12, whiteSpace: 'pre-wrap' }}>
+                        <Text strong>诊断逻辑：</Text>
+                        {currentTask.analysis_report.diagnosis_plan.reasoning}
+                      </Paragraph>
+                    </>
+                  )}
+                  <Paragraph style={{ marginTop: 12, whiteSpace: 'pre-wrap' }}>
                     {currentTask.analysis_report.analysis_report}
                   </Paragraph>
-                  {currentTask.analysis_report.metrics_summary && (
-                    <Descriptions column={4} size="small" title="关键指标">
-                      <Descriptions.Item label="P99延迟">{currentTask.analysis_report.metrics_summary.latency_p99}</Descriptions.Item>
-                      <Descriptions.Item label="错误率">{currentTask.analysis_report.metrics_summary.error_rate}</Descriptions.Item>
-                      <Descriptions.Item label="CPU">{currentTask.analysis_report.metrics_summary.cpu_usage}</Descriptions.Item>
-                      <Descriptions.Item label="内存">{currentTask.analysis_report.metrics_summary.memory_usage}</Descriptions.Item>
-                    </Descriptions>
-                  )}
                 </div>
               )}
             </Panel>
@@ -450,24 +473,51 @@ const Diagnose = () => {
         </>
       )}
 
-      {currentTask && currentTask.status === 'needs_confirmation' && currentTask.decision?.confirmation_request && (
+      {currentTask && currentTask.status === 'needs_confirmation' && (
         <Card style={{ marginBottom: 16, backgroundColor: '#fffbe6', borderColor: '#ffe58f' }}>
-          <div style={{ padding: 20 }}>
-            <Title level={4} style={{ color: '#d48806', marginBottom: 16 }}>⚠️ 需要用户确认</Title>
-            <Paragraph style={{ fontSize: 16, marginBottom: 16 }}>
-              <Text strong>操作：</Text>{currentTask.decision.confirmation_request.operation}
-            </Paragraph>
-            <Paragraph style={{ marginBottom: 8 }}>
-              <Text strong>风险：</Text>
-              <Tag color="orange">{currentTask.decision.confirmation_request.risk}</Tag>
-            </Paragraph>
-            <Paragraph style={{ marginBottom: 8 }}>
-              <Text strong>影响：</Text>{currentTask.decision.confirmation_request.impact}
-            </Paragraph>
-            <Paragraph style={{ marginTop: 16, color: '#666' }}>
-              {currentTask.decision.confirmation_request.message}
-            </Paragraph>
-          </div>
+          {currentTask.email_approval?.email_sent ? (
+            <div style={{ padding: 20, textAlign: 'center' }}>
+              <Title level={4} style={{ color: '#d48806', marginBottom: 16 }}>✉️ 审批邮件已发送</Title>
+              <Descriptions column={1} size="small" style={{ textAlign: 'left' }}>
+                <Descriptions.Item label="收件人">{currentTask.email_approval.to_email}</Descriptions.Item>
+                <Descriptions.Item label="审批 ID">
+                  <Tag color="blue">{currentTask.email_approval.approval_id}</Tag>
+                </Descriptions.Item>
+                <Descriptions.Item label="操作内容">{currentTask.email_approval.operation}</Descriptions.Item>
+                <Descriptions.Item label="风险等级">
+                  <Tag color="orange">{currentTask.email_approval.risk}</Tag>
+                </Descriptions.Item>
+              </Descriptions>
+              <Paragraph style={{ marginTop: 16, color: '#666' }}>
+                请检查邮箱并回复邮件进行确认。回复含 <Tag>APPROVE</Tag> 或 <Tag>批准</Tag> 即批准执行。
+              </Paragraph>
+              <Paragraph style={{ marginTop: 8, color: '#999', fontSize: 12 }}>
+                审批通过后，系统将自动执行已批准的命令并更新诊断结果。当前状态：{currentTask.email_approval.status}
+              </Paragraph>
+            </div>
+          ) : currentTask.decision?.confirmation_request ? (
+            <div style={{ padding: 20 }}>
+              <Title level={4} style={{ color: '#d48806', marginBottom: 16 }}>⚠️ 需要用户确认</Title>
+              <Paragraph style={{ fontSize: 16, marginBottom: 16 }}>
+                <Text strong>操作：</Text>{currentTask.decision.confirmation_request.operation}
+              </Paragraph>
+              <Paragraph style={{ marginBottom: 8 }}>
+                <Text strong>风险：</Text>
+                <Tag color="orange">{currentTask.decision.confirmation_request.risk}</Tag>
+              </Paragraph>
+              <Paragraph style={{ marginBottom: 8 }}>
+                <Text strong>影响：</Text>{currentTask.decision.confirmation_request.impact}
+              </Paragraph>
+              <Paragraph style={{ marginTop: 16, color: '#666' }}>
+                {currentTask.decision.confirmation_request.message}
+              </Paragraph>
+            </div>
+          ) : (
+            <div style={{ padding: 20, textAlign: 'center' }}>
+              <Spin size="default" />
+              <Paragraph style={{ marginTop: 16 }}>等待处理中...</Paragraph>
+            </div>
+          )}
         </Card>
       )}
 

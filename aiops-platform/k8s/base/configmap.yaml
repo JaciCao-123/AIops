@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aiops-config
+  namespace: aiops
+data:
+  LLM_MODEL: "qwen-plus"
+  APP_NAME: "AIOps Platform"
+  DEBUG: "false"

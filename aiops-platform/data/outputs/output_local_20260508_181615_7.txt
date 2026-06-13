@@ -1,0 +1,8 @@
+PING 8.136.186.115 (8.136.186.115): 56 data bytes
+Request timeout for icmp_seq 0
+Request timeout for icmp_seq 1
+Request timeout for icmp_seq 2
+
+--- 8.136.186.115 ping statistics ---
+4 packets transmitted, 0 packets received, 100.0% packet loss
+

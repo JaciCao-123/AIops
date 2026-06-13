@@ -1,0 +1,54 @@
+-- Logs begin at Fri 2024-06-28 12:39:05 CST, end at Fri 2026-05-08 13:03:00 CST. --
+May 08 13:02:29 k8s-worker2 systemd-logind[578]: Removed session 4.
+May 08 13:02:32 k8s-worker2 kubelet[1057]: E0508 13:02:32.686520    1057 eviction_manager.go:258] "Eviction manager: failed to get summary stats" err="failed to get node info: node \"k8s-worker2\" not found"
+May 08 13:02:36 k8s-worker2 kubelet[1057]: E0508 13:02:36.240910    1057 controller.go:146] "Failed to ensure lease exists, will retry" err="Get \"https://10.0.1.232:6443/apis/coordination.k8s.io/v1/namespaces/kube-node-lease/leases/k8s-worker2?timeout=10s\": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)" interval="7s"
+May 08 13:02:36 k8s-worker2 kubelet[1057]: E0508 13:02:36.831933    1057 event.go:289] Unable to write event: '&v1.Event{TypeMeta:v1.TypeMeta{Kind:"", APIVersion:""}, ObjectMeta:v1.ObjectMeta{Name:"k8s-worker2.18ad795b4fe157f4", GenerateName:"", Namespace:"default", SelfLink:"", UID:"", ResourceVersion:"", Generation:0, CreationTimestamp:time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC), DeletionTimestamp:<nil>, DeletionGracePeriodSeconds:(*int64)(nil), Labels:map[string]string(nil), Annotations:map[string]string(nil), OwnerReferences:[]v1.OwnerReference(nil), Finalizers:[]string(nil), ManagedFields:[]v1.ManagedFieldsEntry(nil)}, InvolvedObject:v1.ObjectReference{Kind:"Node", Namespace:"", Name:"k8s-worker2", UID:"k8s-worker2", APIVersion:"", ResourceVersion:"", FieldPath:""}, Reason:"NodeHasSufficientMemory", Message:"Node k8s-worker2 status is now: NodeHasSufficientMemory", Source:v1.EventSource{Component:"kubelet", Host:"k8s-worker2"}, FirstTimestamp:time.Date(2026, time.May, 8, 11, 27, 40, 970366964, time.Local), LastTimestamp:time.Date(2026, time.May, 8, 11, 28, 41, 587214467, time.Local), Count:4, Type:"Normal", EventTime:time.Date(1, time.January, 1, 0, 0, 0, 0, time.UTC), Series:(*v1.EventSeries)(nil), Action:"", Related:(*v1.ObjectReference)(nil), ReportingController:"kubelet", ReportingInstance:"k8s-worker2"}': 'Patch "https://10.0.1.232:6443/api/v1/namespaces/default/events/k8s-worker2.18ad795b4fe157f4": dial tcp 10.0.1.232:6443: i/o timeout'(may retry after sleeping)
+May 08 13:02:42 k8s-worker2 kubelet[1057]: E0508 13:02:42.686780    1057 eviction_manager.go:258] "Eviction manager: failed to get summary stats" err="failed to get node info: node \"k8s-worker2\" not found"
+May 08 13:02:43 k8s-worker2 kubelet[1057]: E0508 13:02:43.753892    1057 kubelet_node_status.go:92] "Unable to register node with API server" err="Post \"https://10.0.1.232:6443/api/v1/nodes\": dial tcp 10.0.1.232:6443: i/o timeout" node="k8s-worker2"
+May 08 13:02:48 k8s-worker2 sshd[23203]: Accepted publickey for jaci from 14.127.30.47 port 21516 ssh2: RSA SHA256:4hMtjz6w0/K/eIBZHf7Njj/dMO/b8wuxBnxX1zvCt4Y
+May 08 13:02:48 k8s-worker2 systemd[1]: Started Session 81 of user jaci.
+May 08 13:02:48 k8s-worker2 systemd-logind[578]: New session 81 of user jaci.
+May 08 13:02:48 k8s-worker2 sshd[23203]: pam_unix(sshd:session): session opened for user jaci by (uid=0)
+May 08 13:02:48 k8s-worker2 sshd[23206]: Received disconnect from 14.127.30.47 port 21516:11: disconnected by user
+May 08 13:02:48 k8s-worker2 sshd[23206]: Disconnected from 14.127.30.47 port 21516
+May 08 13:02:48 k8s-worker2 sshd[23203]: pam_unix(sshd:session): session closed for user jaci
+May 08 13:02:48 k8s-worker2 systemd-logind[578]: Removed session 81.
+May 08 13:02:50 k8s-worker2 kubelet[1057]: I0508 13:02:50.755480    1057 kubelet_node_status.go:70] "Attempting to register node" node="k8s-worker2"
+May 08 13:02:51 k8s-worker2 sshd[23219]: Accepted publickey for jaci from 14.127.30.47 port 21520 ssh2: RSA SHA256:4hMtjz6w0/K/eIBZHf7Njj/dMO/b8wuxBnxX1zvCt4Y
+May 08 13:02:51 k8s-worker2 systemd[1]: Started Session 82 of user jaci.
+May 08 13:02:51 k8s-worker2 systemd-logind[578]: New session 82 of user jaci.
+May 08 13:02:51 k8s-worker2 sshd[23219]: pam_unix(sshd:session): session opened for user jaci by (uid=0)
+May 08 13:02:51 k8s-worker2 sshd[23221]: Received disconnect from 14.127.30.47 port 21520:11: disconnected by user
+May 08 13:02:51 k8s-worker2 sshd[23221]: Disconnected from 14.127.30.47 port 21520
+May 08 13:02:51 k8s-worker2 sshd[23219]: pam_unix(sshd:session): session closed for user jaci
+May 08 13:02:51 k8s-worker2 systemd-logind[578]: Removed session 82.
+May 08 13:02:52 k8s-worker2 kubelet[1057]: E0508 13:02:52.687867    1057 eviction_manager.go:258] "Eviction manager: failed to get summary stats" err="failed to get node info: node \"k8s-worker2\" not found"
+May 08 13:02:53 k8s-worker2 kubelet[1057]: E0508 13:02:53.242494    1057 controller.go:146] "Failed to ensure lease exists, will retry" err="Get \"https://10.0.1.232:6443/apis/coordination.k8s.io/v1/namespaces/kube-node-lease/leases/k8s-worker2?timeout=10s\": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)" interval="7s"
+May 08 13:02:54 k8s-worker2 sshd[23234]: Accepted publickey for jaci from 14.127.30.47 port 21523 ssh2: RSA SHA256:4hMtjz6w0/K/eIBZHf7Njj/dMO/b8wuxBnxX1zvCt4Y
+May 08 13:02:54 k8s-worker2 systemd[1]: Started Session 83 of user jaci.
+May 08 13:02:54 k8s-worker2 systemd-logind[578]: New session 83 of user jaci.
+May 08 13:02:54 k8s-worker2 sshd[23234]: pam_unix(sshd:session): session opened for user jaci by (uid=0)
+May 08 13:02:54 k8s-worker2 sshd[23237]: Received disconnect from 14.127.30.47 port 21523:11: disconnected by user
+May 08 13:02:54 k8s-worker2 sshd[23237]: Disconnected from 14.127.30.47 port 21523
+May 08 13:02:54 k8s-worker2 sshd[23234]: pam_unix(sshd:session): session closed for user jaci
+May 08 13:02:54 k8s-worker2 systemd-logind[578]: Removed session 83.
+May 08 13:02:57 k8s-worker2 sshd[23250]: Accepted publickey for jaci from 14.127.30.47 port 21526 ssh2: RSA SHA256:4hMtjz6w0/K/eIBZHf7Njj/dMO/b8wuxBnxX1zvCt4Y
+May 08 13:02:57 k8s-worker2 systemd[1]: Started Session 84 of user jaci.
+May 08 13:02:57 k8s-worker2 systemd-logind[578]: New session 84 of user jaci.
+May 08 13:02:57 k8s-worker2 sshd[23250]: pam_unix(sshd:session): session opened for user jaci by (uid=0)
+May 08 13:02:57 k8s-worker2 sshd[23252]: Received disconnect from 14.127.30.47 port 21526:11: disconnected by user
+May 08 13:02:57 k8s-worker2 sshd[23252]: Disconnected from 14.127.30.47 port 21526
+May 08 13:02:57 k8s-worker2 sshd[23250]: pam_unix(sshd:session): session closed for user jaci
+May 08 13:02:57 k8s-worker2 systemd-logind[578]: Removed session 84.
+May 08 13:02:58 k8s-worker2 kubelet[1057]: W0508 13:02:58.541598    1057 reflector.go:535] vendor/k8s.io/client-go/informers/factory.go:150: failed to list *v1.CSIDriver: Get "https://10.0.1.232:6443/apis/storage.k8s.io/v1/csidrivers?limit=500&resourceVersion=0": dial tcp 10.0.1.232:6443: i/o timeout
+May 08 13:02:58 k8s-worker2 kubelet[1057]: I0508 13:02:58.541691    1057 trace.go:236] Trace[1821152353]: "Reflector ListAndWatch" name:vendor/k8s.io/client-go/informers/factory.go:150 (08-May-2026 13:02:28.540) (total time: 30001ms):
+May 08 13:02:58 k8s-worker2 kubelet[1057]: Trace[1821152353]: ---"Objects listed" error:Get "https://10.0.1.232:6443/apis/storage.k8s.io/v1/csidrivers?limit=500&resourceVersion=0": dial tcp 10.0.1.232:6443: i/o timeout 30001ms (13:02:58.541)
+May 08 13:02:58 k8s-worker2 kubelet[1057]: Trace[1821152353]: [30.001408219s] [30.001408219s] END
+May 08 13:02:58 k8s-worker2 kubelet[1057]: E0508 13:02:58.541707    1057 reflector.go:147] vendor/k8s.io/client-go/informers/factory.go:150: Failed to watch *v1.CSIDriver: failed to list *v1.CSIDriver: Get "https://10.0.1.232:6443/apis/storage.k8s.io/v1/csidrivers?limit=500&resourceVersion=0": dial tcp 10.0.1.232:6443: i/o timeout
+May 08 13:03:00 k8s-worker2 sshd[23266]: Accepted publickey for jaci from 14.127.30.47 port 21528 ssh2: RSA SHA256:4hMtjz6w0/K/eIBZHf7Njj/dMO/b8wuxBnxX1zvCt4Y
+May 08 13:03:00 k8s-worker2 systemd[1]: Started Session 85 of user jaci.
+May 08 13:03:00 k8s-worker2 systemd-logind[578]: New session 85 of user jaci.
+May 08 13:03:00 k8s-worker2 sshd[23266]: pam_unix(sshd:session): session opened for user jaci by (uid=0)
+
+hostfile_replace_entries: mkstemp: Operation not permitted
+update_known_hosts: hostfile_replace_entries failed for /Users/jaci-j/.ssh/known_hosts: Operation not permitted
