@@ -10,7 +10,7 @@ metadata:
 spec:
   containers:
   - name: docker
-    image: docker:24-dind
+    image: docker:24
     securityContext:
       privileged: true
     volumeMounts:
@@ -46,6 +46,7 @@ spec:
             steps {
                 container('docker') {
                     sh """
+                        docker login ${HARBOR_URL} -u \${HARBOR_CREDS_USR} -p \${HARBOR_CREDS_PSW}
                         cd aiops-platform/backend
                         docker build -t ${HARBOR_URL}/aiops/backend:v1.0.${IMAGE_TAG} .
                         docker push ${HARBOR_URL}/aiops/backend:v1.0.${IMAGE_TAG}
@@ -80,14 +81,16 @@ spec:
 
         stage('Push Updated Manifests') {
             steps {
-                sh """
-                    cd aiops-platform
-                    git config user.email "jenkins@aiops.local"
-                    git config user.name "Jenkins CI"
-                    git add k8s/base/backend-deployment.yaml k8s/base/frontend-deployment.yaml
-                    git commit -m "ci: update image tags to v1.0.${IMAGE_TAG}" || true
-                    git push https://\${GIT_CREDS_USR}:\${GIT_CREDS_PSW}@github.com/JaciCao-123/AIops.git main
-                """
+                container('kubectl') {
+                    sh """
+                        cd aiops-platform
+                        git config user.email "jenkins@aiops.local"
+                        git config user.name "Jenkins CI"
+                        git add k8s/base/backend-deployment.yaml k8s/base/frontend-deployment.yaml
+                        git commit -m "ci: update image tags to v1.0.${IMAGE_TAG}" || true
+                        git push https://\${GIT_CREDS_USR}:\${GIT_CREDS_PSW}@github.com/JaciCao-123/AIops.git main
+                    """
+                }
             }
         }
     }
