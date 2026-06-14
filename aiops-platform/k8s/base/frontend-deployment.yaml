@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: aiops-frontend
   namespace: aiops
@@ -7,6 +7,14 @@ metadata:
     app: aiops-frontend
 spec:
   replicas: 2
+  strategy:
+    canary:
+      steps:
+      - setWeight: 20
+      - pause: {duration: 3m}
+      - setWeight: 50
+      - pause: {duration: 3m}
+      - setWeight: 100
   selector:
     matchLabels:
       app: aiops-frontend
