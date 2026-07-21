@@ -4,6 +4,7 @@ from .knowledge import KnowledgeExpertAgent
 from .master import MasterAgent
 from .action_execute import ActionExecuteAgent
 from .orchestrator import MultiAgentOrchestrator
+from .grafana_log_client import GrafanaLogClient
 from .schemas import (
     NEREntity,
     IntentResult,

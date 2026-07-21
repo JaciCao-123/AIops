@@ -90,6 +90,8 @@ class ToolRegistry:
         self.register("cluster_alerts", self._cluster_alerts)
         self.register("analyze_trace", self._analyze_trace)
         self.register("analyze_service_dependency", self._analyze_service_dependency)
+        self.register("query_grafana_logs", self._query_grafana_logs)
+        self.register("mcp_call", self._mcp_call)
         
         # ServiceNow 工具
         if SERVICENOW_AVAILABLE:
@@ -1107,6 +1109,118 @@ class ToolRegistry:
                 "error": str(e),
                 "source_name": source_name,
                 "data_type": data_type
+            }
+    
+    async def _query_grafana_logs(
+        self,
+        query: str,
+        start: str = "",
+        end: str = "",
+        limit: int = 100,
+        datasource: str = "",
+    ) -> Dict[str, Any]:
+        """
+        通过 Grafana 代理查询 Loki 日志
+
+        使用 Grafana 的 Data Source Proxy API 查询 Loki 日志数据，
+        无需直接暴露 Loki 端口（3100），请求经过 Grafana 认证代理。
+
+        Args:
+            query: LogQL 查询语句，如 '{app="aiops-backend"} |= "error"'
+            start: 开始时间，"1h ago" / "2d ago" / ISO 格式，空=1小时前
+            end:   结束时间，"now" / ISO 格式，空=当前
+            limit: 最大返回条数（默认 100，最大 5000）
+            datasource: Grafana 数据源名称（默认 "Loki"）
+
+        Returns:
+            {
+                "success": true,
+                "datasource": "Loki",
+                "query": '{app="... "} |= "error"',
+                "time_range": "2024-... → 2024-...",
+                "result_count": 42,
+                "results": [
+                    {"timestamp": "...", "line": "ERROR: ...", "labels": {...}}
+                ],
+                "stats": {"query_time_ms": 235}
+            }
+        """
+        try:
+            from .grafana_log_client import GrafanaLogClient
+
+            client = GrafanaLogClient()
+            try:
+                result = await client.query_logs(
+                    query=query,
+                    start=start,
+                    end=end,
+                    limit=limit,
+                    datasource=datasource,
+                )
+                return result
+            finally:
+                await client.close()
+
+        except ImportError as e:
+            return {
+                "success": False,
+                "error": f"Grafana log client not available: {e}",
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "query": query,
+            }
+    
+    async def _mcp_call(
+        self,
+        tool: str,
+        params: dict = {},
+    ) -> Dict[str, Any]:
+        """
+        通过 MCP (Model Context Protocol) 调用可观测数据工具
+
+        Agent 通过此工具统一获取 Grafana/Prometheus 的可观测数据，
+        无需了解底层数据源的差异。
+
+        Args:
+            tool: MCP Server 上注册的工具名，可选值：
+                - query_metrics:      通过 Grafana 代理查询 Prometheus 指标
+                - query_metrics_range: 查询 Prometheus 范围数据
+                - query_logs:         通过 Grafana 代理查询 Loki 日志
+                - list_dashboards:    列出 Grafana 仪表盘
+                - get_dashboard:      获取仪表盘详情
+                - list_alerts:        列出 Grafana 告警
+            params: 工具参数 dict，具体取决于 tool 类型
+
+        Returns:
+            工具执行的响应结果
+        """
+        try:
+            from ..mcp.client import McpClient
+
+            client = McpClient()
+            try:
+                result = await client.call_tool(tool, params)
+                return result
+            finally:
+                await client.close()
+
+        except ImportError as e:
+            # fallback: 如果 MCP Client 不可用，尝试直接调用 Grafana 客户端
+            logger.warning(f"MCP client unavailable, trying direct call: {e}")
+            if tool == "query_logs":
+                return await self._query_grafana_logs(**params)
+            return {
+                "success": False,
+                "error": f"MCP module not available: {e}",
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e),
+                "tool": tool,
             }
     
     async def _detect_log_anomalies(
