@@ -140,11 +140,11 @@ app.include_router(mcp_router, prefix="/mcp")
 ```
 
 MCP Server 的 SSE 端点：
-    GET  /mcp/sse       -- SSE 连接端点
-    POST /mcp/messages  -- 消息接收端点
+    GET  /api/mcp/sse       -- SSE 连接端点
+    POST /api/mcp/messages  -- 消息接收端点
 
 替代方案：也支持通过 HTTP POST 直接调用工具：
-    POST /mcp/call/{tool_name}
+    POST /api/mcp/call/{tool_name}
     Body: {"query": "..."}
 ```
 """

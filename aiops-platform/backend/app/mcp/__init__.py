@@ -6,7 +6,7 @@ Agent 通过 mcp_call 工具与 MCP Server 交互，统一数据获取入口。
 
 架构:
     Agent (MCP Client) → mcp_call()
-        → HTTP POST /mcp/messages (JSON-RPC)
+        → HTTP POST /api/mcp/messages (JSON-RPC)
             → MCP Server (mcp Python SDK)
                 → GrafanaUnifiedClient
                     → Grafana API (47.76.53.232:3000)

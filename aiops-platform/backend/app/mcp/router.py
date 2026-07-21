@@ -19,7 +19,7 @@ from .schemas import JsonRpcRequest, JsonRpcResponse, MCP_TOOLS, MCP_RESOURCES
 from .server import McpServer
 
 logger = get_logger("mcp.router")
-router = APIRouter(prefix="/mcp", tags=["mcp"])
+router = APIRouter(prefix="/api/mcp", tags=["mcp"])
 
 # 全局 MCP Server 实例
 _mcp_server: Optional[McpServer] = None
@@ -54,7 +54,7 @@ async def sse_endpoint(request: Request):
     async def event_generator():
         server = get_server()
         # 发送 endpoint 事件告知 Client 消息发送地址
-        yield f"event: endpoint\ndata: /mcp/messages\n\n"
+        yield f"event: endpoint\ndata: /api/mcp/messages\n\n"
 
         # 发送 server 信息
         server_info = json.dumps({

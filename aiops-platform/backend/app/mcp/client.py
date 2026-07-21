@@ -58,7 +58,7 @@ class McpClient:
 
         try:
             response = await client.post(
-                f"/mcp/call/{tool_name}",
+                f"/api/mcp/call/{tool_name}",
                 json=payload,
             )
             response.raise_for_status()
@@ -82,7 +82,7 @@ class McpClient:
         """获取 MCP Server 上所有可用的工具列表"""
         client = await self._get_client()
         try:
-            response = await client.get("/mcp/tools")
+            response = await client.get("/api/mcp/tools")
             response.raise_for_status()
             data = response.json()
             return data.get("tools", [])
@@ -94,7 +94,7 @@ class McpClient:
         """获取 MCP Server 上所有可用的资源列表"""
         client = await self._get_client()
         try:
-            response = await client.get("/mcp/resources")
+            response = await client.get("/api/mcp/resources")
             response.raise_for_status()
             data = response.json()
             return data.get("resources", [])
