@@ -74,6 +74,21 @@ spec:
             secretKeyRef:
               name: aiops-secrets
               key: SSH_USER
+        - name: GRAFANA_URL
+          valueFrom:
+            configMapKeyRef:
+              name: aiops-config
+              key: GRAFANA_URL
+        - name: GRAFANA_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aiops-grafana-secret
+              key: GRAFANA_API_KEY
+        - name: PROMETHEUS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: aiops-config
+              key: PROMETHEUS_URL
         resources:
           requests:
             cpu: "500m"
