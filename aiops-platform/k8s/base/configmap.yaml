@@ -7,5 +7,5 @@ data:
   LLM_MODEL: "qwen-plus"
   APP_NAME: "AIOps Platform"
   DEBUG: "false"
-  GRAFANA_URL: "http://47.76.53.232:3000"
-  PROMETHEUS_URL: "http://47.76.53.232:9090"
+  GRAFANA_URL: "http://172.21.36.91:3000"
+  PROMETHEUS_URL: "http://172.21.36.91:9090"
