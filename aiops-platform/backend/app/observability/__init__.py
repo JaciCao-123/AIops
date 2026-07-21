@@ -24,7 +24,32 @@ Observability Platform - 可观测性平台包
 
 from .config import ObservabilityConfig, get_observability_config
 from .prometheus_client import PrometheusClient, create_prometheus_client
-from .opentelemetry_tracer import OpenTelemetryTracer, get_tracer, initialize_observability
+
+# OpenTelemetry 为可选依赖，若未安装则降级
+try:
+    from .opentelemetry_tracer import (
+        OpenTelemetryTracer,
+        get_tracer,
+        initialize_observability,
+    )
+    _OPENTELEMETRY_AVAILABLE = True
+except ImportError:
+    import logging
+    logging.getLogger("observability").warning(
+        "OpenTelemetry packages not installed. Tracing disabled. "
+        "Install: pip install opentelemetry-api opentelemetry-sdk "
+        "opentelemetry-exporter-otlp opentelemetry-instrumentation-fastapi "
+        "opentelemetry-instrumentation-httpx"
+    )
+    OpenTelemetryTracer = None  # type: ignore
+    _OPENTELEMETRY_AVAILABLE = False
+
+    def get_tracer():
+        return None
+
+    def initialize_observability(**kwargs):
+        pass
+
 from .tempo_query import TempoQueryClient, create_tempo_client
 from .root_cause_analyzer import RootCauseAnalyzer, create_root_cause_analyzer
 from .grafana_dashboard import GrafanaDashboardGenerator, DashboardTemplate
