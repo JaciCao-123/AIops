@@ -136,27 +136,27 @@ class ObservabilityConfig(BaseModel):
     
     class Config:
         env_prefix = "OBS_"
-        
-        @classmethod
-        def from_env(cls) -> "ObservabilityConfig":
-            """从环境变量加载配置"""
-            return cls(
-                prometheus=PrometheusConfig(
-                    url=os.getenv("PROMETHEUS_URL", "http://localhost:9090"),
-                    enabled=os.getenv("PROMETHEUS_ENABLED", "true").lower() == "true",
-                ),
-                grafana=GrafanaConfig(
-                    url=os.getenv("GRAFANA_URL", "http://localhost:3000"),
-                    api_key=os.getenv("GRAFANA_API_KEY"),
-                ),
-                tempo=TempoConfig(
-                    url=os.getenv("TEMPO_URL", "http://localhost:3200"),
-                ),
-                opentelemetry=OpenTelemetryConfig(
-                    endpoint=os.getenv("OTEL_ENDPOINT", "http://localhost:4317"),
-                    service_name=os.getenv("OTEL_SERVICE_NAME", "aiops-platform"),
-                ),
-            )
+
+    @classmethod
+    def from_env(cls) -> "ObservabilityConfig":
+        """从环境变量加载配置"""
+        return cls(
+            prometheus=PrometheusConfig(
+                url=os.getenv("PROMETHEUS_URL", "http://localhost:9090"),
+                enabled=os.getenv("PROMETHEUS_ENABLED", "true").lower() == "true",
+            ),
+            grafana=GrafanaConfig(
+                url=os.getenv("GRAFANA_URL", "http://localhost:3000"),
+                api_key=os.getenv("GRAFANA_API_KEY"),
+            ),
+            tempo=TempoConfig(
+                url=os.getenv("TEMPO_URL", "http://localhost:3200"),
+            ),
+            opentelemetry=OpenTelemetryConfig(
+                endpoint=os.getenv("OTEL_ENDPOINT", "http://localhost:4317"),
+                service_name=os.getenv("OTEL_SERVICE_NAME", "aiops-platform"),
+            ),
+        )
 
 
 def get_observability_config() -> ObservabilityConfig:
