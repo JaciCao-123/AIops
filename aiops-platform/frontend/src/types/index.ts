@@ -409,3 +409,33 @@ export interface ServiceInfo {
   error_rate: number;
   latency_p99: number;
 }
+
+// ─── MCP 数据源类型 ──────────────────────────────
+
+export interface McpToolInfo {
+  name: string;
+  description: string;
+  inputSchema: {
+    type: string;
+    properties: Record<string, { type: string; description: string }>;
+    required: string[];
+  };
+}
+
+export interface McpStatus {
+  server: string;
+  version: string;
+  status: 'running' | 'stopped';
+  grafana_connected: boolean;
+  grafana_url: string;
+  tool_count: number;
+  resource_count: number;
+}
+
+export interface McpCallResult {
+  success: boolean;
+  error?: string;
+  result_count?: number;
+  results?: unknown[];
+  [key: string]: unknown;
+}

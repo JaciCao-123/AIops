@@ -34,6 +34,11 @@ class McpServer:
         self._initialized = False
 
     @property
+    def grafana_url(self) -> str:
+        from ..observability.config import get_observability_config
+        return get_observability_config().grafana.url
+
+    @property
     def server_name(self) -> str:
         return "aiops-observability"
 

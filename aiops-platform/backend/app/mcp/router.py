@@ -202,6 +202,30 @@ async def list_tools():
     })
 
 
+@router.get("/status")
+async def mcp_status():
+    """MCP Server 健康状态检查"""
+    server = get_server()
+    grafana_ok = False
+    try:
+        client = await server.get_grafana_client()
+        grafana_client = await client._get_client()
+        health_resp = await grafana_client.get("/api/health")
+        grafana_ok = health_resp.status_code == 200
+    except Exception:
+        grafana_ok = False
+
+    return {
+        "server": server.server_name,
+        "version": server.server_version,
+        "status": "running",
+        "grafana_connected": grafana_ok,
+        "grafana_url": server.grafana_url,
+        "tool_count": len(MCP_TOOLS),
+        "resource_count": len(MCP_RESOURCES),
+    }
+
+
 @router.get("/resources")
 async def list_resources():
     """列出所有可用的 MCP 资源"""

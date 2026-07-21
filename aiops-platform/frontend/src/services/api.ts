@@ -5,7 +5,8 @@ import type {
   LoginParams, LoginResult, UserInfo, RegisterParams,
   Alert, ClusteredAlerts, AlertStats, AlertIngestResponse,
   TraceSearchResult, TraceDetail, ServiceDependency, TraceAnalysis,
-  RCAReport, MetricsData, SystemHealth, ServiceInfo
+  RCAReport, MetricsData, SystemHealth, ServiceInfo,
+  McpStatus, McpToolInfo, McpCallResult
 } from '../types';
 
 const api = axios.create({
@@ -363,6 +364,23 @@ export const observabilityApi = {
 
   getServiceList: async (): Promise<{ services: ServiceInfo[] }> => {
     const response = await api.get('/observability/services');
+    return response.data;
+  },
+};
+
+export const mcpApi = {
+  getStatus: async (): Promise<McpStatus> => {
+    const response = await api.get('/mcp/status');
+    return response.data;
+  },
+
+  getTools: async (): Promise<{ tools: McpToolInfo[]; tool_count: number }> => {
+    const response = await api.get('/mcp/tools');
+    return response.data;
+  },
+
+  callTool: async (tool: string, params: Record<string, unknown> = {}): Promise<McpCallResult> => {
+    const response = await api.post(`/mcp/call/${tool}`, { tool, params });
     return response.data;
   },
 };
