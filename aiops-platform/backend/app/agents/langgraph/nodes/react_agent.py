@@ -135,7 +135,7 @@ def _build_user_message(state: AIOpsState) -> str:
 {json.dumps(intent_data, ensure_ascii=False, indent=2)}
 
 ## 可用的 Skill 文件
-{skills_content[:3000]}
+{skills_content}
 """
 
     if ssh_user:

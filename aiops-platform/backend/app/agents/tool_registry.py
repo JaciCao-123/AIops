@@ -2337,6 +2337,28 @@ class ToolRegistry:
             {
                 "type": "function",
                 "function": {
+                    "name": "mcp_call",
+                    "description": "通过 MCP (Model Context Protocol) 调用可观测数据工具，查询 Grafana/Prometheus/Loki 的指标、日志和告警。支持查询服务拓扑(traces_service_graph_request_total)、PromQL 指标、Loki 日志和 Grafana 告警",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "tool": {
+                                "type": "string",
+                                "enum": ["query_metrics", "query_metrics_range", "query_logs", "list_dashboards", "get_dashboard", "list_alerts"],
+                                "description": "MCP 工具名。query_metrics=查询 Prometheus 指标, query_metrics_range=范围查询, query_logs=查询 Loki 日志, list_dashboards=列出仪表盘, get_dashboard=获取仪表盘详情, list_alerts=列出告警"
+                            },
+                            "params": {
+                                "type": "object",
+                                "description": "工具参数。对于 query_metrics/query_metrics_range: {query: PromQL语句, time/start/end: 时间}; 对于 query_logs: {query: LogQL语句, start: 时间, limit: 条数}; 对于 list_alerts: {state: 告警状态}"
+                            }
+                        },
+                        "required": ["tool", "params"]
+                    }
+                }
+            },
+            {
+                "type": "function",
+                "function": {
                     "name": "detect_log_anomalies",
                     "description": "使用 DeepLog 模型检测日志序列异常。基于 LSTM 学习日志事件的正常模式，预测下一个最可能出现的日志事件，如果实际事件不在预测的 Top-k 列表中则判定为异常。仅做推理，不进行训练。",
                     "parameters": {
