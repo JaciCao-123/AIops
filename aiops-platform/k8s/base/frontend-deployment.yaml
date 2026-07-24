@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: aiops-frontend
-        image: 172.21.36.94:80/aiops/frontend:v1.0.25
+        image: 172.21.36.94:80/aiops/frontend:v1.0.26
         imagePullPolicy: Always
         ports:
         - containerPort: 80
