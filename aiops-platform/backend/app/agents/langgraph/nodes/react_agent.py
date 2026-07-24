@@ -128,7 +128,9 @@ def _build_user_message(state: AIOpsState) -> str:
     skills_content = state.get("skills_content", "")
     ssh_user = state.get("ssh_user")
 
-    user_msg = f"""## 用户查询
+    user_msg = f"""{SYSTEM_PROMPT}
+
+## 用户查询
 {state["user_query"]}
 
 ## 意图识别结果
@@ -166,7 +168,6 @@ def _get_react_agent():
     _react_agent = create_react_agent(
         llm,
         lc_tools,
-        prompt=SYSTEM_PROMPT,
     )
 
     return _react_agent
