@@ -132,15 +132,12 @@ SYSTEM_PROMPT = """你是一个专业的 AIOps 智能运维助手。
 # ==================== OpenAI 客户端 ====================
 
 async def get_openai_client():
-    if not settings.OPENAI_API_KEY:
-        raise HTTPException(
-            status_code=500,
-            detail="OpenAI API Key 未配置，请在 .env 中设置 OPENAI_API_KEY"
-        )
+    api_key = settings.OPENAI_API_KEY or "not-needed"
+    base_url = settings.OPENAI_BASE_URL or "http://47.76.53.232:8000/v1"
     
     return AsyncOpenAI(
-        api_key=settings.OPENAI_API_KEY,
-        base_url=settings.OPENAI_BASE_URL if settings.OPENAI_BASE_URL else None,
+        api_key=api_key,
+        base_url=base_url,
     )
 
 
@@ -428,6 +425,6 @@ async def health_check():
         "status": "healthy",
         "service": "ai-chat",
         "model": settings.OPENAI_MODEL,
-        "configured": bool(settings.OPENAI_API_KEY),
+        "configured": bool(settings.OPENAI_BASE_URL),
         "stats": stats
     }

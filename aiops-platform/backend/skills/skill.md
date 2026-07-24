@@ -49,6 +49,7 @@
 | Skill | 文件路径 | 触发关键词 | 适用场景 |
 |-------|---------|-----------|---------|
 | **debug_skill** | `diagnosis/debug_skill.md` | 磁盘, 内存, CPU, 网络, 故障, 排查, OOM, 502, 504, SSH不通, 死锁, CrashLoopBackOff, 防火墙 | 服务器/数据库/中间件/K8S 全栈故障排查 |
+| **rag_debug_skill** | `diagnosis/rag_debug_skill.md` | RAG, 知识库, Qdrant, vLLM, 服务拓扑, traces_service_graph, 检索失败 | RAG 系统故障排查（Docker Compose/Grafana拓扑） |
 | **gnn_rca_skill** | `diagnosis/gnn_rca_skill.md` | 根因分析, RCA, GNN, 微服务, 拓扑 | 微服务根因分析 |
 | **microservice_rca_skill** | `diagnosis/microservice_rca_skill.md` | 微服务根因, GNN, 服务拓扑, 故障传播 | 微服务根因定位 (GNN) |
 | **time_series_rca_skill** | `diagnosis/time_series_rca_skill.md` | 时间序列, 预测, 异常检测, 趋势分析 | 时间序列根因分析 |
@@ -64,6 +65,7 @@
 
 **选择指南**：
 - 单机故障 → `@reference: diagnosis/debug_skill.md`
+- RAG 系统故障 → `@reference: diagnosis/rag_debug_skill.md`
 - 微服务/多服务故障 → `@reference: diagnosis/gnn_rca_skill.md`
 - 微服务根因定位 → `@reference: diagnosis/microservice_rca_skill.md`
 - 时间序列/指标异常 → `@reference: diagnosis/time_series_rca_skill.md`
@@ -378,10 +380,14 @@
     │   ├─ 是 → incident_response_skill (应急响应)
     │   └─ 否 ↓
     │
+    ├─ 是否涉及 RAG 系统/知识库/Qdrant/vLLM？
+    │   ├─ 是 → rag_debug_skill (RAG 系统故障排查)
+    │   └─ 否 ↓
+
     ├─ 是否涉及 Kubernetes/Pod？
     │   ├─ 是 → k8s_pod_skill (Pod 诊断)
     │   └─ 否 ↓
-    │
+
     ├─ 是否涉及 CI/CD 部署？
     │   ├─ 是 → deployment_skill (部署诊断)
     │   └─ 否 ↓
@@ -538,6 +544,10 @@
 | 内存, memory, free, OOM | `diagnosis/debug_skill.md` |
 | CPU, 负载, load, top | `diagnosis/debug_skill.md` |
 | 网络, 连接超时, network | `diagnosis/debug_skill.md` |
+| RAG, rag, 检索增强生成, 知识库, Qdrant, vLLM, 向量检索, 向量数据库 | `diagnosis/rag_debug_skill.md` |
+| 服务拓扑, service graph, traces_service_graph, 服务调用 | `diagnosis/rag_debug_skill.md` |
+| rag_backend, rag_qdrant, rag_vllm, docker compose rag | `diagnosis/rag_debug_skill.md` |
+| 检索失败, 检索无结果, 知识库异常, rag服务异常 | `diagnosis/rag_debug_skill.md` |
 | 根因分析, RCA, root cause | `diagnosis/gnn_rca_skill.md` |
 | GNN, 图神经网络, 拓扑 | `diagnosis/gnn_rca_skill.md` |
 | 微服务, 调用链, trace | `diagnosis/gnn_rca_skill.md` |
@@ -689,6 +699,7 @@ skills/
 ├── skill.md                          # 主索引文件（当前文件）
 ├── diagnosis/                        # 诊断类 Skill
 │   ├── debug_skill.md               # 服务器故障排查 (P0)
+│   ├── rag_debug_skill.md           # RAG 系统故障排查 (P0)
 │   ├── gnn_rca_skill.md             # GNN 根因分析 (P0)
 │   ├── time_series_rca_skill.md     # 时间序列根因分析 (P0)
 │   ├── mysql_deadlock_skill.md      # MySQL 死锁排查 (P0)

@@ -495,6 +495,19 @@ class SkillManager:
                 "灰度配置", "configmap", "secret", "配置热更新"
             ]
         },
+        "rag_debug_skill": {
+            "path": "diagnosis/rag_debug_skill.md",
+            "category": "diagnosis",
+            "description": "RAG 系统故障排查 (Docker Compose/Qdrant/vLLM/Grafana拓扑)",
+            "keywords": [
+                "rag", "检索增强生成", "知识库", "rag系统",
+                "qdrant", "vllm", "向量检索", "embedding",
+                "rag_backend", "rag_qdrant", "rag_vllm",
+                "知识库检索", "检索失败", "检索无结果",
+                "服务拓扑", "service graph", "traces_service_graph",
+                "docker compose rag", "rag服务异常"
+            ]
+        },
         "systemd_autostart_skill": {
             "path": "systemd/systemd_autostart_skill.md",
             "category": "systemd",
@@ -1108,6 +1121,29 @@ class SkillManager:
                 "配置中心": 5, "spring cloud config": 4
             },
             "alias": {}
+        },
+        "rag_debug_skill": {
+            "core": {
+                "rag": 10, "rag系统": 10, "rag故障": 10,
+                "检索增强生成": 9, "知识库": 8, "知识库故障": 9,
+                "rag诊断": 10, "rag排查": 10
+            },
+            "symptom": {
+                "rag服务异常": 10, "rag响应慢": 9, "rag报错": 9,
+                "检索无结果": 9, "检索失败": 9, "知识库异常": 8,
+                "rag超时": 8, "rag不可用": 9, "rag回答异常": 8,
+                "rag崩溃": 8, "rag 502": 8, "rag 500": 8
+            },
+            "component": {
+                "qdrant": 8, "vllm": 8, "向量数据库": 7,
+                "embedding": 7, "向量检索": 7, "rag_backend": 7,
+                "服务拓扑": 7, "service graph": 7, "trace": 6,
+                "traces_service_graph_request_total": 8,
+                "docker compose": 5, "rag容器": 6
+            },
+            "alias": {
+                "rag知识库": 9
+            }
         },
         "systemd_autostart_skill": {
             "core": {

@@ -4,7 +4,7 @@ metadata:
   name: aiops-config
   namespace: aiops
 data:
-  LLM_MODEL: "qwen-plus"
+  LLM_MODEL: "/opt/models/Qwen3.6-35B-A3B-AWQ-4bit"
   APP_NAME: "AIOps Platform"
   DEBUG: "false"
   GRAFANA_URL: "http://172.21.36.91:3000"

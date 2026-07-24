@@ -16,8 +16,8 @@ NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
 NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password")
 
 LLM_API_KEY = os.getenv("LLM_API_KEY", "")
-LLM_API_BASE = os.getenv("LLM_API_BASE", "https://dashscope.aliyuncs.com/compatible-mode/v1")
-LLM_MODEL = os.getenv("LLM_MODEL", "qwen-plus")
+LLM_API_BASE = os.getenv("LLM_API_BASE", "http://47.76.53.232:8000/v1")
+LLM_MODEL = os.getenv("LLM_MODEL", "/opt/models/Qwen3.6-35B-A3B-AWQ-4bit")
 
 class QueryRequest(BaseModel):
     query: str

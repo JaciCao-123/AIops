@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     RAG_SERVICE_URL: str = "http://localhost:8001"
     
     OPENAI_API_KEY: str = ""
-    OPENAI_BASE_URL: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-    OPENAI_MODEL: str = "qwen-plus"
+    OPENAI_BASE_URL: str = "http://47.76.53.232:8000/v1"
+    OPENAI_MODEL: str = "/opt/models/Qwen3.6-35B-A3B-AWQ-4bit"
     
     SSH_USER: str = ""
     SSH_KEY_PATH: str = os.path.expanduser("~/.ssh/id_rsa")
