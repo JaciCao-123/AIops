@@ -20,7 +20,7 @@ class IntentParseAgent:
         )
         self.cmdb_service_list = settings.CMDB_SERVICE_LIST
         
-    def _build_ner_prompt(self, user_input: str) -> str:
+    def _build_ner_system_prompt(self) -> str:
         return f"""你是一个运维领域的 NER (命名实体识别) 专家。你的任务是从用户的自然语言描述中提取所有关键实体。
 
 当前系统维护的服务列表 (CMDB)：{json.dumps(self.cmdb_service_list, ensure_ascii=False)}
@@ -51,8 +51,6 @@ class IntentParseAgent:
   - 当用户说"用户名是xxx"、"登录ID是xxx"、"用xxx用户登录"时，提取用户名
   - 常见用户名：root, admin, ubuntu, centos, ec2-user, jaci 等
 
-用户输入：{user_input}
-
 Output Format (纯 JSON，无 Markdown 标记):
 {{
     "entities": [
@@ -65,11 +63,8 @@ Output Format (纯 JSON，无 Markdown 标记):
     "confidence": "HIGH"
 }}"""
 
-    def _build_intent_prompt(self, user_input: str, entities: List[Dict]) -> str:
-        return f"""你是一个运维意图识别专家。根据提取的实体，确定用户的意图。
-
-提取的实体：{json.dumps(entities, ensure_ascii=False)}
-用户输入：{user_input}
+    def _build_intent_system_prompt(self) -> str:
+        return """你是一个运维意图识别专家。根据提取的实体，确定用户的意图。
 
 意图分类：
 - DIAGNOSE: 故障排查、根因分析
@@ -87,16 +82,20 @@ Output Format (纯 JSON):
 }}"""
 
     async def parse(self, user_input: str) -> IntentResult:
-        ner_prompt = self._build_ner_prompt(user_input)
+        ner_system_prompt = self._build_ner_system_prompt()
+        ner_messages = [
+            {"role": "system", "content": ner_system_prompt},
+            {"role": "user", "content": f"用户输入：{user_input}"}
+        ]
         
-        cache_key_messages = json.dumps([{"role": "user", "content": ner_prompt}], ensure_ascii=False)
+        cache_key_messages = json.dumps(ner_messages, ensure_ascii=False)
         cached = llm_cache.get(settings.OPENAI_MODEL, cache_key_messages, 0.1)
         if cached is not None:
             ner_result = cached
         else:
             response = self.client.chat.completions.create(
                 model=settings.OPENAI_MODEL,
-                messages=[{"role": "user", "content": ner_prompt}],
+                messages=ner_messages,
                 temperature=0.1
             )
             content = response.choices[0].message.content.strip()
@@ -114,16 +113,20 @@ Output Format (纯 JSON):
             llm_cache.set(settings.OPENAI_MODEL, cache_key_messages, 0.1, ner_result)
         
         entities = ner_result.get("entities", [])
-        intent_prompt = self._build_intent_prompt(user_input, entities)
+        intent_system_prompt = self._build_intent_system_prompt()
+        intent_messages = [
+            {"role": "system", "content": intent_system_prompt},
+            {"role": "user", "content": f"提取的实体：{json.dumps(entities, ensure_ascii=False)}\n用户输入：{user_input}"}
+        ]
         
-        cache_key_messages2 = json.dumps([{"role": "user", "content": intent_prompt}], ensure_ascii=False)
+        cache_key_messages2 = json.dumps(intent_messages, ensure_ascii=False)
         cached2 = llm_cache.get(settings.OPENAI_MODEL, cache_key_messages2, 0.1)
         if cached2 is not None:
             intent_result = cached2
         else:
             response = self.client.chat.completions.create(
                 model=settings.OPENAI_MODEL,
-                messages=[{"role": "user", "content": intent_prompt}],
+                messages=intent_messages,
                 temperature=0.1
             )
             content = response.choices[0].message.content.strip()

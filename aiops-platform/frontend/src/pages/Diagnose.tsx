@@ -42,7 +42,7 @@ const Diagnose = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/multi-agent/process', {
+      const response = await fetch('/aiops/api/multi-agent/process', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
