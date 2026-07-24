@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: aiops-backend
-        image: 172.21.36.94:80/aiops/backend:v1.0.22
+        image: 172.21.36.94:80/aiops/backend:v1.0.23
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
