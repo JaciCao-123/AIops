@@ -85,6 +85,8 @@ spec:
             configMapKeyRef:
               name: aiops-config
               key: PROMETHEUS_URL
+        - name: SSH_KEY_PATH
+          value: "/etc/aiops/ssh/id_rsa"
         resources:
           requests:
             cpu: "500m"
@@ -107,9 +109,16 @@ spec:
         volumeMounts:
         - name: app-data
           mountPath: /app/data
+        - name: ssh-key
+          mountPath: /etc/aiops/ssh
+          readOnly: true
       volumes:
       - name: app-data
         emptyDir: {}
+      - name: ssh-key
+        secret:
+          secretName: aiops-ssh-secret
+          defaultMode: 0600
 ---
 apiVersion: v1
 kind: Service
