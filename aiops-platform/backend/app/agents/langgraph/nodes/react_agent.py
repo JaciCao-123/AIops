@@ -166,7 +166,7 @@ def _get_react_agent():
     _react_agent = create_react_agent(
         llm,
         lc_tools,
-        state_modifier=SYSTEM_PROMPT,
+        prompt=SYSTEM_PROMPT,
     )
 
     return _react_agent
