@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# SealedSecret 资源（由 k8s/scripts/seal-secrets.sh 生成加密数据）
+resources:
+  - aiops-secrets.yaml
+  - aiops-ssh-secret.yaml

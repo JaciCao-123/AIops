@@ -94,6 +94,9 @@ cache/
 Thumbs.db
 Desktop.ini
 
+# Sealed Secrets 明文源（禁止提交，仅本地保存加密输入）
+**/k8s/secrets-plain/
+
 # Build outputs
 dist/
 build/
