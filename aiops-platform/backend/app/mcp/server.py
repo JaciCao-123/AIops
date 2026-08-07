@@ -73,6 +73,21 @@ class McpServer:
             return await self._call_get_dashboard(arguments)
         elif tool_name == "list_alerts":
             return await self._call_list_alerts(arguments)
+        elif tool_name == "get_rag_overview":
+            client = await self.get_grafana_client()
+            return await client.get_rag_overview(
+                lookback=arguments.get("lookback", "1h"),
+            )
+        elif tool_name == "get_gpu_overview":
+            client = await self.get_grafana_client()
+            return await client.get_gpu_overview(
+                lookback=arguments.get("lookback", "1h"),
+            )
+        elif tool_name == "get_vllm_overview":
+            client = await self.get_grafana_client()
+            return await client.get_vllm_overview(
+                lookback=arguments.get("lookback", "1h"),
+            )
         else:
             return {
                 "success": False,

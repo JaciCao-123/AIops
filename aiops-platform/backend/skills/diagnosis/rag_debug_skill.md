@@ -22,14 +22,16 @@ rag_backend (FastAPI)           端口 8001
     └── rag_asr (语音识别, 可选)
 ```
 
+登陆部署RAG的服务器，设置了公钥认证
+ssh root@47.76.53.232
 ## 可观测性栈 (共享同一套 Grafana)
 
-Grafana URL: http://172.21.36.91:3000 (已通过 MCP 集成)
+Grafana URL: http://47.76.53.232:3000 (已通过 MCP 集成，Basic Auth)
 
 Grafana 中预置的仪表盘:
-- `rag-overview`: RAG 系统概览（请求量、延迟、错误率）
+- `rag-ops-overview`: RAG 系统运行概览（请求量、缓存命中率、质量指标、节点耗时、Rerank、ERROR 日志）
+- `system-gpu-overview`: 系统与 GPU 概览（CPU/内存/磁盘/GPU 利用率/显存/温度/功耗）
 - `service-topology`: 基于 OpenTelemetry trace 的服务调用拓扑图
-- `system-overview`: 主机级资源监控
 - `vllm-overview`: vLLM 推理性能监控
 
 相关 Prometheus 指标 (通过 `traces_service_graph_request_total` 获取):
@@ -52,6 +54,32 @@ histogram_quantile(0.99, sum(rate(traces_service_graph_request_duration_seconds_
 ```
 
 ## 诊断流程
+
+### 优先步骤: 获取监控健康快照（首选）
+
+优先调用聚合工具一次性获取健康快照，减少多次查询的 Token 消耗；若快照显示异常再进入详细排查。
+
+```
+# RAG 服务健康快照（请求量/缓存命中率/质量指标/节点耗时/Rerank/错误日志）
+工具: mcp_call
+参数: tool="get_rag_overview", params={"lookback": "1h"}
+```
+
+```
+# 系统与 GPU 健康快照（CPU/内存/磁盘/GPU利用率/显存/温度/功耗）
+工具: mcp_call
+参数: tool="get_gpu_overview", params={"lookback": "1h"}
+```
+
+```
+# vLLM 推理引擎健康快照（引擎状态/KV Cache/QPS/TTFT/Token吞吐）
+工具: mcp_call
+参数: tool="get_vllm_overview", params={"lookback": "1h"}
+```
+
+根据返回的 `status`（HEALTHY/WARNING）和 `summary` 快速判断服务状态：
+- `HEALTHY`: 服务正常，可直接输出结论
+- `WARNING`: 依据 `warnings` 和 `errors` 字段进入对应组件的详细排查
 
 ### 步骤 1: 获取 RAG 服务调用拓扑
 

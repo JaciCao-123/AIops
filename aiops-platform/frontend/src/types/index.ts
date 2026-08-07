@@ -439,3 +439,24 @@ export interface McpCallResult {
   results?: unknown[];
   [key: string]: unknown;
 }
+
+// ─── RAG/GPU/vLLM 监控快照 ───
+
+export interface MetricItem {
+  value?: number | string | null;
+  [key: string]: unknown;
+}
+
+export interface OverviewSnapshot {
+  success: boolean;
+  source?: string;
+  dashboard_url?: string;
+  timestamp?: string;
+  status: string;
+  summary?: string;
+  metrics: Record<string, unknown>;
+  warnings?: string[];
+  errors?: Array<Record<string, unknown>>;
+  alerts?: unknown[];
+  [key: string]: unknown;
+}

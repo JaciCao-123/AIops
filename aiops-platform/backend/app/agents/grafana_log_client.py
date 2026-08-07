@@ -50,6 +50,12 @@ class GrafanaLogClient:
             headers = {"Accept": "application/json"}
             if self.config.api_key:
                 headers["Authorization"] = f"Bearer {self.config.api_key}"
+            else:
+                # fallback 到 Basic Auth
+                import base64
+                auth_str = f"{self.config.username}:{self.config.password}"
+                encoded = base64.b64encode(auth_str.encode()).decode()
+                headers["Authorization"] = f"Basic {encoded}"
             self._client = httpx.AsyncClient(
                 base_url=self.config.url.rstrip("/"),
                 headers=headers,
@@ -183,49 +189,72 @@ class GrafanaLogClient:
             ds_uid = await self._get_loki_datasource_uid(datasource)
             client = await self._get_client()
 
-            params = {
-                "query": query,
-                "start": start_dt.isoformat(),
-                "end": end_dt.isoformat(),
-                "limit": str(limit),
-                "direction": "backward",
+            # 使用 Grafana 统一查询接口 /api/ds/query（datasource proxy 路径返回 400）
+            payload = {
+                "queries": [
+                    {
+                        "refId": "A",
+                        "datasource": {"type": "loki", "uid": ds_uid},
+                        "expr": query,
+                        "queryType": "range",
+                        "maxLines": limit,
+                    }
+                ],
+                "from": start_dt.isoformat(),
+                "to": end_dt.isoformat(),
             }
-
-            proxy_url = f"/api/datasources/proxy/uid/{ds_uid}/loki/api/v1/query_range"
             logger.info(f"Querying Grafana Loki: {query} ({start} ~ {end})")
 
             t0 = datetime.now()
-            response = await client.get(proxy_url, params=params)
+            response = await client.post("/api/ds/query", json=payload)
             elapsed = (datetime.now() - t0).total_seconds() * 1000
             response.raise_for_status()
             data = response.json()
 
-            # 解析 Loki 返回结果
+            # 解析 LabeledTimeValues 帧: fields=[labels, Time, Line, tsNs, labelTypes, id]
             results = []
-            result_type = data.get("data", {}).get("resultType", "")
-            streams = data.get("data", {}).get("result", [])
+            for ref_id, frame in data.get("results", {}).items():
+                for series in frame.get("frames", []):
+                    fields = series.get("schema", {}).get("fields", [])
+                    values = series.get("data", {}).get("values", [])
+                    if not fields or not values:
+                        continue
+                    idx = {f.get("name", f"col{i}"): i for i, f in enumerate(fields)}
+                    labels_col = idx.get("labels")
+                    time_col = idx.get("Time")
+                    line_col = idx.get("Line")
 
-            for stream in streams:
-                stream_labels = stream.get("stream", {})
-                values = stream.get("values", [])
-                for ts_ns, line in values:
-                    # Loki 时间戳是纳秒级
-                    try:
-                        ts_sec = int(ts_ns) / 1e9
-                        ts_str = datetime.fromtimestamp(ts_sec, tz=timezone.utc).isoformat()
-                    except (ValueError, TypeError):
-                        ts_str = ts_ns
+                    n = max(len(col) for col in values)
+                    for r in range(n):
+                        raw_labels = values[labels_col][r] if labels_col is not None and r < len(values[labels_col]) else None
+                        if isinstance(raw_labels, str):
+                            try:
+                                stream_labels = json.loads(raw_labels)
+                            except (ValueError, TypeError):
+                                stream_labels = {}
+                        elif isinstance(raw_labels, dict):
+                            stream_labels = raw_labels
+                        else:
+                            stream_labels = {}
 
-                    results.append({
-                        "timestamp": ts_str,
-                        "line": line,
-                        "labels": stream_labels,
-                    })
+                        ts_val = values[time_col][r] if time_col is not None and r < len(values[time_col]) else None
+                        line = values[line_col][r] if line_col is not None and r < len(values[line_col]) else ""
+                        # Grafana 时间戳为毫秒级
+                        try:
+                            ts_ms = float(ts_val)
+                            ts_str = datetime.fromtimestamp(ts_ms / 1e3, tz=timezone.utc).isoformat()
+                        except (ValueError, TypeError):
+                            ts_str = str(ts_val)
 
+                        results.append({
+                            "timestamp": ts_str,
+                            "line": str(line),
+                            "labels": stream_labels,
+                        })
+                        if len(results) >= limit:
+                            break
                     if len(results) >= limit:
                         break
-                if len(results) >= limit:
-                    break
 
             return {
                 "success": True,

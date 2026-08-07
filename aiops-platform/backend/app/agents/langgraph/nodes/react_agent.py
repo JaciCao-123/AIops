@@ -177,7 +177,13 @@ async def react_agent_node(state: AIOpsState) -> dict:
     agent = _get_react_agent()
 
     user_message = _build_user_message(state)
-    input_messages = state.get("messages", []) + [
+    # 只提取 state 中的 system 消息，避免 assistant 消息混在 system 和 user 之间
+    # vLLM 要求 system 消息必须位于消息列表最前面
+    system_messages = [
+        m for m in state.get("messages", [])
+        if isinstance(m, dict) and m.get("role") == "system"
+    ]
+    input_messages = system_messages + [
         {"role": "user", "content": user_message}
     ]
 

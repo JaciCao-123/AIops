@@ -13,6 +13,7 @@ import {
   AlertOutlined,
   ClusterOutlined,
   HddOutlined,
+  ThunderboltOutlined,
 } from '@ant-design/icons';
 
 import Dashboard from './pages/Dashboard';
@@ -26,6 +27,7 @@ import Register from './pages/Register';
 import Alerts from './pages/Alerts';
 import Tracing from './pages/Tracing';
 import Datasources from './pages/Datasources';
+import RagMonitor from './pages/RagMonitor';
 import { TerminalProvider } from './contexts/TerminalContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
@@ -36,6 +38,7 @@ const menuItems = [
   { key: '/', icon: <DashboardOutlined />, label: '仪表盘', path: '/', permission: null },
   { key: '/alerts', icon: <AlertOutlined />, label: '告警中心', path: '/alerts', permission: 'alerts:view' },
   { key: '/datasources', icon: <HddOutlined />, label: '数据源', path: '/datasources', permission: null },
+  { key: '/rag-monitor', icon: <ThunderboltOutlined />, label: 'RAG监控', path: '/rag-monitor', permission: null },
   { key: '/logs', icon: <FileTextOutlined />, label: '日志列表', path: '/logs', permission: 'logs:view' },
   { key: '/tracing', icon: <ClusterOutlined />, label: '链路追踪', path: '/tracing', permission: 'tracing:view' },
   { key: '/diagnose', icon: <BugOutlined />, label: '故障诊断', path: '/diagnose', permission: 'diagnose:view' },
@@ -185,6 +188,7 @@ const AppContent = () => {
                   </PrivateRoute>
                 } />
                 <Route path="/datasources" element={<Datasources />} />
+                <Route path="/rag-monitor" element={<RagMonitor />} />
                 <Route path="/diagnose" element={
                   <PrivateRoute requiredPermission="diagnose:view">
                     <Diagnose />

@@ -1,14 +1,25 @@
 from ..state import AIOpsState
 from app.agents.skill_manager import SkillManager
+import logging
 
 _skill_manager = SkillManager()
+logger = logging.getLogger(__name__)
 
 
 async def skill_match_node(state: AIOpsState) -> dict:
+    query = state["user_query"]
+    intent_data = state.get("intent_data", {})
+
+    logger.warning(f"[DEBUG skill_match] query={query}")
+    logger.warning(f"[DEBUG skill_match] intent_data={intent_data}")
+
     matched_skills = _skill_manager.search_relevant_skills(
-        state["user_query"],
-        state.get("intent_data", {}),
+        query,
+        intent_data,
     )
+
+    logger.warning(f"[DEBUG skill_match] result={matched_skills}")
+
     skills_content = _skill_manager.get_relevant_skills_content(matched_skills)
 
     return {

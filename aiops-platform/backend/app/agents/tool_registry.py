@@ -1192,6 +1192,9 @@ class ToolRegistry:
                 - list_dashboards:    列出 Grafana 仪表盘
                 - get_dashboard:      获取仪表盘详情
                 - list_alerts:        列出 Grafana 告警
+                - get_rag_overview:   RAG 服务健康快照（推荐用于 RAG 故障诊断）
+                - get_gpu_overview:   主机与 GPU 健康快照（推荐用于 GPU 资源检查）
+                - get_vllm_overview:  vLLM 推理引擎健康快照（推荐用于本地模型/推理性能检查）
             params: 工具参数 dict，具体取决于 tool 类型
 
         Returns:
@@ -2338,18 +2341,18 @@ class ToolRegistry:
                 "type": "function",
                 "function": {
                     "name": "mcp_call",
-                    "description": "通过 MCP (Model Context Protocol) 调用可观测数据工具，查询 Grafana/Prometheus/Loki 的指标、日志和告警。支持查询服务拓扑(traces_service_graph_request_total)、PromQL 指标、Loki 日志和 Grafana 告警",
+                    "description": "通过 MCP (Model Context Protocol) 调用可观测数据工具，查询 Grafana/Prometheus/Loki 的指标、日志和告警。支持查询服务拓扑(traces_service_graph_request_total)、PromQL 指标、Loki 日志、Grafana 告警，以及 RAG/GPU/vLLM 健康快照",
                     "parameters": {
                         "type": "object",
                         "properties": {
                             "tool": {
                                 "type": "string",
-                                "enum": ["query_metrics", "query_metrics_range", "query_logs", "list_dashboards", "get_dashboard", "list_alerts"],
-                                "description": "MCP 工具名。query_metrics=查询 Prometheus 指标, query_metrics_range=范围查询, query_logs=查询 Loki 日志, list_dashboards=列出仪表盘, get_dashboard=获取仪表盘详情, list_alerts=列出告警"
+                                "enum": ["query_metrics", "query_metrics_range", "query_logs", "list_dashboards", "get_dashboard", "list_alerts", "get_rag_overview", "get_gpu_overview", "get_vllm_overview"],
+                                "description": "MCP 工具名。query_metrics=查询 Prometheus 指标, query_metrics_range=范围查询, query_logs=查询 Loki 日志, list_dashboards=列出仪表盘, get_dashboard=获取仪表盘详情, list_alerts=列出告警, get_rag_overview=RAG服务健康快照(请求量/缓存命中率/质量/耗时/错误日志), get_gpu_overview=主机与GPU健康快照(CPU/内存/磁盘/GPU利用率/显存/温度/功耗), get_vllm_overview=vLLM推理引擎健康快照(引擎状态/KV Cache/QPS/TTFT/Token)"
                             },
                             "params": {
                                 "type": "object",
-                                "description": "工具参数。对于 query_metrics/query_metrics_range: {query: PromQL语句, time/start/end: 时间}; 对于 query_logs: {query: LogQL语句, start: 时间, limit: 条数}; 对于 list_alerts: {state: 告警状态}"
+                                "description": "工具参数。对于 query_metrics/query_metrics_range: {query: PromQL语句, time/start/end: 时间}; 对于 query_logs: {query: LogQL语句, start: 时间, limit: 条数}; 对于 list_alerts: {state: 告警状态}; 对于 get_rag_overview/get_gpu_overview/get_vllm_overview: {lookback: 回看窗口如 1h}"
                             }
                         },
                         "required": ["tool", "params"]

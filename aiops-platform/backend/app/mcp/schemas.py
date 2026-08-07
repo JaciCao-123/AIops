@@ -236,4 +236,46 @@ MCP_TOOLS: List[McpToolDefinition] = [
             "required": [],
         },
     ),
+    McpToolDefinition(
+        name="get_rag_overview",
+        description="获取 RAG Operations Overview 健康快照，返回 RAG 服务请求量、缓存命中率、质量指标、节点耗时、Rerank 指标及最近 ERROR 日志",
+        input_schema={
+            "type": "object",
+            "properties": {
+                "lookback": {
+                    "type": "string",
+                    "description": "错误日志回看窗口，如 '1h'、'30m'，默认 '1h'",
+                },
+            },
+            "required": [],
+        },
+    ),
+    McpToolDefinition(
+        name="get_gpu_overview",
+        description="获取 System & GPU Overview 健康快照，返回 CPU/内存/磁盘使用率、GPU 利用率/显存/温度/功耗、系统负载及 I/O 指标",
+        input_schema={
+            "type": "object",
+            "properties": {
+                "lookback": {
+                    "type": "string",
+                    "description": "预留参数，默认 '1h'",
+                },
+            },
+            "required": [],
+        },
+    ),
+    McpToolDefinition(
+        name="get_vllm_overview",
+        description="获取 vLLM 推理引擎健康快照，返回引擎状态、KV Cache 使用率、运行中/等待请求数、QPS、TTFT(p50/p95/p99)、Token 吞吐与累计量",
+        input_schema={
+            "type": "object",
+            "properties": {
+                "lookback": {
+                    "type": "string",
+                    "description": "预留参数，默认 '1h'",
+                },
+            },
+            "required": [],
+        },
+    ),
 ]

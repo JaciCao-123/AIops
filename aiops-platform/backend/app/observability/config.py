@@ -148,6 +148,8 @@ class ObservabilityConfig(BaseModel):
             grafana=GrafanaConfig(
                 url=os.getenv("GRAFANA_URL", "http://localhost:3000"),
                 api_key=os.getenv("GRAFANA_API_KEY"),
+                username=os.getenv("GRAFANA_USERNAME", "admin"),
+                password=os.getenv("GRAFANA_PASSWORD", "admin"),
             ),
             tempo=TempoConfig(
                 url=os.getenv("TEMPO_URL", "http://localhost:3200"),

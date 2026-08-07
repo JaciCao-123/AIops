@@ -75,11 +75,13 @@ spec:
             configMapKeyRef:
               name: aiops-config
               key: GRAFANA_URL
-        - name: GRAFANA_API_KEY
+        - name: GRAFANA_USERNAME
+          value: "admin"
+        - name: GRAFANA_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: aiops-grafana-secret
-              key: GRAFANA_API_KEY
+              name: aiops-secrets
+              key: GRAFANA_PASSWORD
         - name: PROMETHEUS_URL
           valueFrom:
             configMapKeyRef:
