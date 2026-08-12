@@ -11,8 +11,7 @@ def clean_cost_data(input_dir="data/raw", output_dir="data/cleaned"):
     - output_dir (str): 清洗后数据输出目录。
     """
     print("--- 步骤 2: 开始清洗和聚合数据 ---")
-    
-    # 确保目录存在
+
     os.makedirs(output_dir, exist_ok=True)
     input_path = os.path.join(input_dir, "cost_raw.csv")
     output_path = os.path.join(output_dir, "cost_total_hourly.csv")
@@ -30,8 +29,9 @@ def clean_cost_data(input_dir="data/raw", output_dir="data/cleaned"):
     df_total.columns = ['ds', 'y']  # 重命名以符合Prophet的要求
 
     df_total.to_csv(output_path, index=False)
-    
+
     print(f"✅ 数据清洗和聚合完毕，已保存至: {output_path}")
+    print(f"  共 {len(df_total)} 条小时级记录 ({df_total['ds'].min()} ~ {df_total['ds'].max()})")
     print("-" * 20)
 
 if __name__ == "__main__":

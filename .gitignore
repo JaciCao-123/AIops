@@ -90,6 +90,9 @@ time_sequence_detection/*/data/
 *.temp
 cache/
 
+# 训练产物（模型、划分信息、图表等）
+time_sequence_detection/cost_analysis_Prophet/models/
+
 # OS
 Thumbs.db
 Desktop.ini
